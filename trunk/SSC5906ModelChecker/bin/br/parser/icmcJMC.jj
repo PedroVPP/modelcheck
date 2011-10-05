@@ -1,245 +1,0 @@
-/**
- * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
- * Trabalho da Disciplina de Especificação Formal de Software.
- * Implementação - Model checker!
- */options{  	JDK_VERSION = "1.5";
-	DEBUG_LOOKAHEAD = true;
-  	IGNORE_CASE = true;   	static = true;}PARSER_BEGIN(ssc5906JMC)package br.parser;
-
-public class ssc5906JMC{
-
-static private final String Version = ("ssc5906JMC - icmcJMC - Java Model Checker \"Version 0.1\"  \n A Java implementation"); 
-  public static void main(String args []) throws ParseException  {
-	System.out.println(Version);
-	String filename = " "; // file name to analyse
-	ssc5906JMC parser;
-    
-	if (args.length < 1)
-	System.out.println("Sorry, you have to insert a parameter ...");
-	// caso em que nenhum arquivo é passado como parâmetro
-
-	else
-	{
-	//abrir o arquivo para leitura
- 	filename = args[args.length-1];  
-    System.out.println("Reading Specification from file " + filename + " . . .");
-	try {  // cria AS
-            parser = new ssc5906JMC(new java.io.FileInputStream(filename));
-
-            parser.unitJavaMC(); // chamada do método que faz a análise ...
-
-            System.out.println(" Arquivo de parser valido ");
-
-			if (parser.token_source.foundLexError() > 0)
-        	{
-              System.out.println("Lexical Errors found");
-        	}
-        	else
-        	{
-			/* aqui devemos processar a MEF ...  */
-        	}
-        } 
-    catch (java.io.FileNotFoundException e)
-    	{
-        System.out.println("File " + filename + " not found.");
-        return;
-        }	}
-
-      } // end main()
-
-
-static public String im(String s)
-{
-int k;
-   k = s.lastIndexOf("\"");
-   try {s = s.substring(1,k);}
-   catch (StringIndexOutOfBoundsException e)
-   {}
-   return s;
-}
-  }PARSER_END(ssc5906JMC)
-
-//####################################
-// DECLARACAO DE ATOMOS DO AN. LEXICO
-//####################################
-
-
-TOKEN_MGR_DECLS :
-{
-static int countLexError = 0;
-
-public int foundLexError()
-{
-   return countLexError;
-}
-
-}
-
-
-/*caracteres a serem desprezados pelo compilador*///#################################################################
-SKIP :
-{
-  " "
-| "\t"
-| "\n"
-| "\r"
-| "\f"
-}
-
-//#################################################################
-//#################/*DEFINIÇÕES DE COMENTÁRIOS*/
-SKIP :
-{
-  "/*" : multilinecomment
-}
-SKIP :
-{
-  "//" : singlelinecomment
-}
-<multilinecomment> SKIP:
-{
-   "*/" : DEFAULT
-|  <~[]>
-}
-
-<singlelinecomment> SKIP:
-{
-   <["\n","\r"]> : DEFAULT
-|   <~[]>
-}
-
-
-//#################################################################
-//#################/*DEFINIÇÕES DE PALAVRAS RESERVADAS*/
-TOKEN : /* OPERATORS */{ 	< BEGIN: "begin" >
-|   < END: "end">
-| 	< ssc5906JavaMC: "ssc5906JavaMC">
-|	< STATES: "states">
-| 	< PROPERTIES: "properties">
-| 	< DEFINE: "define">
-| 	< VERIFYING: "verifying">}
-
-//#################################################################
-//#################/*DEFINIÇÕES DE TODOS OS OPERADORES ESPECIAIS*/
-TOKEN:{
-   <COMMA:",">
-  | < LBRACKET: "[">
-  | < RBRACKET: "]">
-  | < SEMICOLON: ";"> 
-  | <COLON: ":">
-  | <EQ: "=">
-  | <Lparentheses : "(" >
-  | <Rparentheses : ")" >
-  | <RECEIVE: ":=" >
-  
-	}
-
-
-//#################################################################
-//#################/*DEFINIÇÃO DE IDENTIFICADORES EM PASCAL*/######
-TOKEN:{
-  <IDENTIFIER: <LETTER> (<LETTER> |<DIGIT>)*>
-  | <LETTER:["a"-"z", "A"-"Z", "_"]>
-  | <DIGIT:["0"-"9"]>
-}
-
-
-//#################################################################
-//#################/*Tratador de erros léxicos*/######
-SPECIAL_TOKEN :
-{
-<INVALID_LEXICAL: 
-(~ ["a"-"z", "A"-"Z",
-  "0"-"9",
-  "\"",
-  "\\",
-  "/",
-  "-",
-  ";",
-  ":",
-  " ",
-  "\t",
-  "\n",
-  "\r",
-  "\f"
-])+>
-   {
-    System.out.println("Line " + input_stream.getEndLine() + 
-                           " - Invalid string found: " + image);
-    countLexError++;
-   }
-|
-   <INVALID_CONST: 
-   "\"" (~ ["\n","\r","\""])* ["\n","\r"]>
-   {
-    System.out.println("Line " + input_stream.getEndLine() + 
-                           " - String constant has a \\n: " + image);
-    countLexError++;
-   }
-}
-
-
-
-//########################################
-// INICIO DA DECLARACAO DE DO AN. LEXICO
-//########################################
-
-
-void unitJavaMC():
-{}{
-  <BEGIN> <ssc5906JavaMC> // inicio
-	icmcJavaModelCheckerUnit()
-  <END> <ssc5906JavaMC> // fim default}
-
-
-void icmcJavaModelCheckerUnit():
-{}{
-	(modelDec() (propertiesVerifying())*)  // pode ser que nao tenhamos definicoes de propriedades
-		}
-
-void modelDec():
-{}
-{
-  satesDec() propertiesDec() behavioerDec() // definicao de ordem de declaracoes do nosso modelo: estados, propriedades e comportamento }
-
-void propertiesVerifying():
-{}{
-  <VERIFYING> // por eqto, a definicao de propriedades é apenas um texto verifying. Aqui será nosso trabalho
-  // toDo, definir essa gramática seguindo normas de CTL}
-
-void satesDec(): 
-{}{
-   <STATES> 
-   <Lparentheses>
-   <IDENTIFIER> // esse cara aqui é o estado inicial da MEF
-   (< COMMA> <IDENTIFIER>)*
-   <Rparentheses> }
-
-void propertiesDec(): // simples declaracao de propriedades
-{}{
-  <PROPERTIES> <Lparentheses> <IDENTIFIER> (< COMMA> <IDENTIFIER>)* <Rparentheses>}
-
-void behavioerDec():
-{
-  Token t = new Token();
-}
-{
- (t = <DEFINE>)
-   <LBRACKET>  		defineBody() //no mínimo uma especificacao de modelo
-  <RBRACKET>}
-void defineBody(): // especificação de um estado - próximos e propriedades
-{}{
-<IDENTIFIER> <RECEIVE> <Lparentheses> nextStates() <COLON> validProperties() <Rparentheses> <SEMICOLON>
-// esse cara aqui é o S0 ... :)
-
-(<IDENTIFIER> <RECEIVE> <Lparentheses> nextStates() <COLON> validProperties() <Rparentheses> <SEMICOLON>)*
-// montar o arquivo graphviz ...Vania !!!!!! Vai la!}
-
-void nextStates():
-{}{	<IDENTIFIER> (< COMMA> <IDENTIFIER>)* // no mínimo 1 e no máximo inumeros próximo estados
-}
-
-void validProperties():
-{}{	<IDENTIFIER> (< COMMA> <IDENTIFIER>)* // no mínimo 1 e no máximo inúmeras propriedades
-}
-
