@@ -39,7 +39,7 @@ public class MEF {
 	public void addState(State n){
 
 		if(!states.contains(n)){
-			states.add(n);
+			states.add(n);		  
 		}
 	}
 
@@ -109,4 +109,8 @@ public class MEF {
 		    System.exit(0);
 		}		
 	}
+	
+
+	
+	
 }

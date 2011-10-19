@@ -6,13 +6,24 @@
 	DEBUG_LOOKAHEAD = true;
   	IGNORE_CASE = true;   	static = true;}PARSER_BEGIN(ssc5906JMC)package br.parser;
 
+
+
+import br.mef.*;
+import java.util.*; 
+
 public class ssc5906JMC{
 
 static private final String Version = ("ssc5906JMC - icmcJMC - Java Model Checker \"Version 0.1\"  \n A Java implementation"); 
+//static private MEF mef;
   public static void main(String args []) throws ParseException  {
 	System.out.println(Version);
 	String filename = " "; // file name to analyse
 	ssc5906JMC parser;
+
+	//Declaracao da MEF a ser instaciada e povoado por estados e propriedades
+	
+
+	
     
 	if (args.length < 1)
 	System.out.println("Sorry, you have to insert a parameter ...");
@@ -25,18 +36,23 @@ static private final String Version = ("ssc5906JMC - icmcJMC - Java Model Checke
     System.out.println("Reading Specification from file " + filename + " . . .");
 	try {  // cria AS
             parser = new ssc5906JMC(new java.io.FileInputStream(filename));
-
-            parser.unitJavaMC(); // chamada do método que faz a análise ...
-
-            System.out.println(" Arquivo de parser valido ");
-
+			parser.unitJavaMC(); // chamada do método que faz a análise ...
+            System.out.println("--  Arquivo de parser valido --");
+			 
 			if (parser.token_source.foundLexError() > 0)
         	{
               System.out.println("Lexical Errors found");
         	}
         	else
         	{
-			/* aqui devemos processar a MEF ...  */
+			/* aqui devemos chamar métodos para processar a MEF e verificar propriedades ...*/
+			System.out.println("#################Analise da MEF definida#################");
+			ArrayList<State> state  = MEF.getInstance().getStates();
+
+			System.out.println("O MEF definida contem: "+state.size()+" estados");
+			System.out.println("O MEF definida contem: "+MEF.getInstance().getFirstState().getName()+" estados");
+			MEF.getInstance().createMEF();
+			
         	}
         } 
     catch (java.io.FileNotFoundException e)
@@ -44,8 +60,7 @@ static private final String Version = ("ssc5906JMC - icmcJMC - Java Model Checke
         System.out.println("File " + filename + " not found.");
         return;
         }	}
-
-      } // end main()
+	  } // end main()
 
 
 static public String im(String s)
@@ -111,13 +126,19 @@ SKIP :
 
 //#################################################################
 //#################/*DEFINIÇÕES DE PALAVRAS RESERVADAS*/
-TOKEN : /* OPERATORS */{ 	< BEGIN: "begin" >
-|   < END: "end">
-| 	< ssc5906JavaMC: "ssc5906JavaMC">
-|	< STATES: "states">
+TOKEN :{   <E: "E">
+  | <A: "A">   
+  | <U: "U">
+  | <AX: "AX">
+  | <EX: "EX">
+  | <AF: "AF">
+  | <EF: "EF">
+  | <AG: "AG">
+  | <EG: "EG">
+|  <JMC: "JMC">| 	< STATES: "states">
 | 	< PROPERTIES: "properties">
-| 	< DEFINE: "define">
-| 	< VERIFYING: "verifying">}
+| 	< DEFINE: "def">
+}
 
 //#################################################################
 //#################/*DEFINIÇÕES DE TODOS OS OPERADORES ESPECIAIS*/
@@ -131,6 +152,15 @@ TOKEN:{
   | <Lparentheses : "(" >
   | <Rparentheses : ")" >
   | <RECEIVE: ":=" >
+
+//#################################################################
+//#################/*DEFINIÇÕES DOS OPERADORES ESPECIAIS CTL*/  
+  | <NOT: "~" >
+  | <AND: "^" >
+  | <OR: "v">
+  | <IMPLICATION: "->">  // if .. then
+  | <BICONDICIONAL: "<->"> //if and only if ...
+  
   
 	}
 
@@ -156,6 +186,10 @@ SPECIAL_TOKEN :
   "/",
   "-",
   ";",
+  ")",
+  "(",
+  "[",
+  "]",
   ":",
   " ",
   "\t",
@@ -187,37 +221,96 @@ SPECIAL_TOKEN :
 
 void unitJavaMC():
 {}{
-  <BEGIN> <ssc5906JavaMC> // inicio
+  <JMC> // inicio
 	icmcJavaModelCheckerUnit()
-  <END> <ssc5906JavaMC> // fim default}
+  <JMC> // fim default}
 
 
 void icmcJavaModelCheckerUnit():
 {}{
-	(modelDec() (propertiesVerifying())*)  // pode ser que nao tenhamos definicoes de propriedades
+	(modelDec() ctlGrammar() (<COMMA> ctlGrammar())*)  // pode ser que nao tenhamos definicoes de propriedades
 		}
 
 void modelDec():
-{}
-{
-  satesDec() propertiesDec() behavioerDec() // definicao de ordem de declaracoes do nosso modelo: estados, propriedades e comportamento }
+{  }
+{ 	satesDec() propertiesDec() behavioerDec() // definicao de ordem de declaracoes do nosso modelo: estados, propriedades e comportamento	 }
 
-void propertiesVerifying():
+
+void ctlGrammar():
+{}{
+  //<VERIFYING> // por eqto, a definicao de propriedades é apenas um texto verifying. Aqui será nosso trabalho
+  // toDo, definir essa gramática seguindo normas de CTL
+  <IDENTIFIER>   |				// definicao de propriedade atomica
+  <Lparentheses> logicalRelations() <Rparentheses> |      //definicao de relacoes logicas parentisadas em CTL
+  ctlSpecifications() ctlGrammar()   |
+  unionDec() union()
+}
+
+
+
+void logicalRelations():
 {}{
-  <VERIFYING> // por eqto, a definicao de propriedades é apenas um texto verifying. Aqui será nosso trabalho
-  // toDo, definir essa gramática seguindo normas de CTL}
+	negation() |
+	dualRelations()	 }
+
+
+
+void negation():
+{
+}
+{
+  <NOT> ctlGrammar()
+}
+
+
+void dualRelations():
+{}{
+  	ctlGrammar()
+  	(
+  	  <AND> | //conjunction
+  	  <OR>  |  //disjunction
+  	  <IMPLICATION> | //material implication - if  .. then
+  	  <BICONDICIONAL> //Bicondicional - if and only if  	)
+  	ctlGrammar()  	
+}
+
+void ctlSpecifications():
+{}{   <AX> //em todos os próximos estados as propriedade e valida
+  | <EX> //existe um próximo estado no qual a propriedade vale
+  | <AF> //todas as execucoes fazem o caminho valer em algum lugar
+  | <EF> //em algum lugar, é possível que aconteça
+  | <AG> //propriedade sempre valida
+  | <EG> //para um caminho, a partir de um estado, a prop. vale    }
+
+void unionDec():
+{}{
+  (< E >|< A >)}
+
+void union():
+{}{
+  <LBRACKET> ctlGrammar() <U> ctlGrammar() <RBRACKET>}
+
 
 void satesDec(): 
-{}{
+{
+  Token t = new Token() ;
+  State state = null;  }{
    <STATES> 
-   <Lparentheses>
-   <IDENTIFIER> // esse cara aqui é o estado inicial da MEF
-   (< COMMA> <IDENTIFIER>)*
-   <Rparentheses> }
+    <Lparentheses>
+   				( t = <IDENTIFIER>
+			{			  		state = new State(t.toString()); // rafa
+  					System.out.println("Estado "+t.toString()+" lido com sucesso e incluido na instacia da MEF");  					
+  					MEF.getInstance().addState(state); // adiciona estado na estrutura MEF  					  								}
+   				)+   				
+   <Rparentheses>   
+}
 
 void propertiesDec(): // simples declaracao de propriedades
 {}{
-  <PROPERTIES> <Lparentheses> <IDENTIFIER> (< COMMA> <IDENTIFIER>)* <Rparentheses>}
+  <PROPERTIES>
+  	<Lparentheses>  		
+  			(<IDENTIFIER>)+
+  	<Rparentheses>}
 
 void behavioerDec():
 {
@@ -225,21 +318,37 @@ void behavioerDec():
 }
 {
  (t = <DEFINE>)
-   <LBRACKET>  		defineBody() //no mínimo uma especificacao de modelo
+   <LBRACKET>  		defineBody() //exatamente uma especificacao de modelo
   <RBRACKET>}
 void defineBody(): // especificação de um estado - próximos e propriedades
-{}{
-<IDENTIFIER> <RECEIVE> <Lparentheses> nextStates() <COLON> validProperties() <Rparentheses> <SEMICOLON>
-// esse cara aqui é o S0 ... :)
+{
+  Token t = new Token();
+  State child, father;}{
+ (t = <IDENTIFIER> )
+ {  father = MEF.getInstance().getState(t.toString());
+    MEF.getInstance().setFirstState(father); } 
+  <Lparentheses>
+      (t = <IDENTIFIER>)+
+	{
+	 child = MEF.getInstance().getState(t.toString());
+	 father.addChild(child); 	}
+       <COLON> (<IDENTIFIER>)+ <Rparentheses>
 
-(<IDENTIFIER> <RECEIVE> <Lparentheses> nextStates() <COLON> validProperties() <Rparentheses> <SEMICOLON>)*
+(     (t = <IDENTIFIER> )
+	    {
+	    father = MEF.getInstance().getState(t.toString());
+		}
+
+
+ <Lparentheses>
+
+ (t = <IDENTIFIER>)+
+{
+	 child = MEF.getInstance().getState(t.toString());
+	 father.addChild(child); }
+
+
+  <COLON> (<IDENTIFIER>)+ <Rparentheses>)*
 // montar o arquivo graphviz ...Vania !!!!!! Vai la!}
 
-void nextStates():
-{}{	<IDENTIFIER> (< COMMA> <IDENTIFIER>)* // no mínimo 1 e no máximo inumeros próximo estados
-}
 
-void validProperties():
-{}{	<IDENTIFIER> (< COMMA> <IDENTIFIER>)* // no mínimo 1 e no máximo inúmeras propriedades
-}
-
