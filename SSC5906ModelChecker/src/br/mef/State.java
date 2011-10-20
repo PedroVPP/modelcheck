@@ -67,7 +67,7 @@ public class State {
 	
 	
 	
-	//parte de propriedades - adcionado por Frota
+	//parte de propriedades - adcionado por Frota em 19/10
 	private ArrayList<Property> validProperties = new ArrayList<Property>();
 	
 	public void addValidProperties(Property p)
@@ -75,6 +75,11 @@ public class State {
 		if(!validProperties.contains(p)){
 			validProperties.add(p);		  
 		}		
+	}
+	
+	
+	public ArrayList<Property> getValidProperties(){
+		return this.validProperties;
 	}
 	
 	

@@ -49,11 +49,53 @@ static private final String Version = ("ssc5906JMC - icmcJMC - Java Model Checke
 			System.out.println("#################Analise da MEF definida#################");
 			ArrayList<State> state  = MEF.getInstance().getStates();
 
+					/*Analise quanto a estados */
 			System.out.println("O MEF definida contem: "+state.size()+" estados");
-			System.out.println("O MEF definida contem: "+MEF.getInstance().getFirstState().getName()+" estados");
-			MEF.getInstance().createMEF();
+			System.out.println("O estado inicial eh "+MEF.getInstance().getFirstState().getName());
+			System.out.println("\n ####    os estados declarados  e transicoes sao  ######\n");
+
+
+			ArrayList<State>  stateChildrem = null;
+			for (State s : state) {
+
+			  System.out.print("estado -"+s.getName()+"- e transicoes para [");
+			  stateChildrem = s.getChildren();
+
+			  for (State s2 : stateChildrem) {
+			  System.out.print(" "+s2.getName()+" ");  
+			  }
+			System.out.print("]\n\n");			  
+			}
+
+
+			/*Analise quanto a propriedades */
+			ArrayList<Property> properties = MEF.getInstance().getProperties();
+			System.out.println("O MEF definida contem: "+properties.size()+" propriedades");
+
+			System.out.println(" XUPA "+ state.size());
+			System.out.println("\n ####    as propriedades declaradas sao  ######\n");
+
+			for (Property p : properties) {
+			  System.out.println(" "+p.getName()+" ");			  		
+				}
+
+			System.out.println("\n ####    os estados e suas propriedades sao  ######\n");
+
+			ArrayList<Property> validProperties =  null; 
+			for (State s : state) {
+			validProperties = s.getValidProperties();			  
+			System.out.print("-para o estado "+s.getName()+" as propriedades validas  sao [" );
 			
-        	}
+			for (Property pState : validProperties) {
+				System.out.print(" "+pState.getName()+" ");
+			   }
+			System.out.print(" ] \n\n");
+
+			}
+			
+			//dps das analises, criacao da MEF
+			MEF.getInstance().createMEF(); 			
+			}
         } 
     catch (java.io.FileNotFoundException e)
     	{
@@ -298,18 +340,28 @@ void satesDec():
    <STATES> 
     <Lparentheses>
    				( t = <IDENTIFIER>
-			{			  		state = new State(t.toString()); // rafa
-  					System.out.println("Estado "+t.toString()+" lido com sucesso e incluido na instacia da MEF");  					
-  					MEF.getInstance().addState(state); // adiciona estado na estrutura MEF  					  								}
+			{			  		state = new State(t.toString()); 
+  					MEF.getInstance().addState(state); // adiciona estado na estrutura MEF
+  					System.out.println("Estado "+t.toString()+" lido com sucesso e incluido na instacia da MEF");  					  								}
    				)+   				
    <Rparentheses>   
 }
 
 void propertiesDec(): // simples declaracao de propriedades
-{}{
+{
+	Token t = new Token() ;
+ 	Property property = null;
+  }{
   <PROPERTIES>
-  	<Lparentheses>  		
-  			(<IDENTIFIER>)+
+  	<Lparentheses>
+  			(
+  			 (t =  <IDENTIFIER>)
+  			 {
+				property = new Property(t.toString()); //
+				MEF.getInstance().addProperty(property); // adiciona estado na estrutura MEF
+  				System.out.println("Propriedade "+t.toString()+" lido com sucesso e incluido na instacia da MEF"); 
+			}
+  	       )+
   	<Rparentheses>}
 
 void behavioerDec():
@@ -317,38 +369,58 @@ void behavioerDec():
   Token t = new Token();
 }
 {
- (t = <DEFINE>)
-   <LBRACKET>  		defineBody() //exatamente uma especificacao de modelo
-  <RBRACKET>}
+ <DEFINE>
+   <LBRACKET>
+	defineBody() //exatamente uma especificacao de modelo
+   <RBRACKET>}
 void defineBody(): // especificação de um estado - próximos e propriedades
 {
   Token t = new Token();
-  State child, father;}{
- (t = <IDENTIFIER> )
- {  father = MEF.getInstance().getState(t.toString());
-    MEF.getInstance().setFirstState(father); } 
+  State specified, analyzed;
+  Property property = null;}{
+ (t = <IDENTIFIER>  //estado sendo definido
+ {
+	analyzed = MEF.getInstance().getState(t.toString());
+	MEF.getInstance().setFirstState(analyzed);  	 } )
   <Lparentheses>
-      (t = <IDENTIFIER>)+
+      (t = <IDENTIFIER> // estados para os quais o estado sendo definido tera transicao
 	{
-	 child = MEF.getInstance().getState(t.toString());
-	 father.addChild(child); 	}
-       <COLON> (<IDENTIFIER>)+ <Rparentheses>
+	 specified = MEF.getInstance().getState(t.toString());
+	 analyzed.addChild(specified); 	})+
+    <COLON>
+    ( t = <IDENTIFIER> // propriedades válidas no estado sendo definido
+	{
+	 // código de insercao da propriedade nos estados 
+	 property = MEF.getInstance().getProperty(t.toString());
+	 analyzed.addValidProperties(property);	 
+	})+
 
-(     (t = <IDENTIFIER> )
+    <Rparentheses>
+	(	  (t = <IDENTIFIER> 
 	    {
-	    father = MEF.getInstance().getState(t.toString());
+	    analyzed = MEF.getInstance().getState(t.toString());
 		}
+	)
 
 
  <Lparentheses>
 
- (t = <IDENTIFIER>)+
+ (t = <IDENTIFIER>
 {
-	 child = MEF.getInstance().getState(t.toString());
-	 father.addChild(child); }
+	 specified = MEF.getInstance().getState(t.toString());
+	 analyzed.addChild(specified); }
+)+
 
+  <COLON>
+  (t = <IDENTIFIER>
+	{
+	 // código de insercao da propriedade nos estados 
+	 property = MEF.getInstance().getProperty(t.toString());
+	 analyzed.addValidProperties(property);	 
+	})+
 
-  <COLON> (<IDENTIFIER>)+ <Rparentheses>)*
-// montar o arquivo graphviz ...Vania !!!!!! Vai la!}
+  <Rparentheses>)*
+
+}
 
 

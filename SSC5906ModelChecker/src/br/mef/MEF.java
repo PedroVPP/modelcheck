@@ -120,6 +120,15 @@ public class MEF {
 		}
 	}
 
+	public Property getProperty(String name){
+
+		for (Property p : properties) {
+			if(p.getName().equals(name)){
+				return p;
+			}
+		}
+		return null;
+	}
 	
 	public ArrayList<Property> getProperties(){
 		return this.properties;
