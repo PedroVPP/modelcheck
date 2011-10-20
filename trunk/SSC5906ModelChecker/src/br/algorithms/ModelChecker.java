@@ -1,8 +1,7 @@
 package br.algorithms;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class ModelChecker {
 
@@ -18,31 +17,93 @@ public class ModelChecker {
 	private boolean info[][]; // l- num de estados do espaco de estados e c -
 								// tam da formula CTL a ser avalaida
 
-	private ArrayList<int[]> pi = new ArrayList<int[]>(); // armazena o
-															// resultado da
-															// avaliacao da
-															// formula indicada
+	private List<int[]> pi = new ArrayList<int[]>(); // armazena o
+														// resultado da
+														// avaliacao da
+														// formula indicada
 	private boolean _continue[]; // serve de flag p/ controlar a aavaliacao da
 									// formula indicada pelo indice do array
 
-	public ModelChecker(){
-		
-		this.setMarked(new boolean[2][2]);
-		this.setInfo(new boolean[1][1]);
-		this.set_continue(new boolean[2]);
-		this.setPi(new ArrayList<int[]>(){});
-	}
-	
-	
-	public boolean check(String f, int s, int i_f){
-		
-		if (marked[s][i_f]){
-			return info[s][i_f];
-		}
-		return false;
-		//...do something
+	public ModelChecker() {
+
 	}
 
+	/**
+	 * @param marked
+	 *            : boolean multidimentional array, which "l" indicates the
+	 *            current state and "c" indicates the size of CTL formula
+	 * @param info
+	 *            : boolean multidimensional arrey used to store information
+	 *            related if the state was visited or not by a CTL subformula
+	 * @param _continue
+	 *            : is a boolean array with "p" positions where "p" is the size
+	 *            of CTL formula.
+	 * @param pi
+	 *            int list array with "p" positions where "p" is the CTL formula
+	 *            size to be evaluated. Each position stores the states which
+	 *            are examples and counter-examples of the formula indicated by
+	 *            each position
+	 * */
+	public ModelChecker(boolean[][] marked, boolean[][] info,
+			boolean[] _continue, List<int[]> pi) {
+
+		this.setMarked(marked);
+		this.setInfo(info);
+		this.set_continue(_continue);
+		this.setPi(pi);
+
+	}
+
+	public boolean check(String f, int s, int i_f) {
+
+		String f_type = null;
+
+		if (marked[s][i_f])
+			return info[s][i_f];
+
+		f_type = this.formulaType(f);
+		_continue[i_f] = true;
+
+		if (f_type == "AP") {
+			checkAP(f, s, i_f);
+		} else if (f_type == "NOT") {
+			checkNOT(f, s, i_f);
+		}
+
+		return info[s][i_f];
+	}
+
+	public String formulaType(String f) {
+
+		if (f.startsWith("AP")) {
+			return "AP";
+		} else if (f.startsWith("¬")) {
+			return "NOT";
+		} else if (f.startsWith("^")) {
+			return "AND";
+		} else if (f.startsWith("v")) {
+			return "OR";
+		} else if (f.startsWith("AG")) {
+			return "AG";
+		} else if (f.startsWith("AX")) {
+			return "AX";
+		} else if (f.startsWith("EU")) {
+			return "EU";
+		} else if (f.startsWith("EG")) {
+			return "EG";
+		}
+		return null;
+	}
+
+	public void checkAP(String f, int s, int i_f) {
+
+	}
+
+	public void checkNOT(String f, int s, int i_f) {
+
+	}
+
+	/*-------------------getters and setters------------------------------------*/
 	public boolean[][] getMarked() {
 		return marked;
 	}
@@ -59,11 +120,11 @@ public class ModelChecker {
 		this.info = info;
 	}
 
-	public ArrayList<int[]> getPi() {
+	public List<int[]> getPi() {
 		return pi;
 	}
 
-	public void setPi(ArrayList<int[]> pi) {
+	public void setPi(List<int[]> pi) {
 		this.pi = pi;
 	}
 
@@ -74,5 +135,6 @@ public class ModelChecker {
 	public void set_continue(boolean[] _continue) {
 		this._continue = _continue;
 	}
+	/*---------------------------------------------------------------------------*/
 
 }
