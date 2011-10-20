@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class State {
 	
 	private ArrayList<State> children = new ArrayList<State>();
+	
 	private String name;
 	
 	public State (String name){
@@ -63,4 +64,26 @@ public class State {
 	public ArrayList<State> getChildren(){
 		return this.children;
 	}
+	
+	
+	
+	//parte de propriedades - adcionado por Frota
+	private ArrayList<Property> validProperties = new ArrayList<Property>();
+	
+	public void addValidProperties(Property p)
+	{
+		if(!validProperties.contains(p)){
+			validProperties.add(p);		  
+		}		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

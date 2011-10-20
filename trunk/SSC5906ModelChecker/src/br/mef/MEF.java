@@ -9,7 +9,7 @@ public class MEF {
 	
 	private static MEF instance;
 	
-	private ArrayList<State> states = new ArrayList<State>();
+	private ArrayList<State> states = new ArrayList<State>();	
 	private State firsState;
 	
 	private Escrita novoDotArq;
@@ -27,7 +27,6 @@ public class MEF {
 	}
 
 	public void removeState(State state){
-
 		for (int i = 0; i < states.size(); i++) {
 			if(states.get(i).equals(state)){
 				removeState(i);
@@ -37,7 +36,6 @@ public class MEF {
 	}
 	
 	public void addState(State n){
-
 		if(!states.contains(n)){
 			states.add(n);		  
 		}
@@ -62,7 +60,6 @@ public class MEF {
 				return st;
 			}
 		}
-
 		return null;
 	}
 	
@@ -110,7 +107,22 @@ public class MEF {
 		}		
 	}
 	
+	
+	
+	
+	
+	//adicionando parte que genrecia as propriedades
+	private ArrayList<Property> properties = new ArrayList<Property>();
+		
+	public void addProperty(Property n){
+		if(!properties.contains(n)){
+			properties.add(n);		  
+		}
+	}
 
 	
-	
+	public ArrayList<Property> getProperties(){
+		return this.properties;
+	}
+		
 }
