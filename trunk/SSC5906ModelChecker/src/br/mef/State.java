@@ -39,7 +39,9 @@ public class State {
 	}
 	
 	public void addChild(State n){
-		children.add(n);
+		if(!children.contains(n)){
+			children.add(n);	
+		}		
 	}	
 
 	public String getName() {
