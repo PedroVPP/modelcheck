@@ -106,6 +106,9 @@ public class Principal extends javax.swing.JFrame {
         jtExpressions = new javax.swing.JTable();
         jPanel8 = new javax.swing.JPanel();
         btOK2 = new javax.swing.JButton();
+        pnlStatesExp = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        jtStatesExp = new javax.swing.JTable();
         pnlMEF = new javax.swing.JPanel();
         jlbImagem = new javax.swing.JLabel();
 
@@ -634,6 +637,43 @@ public class Principal extends javax.swing.JFrame {
                 .addComponent(btOK2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        pnlStatesExp.setBorder(javax.swing.BorderFactory.createTitledBorder("States"));
+        pnlStatesExp.setName("pnlStates"); // NOI18N
+        pnlStatesExp.setPreferredSize(new java.awt.Dimension(895, 140));
+        pnlStatesExp.setRequestFocusEnabled(false);
+
+
+        jtStatesExp.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+
+
+        jScrollPane6.setViewportView(jtStatesExp);
+
+        javax.swing.GroupLayout pnlStatesExpLayout = new javax.swing.GroupLayout(pnlStatesExp);
+        pnlStatesExp.setLayout(pnlStatesExpLayout);
+        pnlStatesExpLayout.setHorizontalGroup(
+            pnlStatesExpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlStatesExpLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane6, 0, 0, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        pnlStatesExpLayout.setVerticalGroup(
+            pnlStatesExpLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlStatesExpLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout pnlStates4Layout = new javax.swing.GroupLayout(pnlStates4);
         pnlStates4.setLayout(pnlStates4Layout);
         pnlStates4Layout.setHorizontalGroup(
@@ -641,15 +681,18 @@ public class Principal extends javax.swing.JFrame {
             .addGroup(pnlStates4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlStates4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 663, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlStates4Layout.createSequentialGroup()
-                        .addComponent(txtExpressions, javax.swing.GroupLayout.DEFAULT_SIZE, 605, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnAddExpression, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDelExpression, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(pnlStates4Layout.createSequentialGroup()
+                        .addGroup(pnlStates4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 663, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlStates4Layout.createSequentialGroup()
+                                .addComponent(txtExpressions, javax.swing.GroupLayout.DEFAULT_SIZE, 605, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnAddExpression, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnDelExpression, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(pnlStatesExp, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())))
         );
         pnlStates4Layout.setVerticalGroup(
             pnlStates4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -659,10 +702,12 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(btnAddExpression, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnDelExpression, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlStatesExp, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(44, 44, 44)
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(334, 334, 334))
+                .addGap(294, 294, 294))
         );
 
         jPanel7.add(pnlStates4);
@@ -937,7 +982,7 @@ public class Principal extends javax.swing.JFrame {
         	}		    		
     		defMEF = defMEF + ") ";
     	}		
-		defMEF = defMEF + "] ";
+		defMEF = defMEF + "] \n";
 		for (int i = 0; i < expressions.size(); ++i) {
     		Expression exp = (Expression) expressions.get(i);
     		defMEF = defMEF + exp.getName()+ "\n";   		
@@ -974,8 +1019,7 @@ public class Principal extends javax.swing.JFrame {
 		this.setJlbImagem(label);
 		pnlMEF.add(this.jlbImagem);
 		this.jlbImagem.setHorizontalAlignment(SwingConstants.CENTER); 
-		this.pack();
-    	
+		this.pack();    	
     }
     
     private void btOK2ActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1078,6 +1122,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JButton jbImport;
     private javax.swing.JToggleButton jbtPesquisar;
@@ -1088,11 +1133,13 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JTable jtStates2;
     private javax.swing.JTable jtExpressions;
     private javax.swing.JTextField jtfDiretorio;
+	private javax.swing.JTable jtStatesExp;
     private javax.swing.JPanel pnlStates;
     private javax.swing.JPanel pnlStates1;
     private javax.swing.JPanel pnlStates2;
     private javax.swing.JPanel pnlStates3;
     private javax.swing.JPanel pnlStates4;
+    private javax.swing.JPanel pnlStatesExp;
     private javax.swing.JTextField txtExpressions;
     private javax.swing.JTextField txtProperties;
     private javax.swing.JTextField txtState;
