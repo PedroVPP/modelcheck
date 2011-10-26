@@ -4,7 +4,7 @@
  * Implementação - Model checker!
  */options{  	JDK_VERSION = "1.5";
 	DEBUG_LOOKAHEAD = true;
-  	IGNORE_CASE = true;   	static = true;}PARSER_BEGIN(ssc5906JMC)package br.parser;
+  	IGNORE_CASE = true;   	static = false;}PARSER_BEGIN(ssc5906JMC)package br.parser;
 
 
 
@@ -15,6 +15,8 @@ public class ssc5906JMC{
 
 static private final String Version = ("ssc5906JMC - icmcJMC - Java Model Checker \"Version 0.1\"  \n A Java implementation"); 
 //static private MEF mef;
+static private String ctlExpression = "";
+static private ArrayList < Expression> expressions;
   public static void main(String args []) throws ParseException  {
 	System.out.println(Version);
 	String filename = " "; // file name to analyse
@@ -35,6 +37,7 @@ static private final String Version = ("ssc5906JMC - icmcJMC - Java Model Checke
  	filename = args[args.length-1];  
     System.out.println("Reading Specification from file " + filename + " . . .");
 	try {  // cria AS
+			expressions = new ArrayList<Expression>();
             parser = new ssc5906JMC(new java.io.FileInputStream(filename));
 			parser.unitJavaMC(); // chamada do método que faz a análise ...
             System.out.println("--  Arquivo de parser valido --");
@@ -278,59 +281,137 @@ void modelDec():
 { 	satesDec() propertiesDec() behavioerDec() // definicao de ordem de declaracoes do nosso modelo: estados, propriedades e comportamento	 }
 
 
-void ctlGrammar():
-{}{
+String ctlGrammar():
+{
+
+  Token t = new Token();
+  String exp = "";
+  String exp2 = ""; }{
   //<VERIFYING> // por eqto, a definicao de propriedades é apenas um texto verifying. Aqui será nosso trabalho
-  // toDo, definir essa gramática seguindo normas de CTL
-  <IDENTIFIER>   |				// definicao de propriedade atomica
-  <Lparentheses> logicalRelations() <Rparentheses> |      //definicao de relacoes logicas parentisadas em CTL
-  ctlSpecifications() ctlGrammar()   |
-  unionDec() union()
+  // toDo, definir essa gramática seguindo normas de CTL    (     
+	( t = <IDENTIFIER>
+	  {
+	    exp = t.toString();
+	  }
+	)   				
+    |				// definicao de propriedade atomica
+  <Lparentheses>
+    exp = logicalRelations()
+  <Rparentheses>
+    |      //definicao de relacoes logicas parentisadas em CTL
+  exp = ctlSpecifications() exp2 = ctlGrammar()   |
+  exp = unionDec() exp2 = union()
+  
+)
+  {
+    Expression e = new Expression(exp + exp2);
+    expressions.add(e);        return exp + exp2;  }  
 }
 
 
 
-void logicalRelations():
-{}{
-	negation() |
-	dualRelations()	 }
-
-
-
-void negation():
+String logicalRelations():
 {
+  String exp = "";}{
+	(	  exp = negation() |
+	  exp = dualRelations()
+    )
+	{
+	 // Expression e = new Expression(exp);
+	  //expressions.add(e);  	  
+	  return "( " + exp + " )";	}
+	  	 }
+
+
+
+String negation():
+{
+   Token t = new Token();
+   String exp = "";
 }
 {
-  <NOT> ctlGrammar()
+  (    t = <NOT>
+	  {
+	    exp = t.toString();
+	  }
+	)  
+
+    {      exp = exp + ctlGrammar();
+	  //Expression e = new Expression(ctlExpression);
+	  //expressions.add(e);      
+      return exp;    }    
 }
 
 
-void dualRelations():
-{}{
-  	ctlGrammar()
+String dualRelations():
+{
+  Token t = new Token();
+  String exp = "";
+  String exp2 = "";
+  String exppartial = "";}{
+  	exp = ctlGrammar()
   	(
-  	  <AND> | //conjunction
-  	  <OR>  |  //disjunction
-  	  <IMPLICATION> | //material implication - if  .. then
-  	  <BICONDICIONAL> //Bicondicional - if and only if  	)
-  	ctlGrammar()  	
+  	 t = <AND>
+  	 | //conjunction
+	 t = <OR>
+  	 |  //disjunction
+  	 t = <IMPLICATION>
+	 | //material implication - if  .. then
+  	 t =  <BICONDICIONAL> //Bicondicional - if and only if
+  	)  	exp2 = ctlGrammar()
+  	   {
+  	    exppartial =  exp + t.toString() + exp2;
+  	    //Expression e = new Expression(exppartial);
+		//expressions.add(e);              
+        return exppartial; 		  					  					
+	  }
 }
 
-void ctlSpecifications():
-{}{   <AX> //em todos os próximos estados as propriedade e valida
-  | <EX> //existe um próximo estado no qual a propriedade vale
-  | <AF> //todas as execucoes fazem o caminho valer em algum lugar
-  | <EF> //em algum lugar, é possível que aconteça
-  | <AG> //propriedade sempre valida
-  | <EG> //para um caminho, a partir de um estado, a prop. vale    }
+String ctlSpecifications():
+{
+    Token t = new Token(); }{ ( t = <AX> //em todos os próximos estados as propriedade e valida
+  | t = <EX> //existe um próximo estado no qual a propriedade vale     
+  | t = <AF> //todas as execucoes fazem o caminho valer em algum lugar
+  | t = <EF> //em algum lugar, é possível que aconteça   
+  | t = <AG> //propriedade sempre valida
+  | t = <EG> //para um caminho, a partir de um estado, a prop. vale
+  )
+  {
+	return t.toString();  					  					
+  }	        }
 
-void unionDec():
-{}{
-  (< E >|< A >)}
+String unionDec():
+{
+    Token t = new Token(); }{
+  (
+    t = < E > | t = < A >
+   )
+  {
+	return t.toString();  					  					
+  }
+	  }
 
-void union():
-{}{
-  <LBRACKET> ctlGrammar() <U> ctlGrammar() <RBRACKET>}
+String union():
+{
+  Token t = new Token();
+  String exp = "";
+  String exp2 = "";
+  String exppartial = "";}{
+    (      t = <LBRACKET>
+     exp = ctlGrammar()
+    t = <U>
+     exp2 = ctlGrammar()
+    t = <RBRACKET>
+  )
+    {
+		exppartial = "[ " + exp + " U " + exp2 + " ]"; 
+  	    Expression e = new Expression(exppartial);
+  	    
+		expressions.add(e);             
+		
+		return exppartial;  					  					
+    }
+}
 
 
 void satesDec(): 
