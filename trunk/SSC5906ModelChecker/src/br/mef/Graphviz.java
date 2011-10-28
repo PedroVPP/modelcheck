@@ -69,7 +69,7 @@ private static String TEMP_DIR   = System.getProperty("java.io.tmpdir");
 /**
 * Where is your dot program located? It will be called externally.
 */
-private final static String DOT_W        = "c:\\Arquivos de programas\\ATT\\GraphViz\\bin\\dot.exe";
+private final static String DOT_W        = "c:\\Arquivos de programas\\Graphviz2.24\\bin\\dot.exe";
 private final static String DOT_L        = "/usr/bin/dot";
 private static String DOT = null;
 
