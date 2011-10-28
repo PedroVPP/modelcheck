@@ -22,10 +22,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
+import br.algorithms.Algorithms;
 import br.gui.util.TableModelDefine;
 import br.gui.util.TableModelExpressions;
 import br.gui.util.TableModelProperties;
 import br.gui.util.TableModelState;
+import br.gui.util.TableModelStateAnswer;
 import br.mef.Define;
 import br.mef.Expression;
 import br.mef.MEF;
@@ -50,7 +52,8 @@ public class Principal extends javax.swing.JFrame {
     private ArrayList<Define> defines = null;
     private Expression expression = null;
     private ArrayList<Expression> expressions = null;
-    
+    private StateAnswer stateAnswer = null;
+    private ArrayList<StateAnswer> statesAnswer = null;
     /** Creates new form Principal */
     public Principal() {
         initComponents();
@@ -741,12 +744,17 @@ public class Principal extends javax.swing.JFrame {
         if (this.state == null){
             State newState = new State(txtState.getText());
             this.states.add(newState);
+            
+            StateAnswer staw = new StateAnswer(txtState.getText());
+            this.statesAnswer.add(staw);
         }
         else{
             state.setName(txtState.getText());
+            this.stateAnswer.setName(txtState.getText());
         }
         ((TableModelState)jtStates.getModel()).fireTableDataChanged();
-        ((TableModelState)jtStates2.getModel()).fireTableDataChanged();        
+        ((TableModelState)jtStates2.getModel()).fireTableDataChanged();
+        ((TableModelStateAnswer)jtStatesExp.getModel()).fireTableDataChanged();        
         txtState.setText("");    	
     }
 
@@ -864,7 +872,9 @@ public class Principal extends javax.swing.JFrame {
 	    		Define def = new Define();
 	    		def.setState(st);
 				ArrayList<Property> props = st.getValidProperties();
-				
+
+				StateAnswer staw = new StateAnswer(st.getName());
+				statesAnswer.add(staw);
 				for(int j=0; j<props.size(); j++){
 					Property prop = (Property) props.get(j);
 					def.addProperty(prop);
@@ -881,6 +891,7 @@ public class Principal extends javax.swing.JFrame {
 	    	((TableModelProperties)jtProperties.getModel()).fireTableDataChanged();
 	    	((TableModelExpressions)jtExpressions.getModel()).fireTableDataChanged();
 	    	((TableModelDefine)jtDefine.getModel()).fireTableDataChanged();
+	    	((TableModelStateAnswer)jtStatesExp.getModel()).fireTableDataChanged();
 		} catch (ParseException e) {
 			JOptionPane.showMessageDialog(null,"Erro","Alerta",JOptionPane.WARNING_MESSAGE);
 		}
@@ -1015,10 +1026,22 @@ public class Principal extends javax.swing.JFrame {
     	MEF.getInstance().createMEF();
 		ImageIcon img = new ImageIcon("mef.jpg");
 		JLabel label = new JLabel(img);
-		label.setBounds(0, 0, img.getIconWidth() + 10, img.getIconHeight() + 10); 
+		label.setBounds(0, 0, img.getIconWidth() + 10, img.getIconHeight() + 10);
 		this.setJlbImagem(label);
 		pnlMEF.add(this.jlbImagem);
-		this.jlbImagem.setHorizontalAlignment(SwingConstants.CENTER); 
+		this.jlbImagem.setHorizontalAlignment(SwingConstants.CENTER);
+		Expression e = (Expression) MEF.getInstance().getExpressions().get(MEF.getInstance().getExpressions().size() -1);
+		//considerar somente o último elemento do  vetor
+		//ver comentário do icmcJMC.jj
+		analyzeExpressions(e);
+		//depois de analisar as expressões, para saber se ela é válida, bastaria verificar se ela 
+		//possui o label da expressão (verificar comentários das classes State e Algorithms
+		//percorrer os estados e setar o statesAnswer
+		//ficaria mais ou menos assim:
+		// for states...{
+		// if state(i).getLabels().contains(e.getLabel))
+		//pegar o stateAnswer correspondente ao state
+		//e setar valid = true, senão setar valid = false
 		this.pack();    	
     }
     
@@ -1040,6 +1063,16 @@ public class Principal extends javax.swing.JFrame {
          }
     }
 
+    public void setStatesAnswer(ArrayList<StateAnswer> statesAnswer){
+        try {
+     	   this.statesAnswer = statesAnswer;
+            TableModelStateAnswer modelo = new TableModelStateAnswer(statesAnswer);
+            jtStatesExp.setModel(modelo);
+        }
+         catch(java.lang.Exception e){
+             JOptionPane.showMessageDialog(null,"Error when initialize States.","Alert",JOptionPane.WARNING_MESSAGE);
+         }
+    }    
     public void setProperties(ArrayList<Property> properties){
         try {
      	   this.properties = properties;
@@ -1074,12 +1107,53 @@ public class Principal extends javax.swing.JFrame {
          catch(java.lang.Exception e){
              JOptionPane.showMessageDialog(null,"Error when initialize Expressions.","Alert",JOptionPane.WARNING_MESSAGE);
          }
-    }    
+    }
+    
+    //pra mim esse método serviria pra percorrer as expressões e 
+    // rotular os estados pra ver se a expressão seria válida naquele 
+    //estado
+    public void analyzeExpressions(Expression e){
+		for (int i = 0; i < states.size(); ++i) {
+     		State est = (State) states.get(i);
+		  	  if (!e.getType().equals("CS"))
+		  		//do jeito q o ArrayList foi montado, iria repetir...
+		  		//por ex, EG r, iria considerar o r, depois EG e depois EG r
+		  		//e o certo seria apenas o r e o EG r, por isso esse if...  
+		  	  {
+		  		  
+		  //System.out.println(e.getName());
+		  //nesse trecho deveria verificar qual o tipo de instrução
+		  // E, OU, => , <=>, AF, EF, U, etc.
+		  //e dependendo desse tipo chamar o algoritmo correto
+		  // no meu entendimento, esse algoritmo iria rotular o estado
+		 // pra saber se a expressão é válida (ver comentário na classe State)
+  		  //Como exemplo, fiz somente para o E e qnd é um atributo
+		    if (!e.getType().equals("^")){
+		    	Algorithms.Alg_E(est, e.getExp1(), e.getExp1());
+		    }
+		    else if (!e.getType().equals("Id")){
+		    	Algorithms.Alg_Id(est, e.getExp1()); 
+		    }		    
+		  	  }	  
+			  if (e.getExp1() != null)
+			  {
+				  analyzeExpressions(e.getExp1());
+			  }
+			    
+			  if (e.getExp2() != null)
+			  {
+				  analyzeExpressions(e.getExp2());
+			  }
+    	}
+    	
+    }
+    
     public void inicializa(){
  	   this.setStates(new ArrayList(0));
  	   this.setProperties(new ArrayList(0));
  	   this.setDefines(new ArrayList(0));
- 	  this.setExpressions(new ArrayList(0));
+  	   this.setExpressions(new ArrayList(0));
+  	   this.setStatesAnswer(new ArrayList(0));
  	   
     }
     
