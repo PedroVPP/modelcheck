@@ -7,7 +7,15 @@ public class State {
 	private ArrayList<State> children = new ArrayList<State>();
 	
 	private String name;
-	
+	private ArrayList<Integer> labels = new ArrayList<Integer>();
+	//nesse atributo ficaria guardado todos os labels das expressões
+	//fiz isso considerando o exemplo que o Ades deu em aula
+	//por ex, a expressão EX EG r, o label de r é (1), o label de EG r é (2)
+	//o label de EX EG r é (3)
+	//ao chamar os algoritmos, eles adicionariam os labels válidos em cada state
+	//depois, pra saber se a expressão é válida, bastaria verificar se ela
+	//possui o label
+	// a parte que ficou faltando é associar um label para cada expressão...
 	public State (String name){
 		this.name = name;
 	}
@@ -65,6 +73,19 @@ public class State {
 	
 	public ArrayList<State> getChildren(){
 		return this.children;
+	}
+	
+
+	public void addLabel(Integer lb)
+	{
+		if(!labels.contains(lb)){
+			labels.add(lb);		  
+		}		
+	}
+	
+	
+	public ArrayList<Integer> getLabels(){
+		return this.labels;
 	}
 	
 	
