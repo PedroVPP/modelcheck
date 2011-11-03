@@ -5,12 +5,16 @@ import java.util.ArrayList;
 public class Expression {
 	
 	private String name;
-	private Expression exp1;
-	private Expression exp2;
-	private String type = "";
+	private Expression exp1 = null;
+	private Expression exp2 = null;
+	//(o type = null indica que a expressão em questão e' uma propriedade e nao uma expressao)
+	private String type = null;
+	
+	//unnecessary?
 	private ArrayList<Expression> expressions;
-	private Integer label;
-
+	private Integer label; // no caso os labels não poderiam ser o próprio nome das expressoes? entao essa
+	//variavel e' desnecessaria?
+		
 	public Expression (String name){
 		this.name = name;
 	}	
@@ -92,5 +96,4 @@ public class Expression {
 	public ArrayList<Expression> getExpressions(){
 		return this.expressions;
 	}
-
 }
