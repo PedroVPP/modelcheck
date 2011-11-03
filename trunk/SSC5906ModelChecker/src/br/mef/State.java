@@ -8,14 +8,20 @@ public class State {
 	
 	private String name;
 	private ArrayList<Integer> labels = new ArrayList<Integer>();
-	//nesse atributo ficaria guardado todos os labels das expressões
+	//nesse atributo ficaria guardado todos os labels das expressï¿½es
 	//fiz isso considerando o exemplo que o Ades deu em aula
-	//por ex, a expressão EX EG r, o label de r é (1), o label de EG r é (2)
-	//o label de EX EG r é (3)
-	//ao chamar os algoritmos, eles adicionariam os labels válidos em cada state
-	//depois, pra saber se a expressão é válida, bastaria verificar se ela
+	//por ex, a expressï¿½o EX EG r, o label de r ï¿½ (1), o label de EG r ï¿½ (2)
+	//o label de EX EG r ï¿½ (3)
+	//ao chamar os algoritmos, eles adicionariam os labels vï¿½lidos em cada state
+	//depois, pra saber se a expressï¿½o ï¿½ vï¿½lida, bastaria verificar se ela
 	//possui o label
-	// a parte que ficou faltando é associar um label para cada expressão...
+	// a parte que ficou faltando ï¿½ associar um label para cada expressï¿½o...
+	
+	// Criei essa outra variÃ¡vel porque achei melhor que os labels sejam as expressoes
+	// ao inves inteiros representando elas. Alem de expressoes tambem sao colocadas aqui
+	// as propriedades dos estados by Pedro
+	private ArrayList<String> labelsString = new ArrayList<String>();
+	
 	public State (String name){
 		this.name = name;
 	}
@@ -100,12 +106,23 @@ public class State {
 		}		
 	}
 	
-	
 	public ArrayList<Property> getValidProperties(){
 		return this.validProperties;
 	}
+
+	public void setLabelsString(ArrayList<String> labelsString) {
+		this.labelsString = labelsString;
+	}
 	
-	
+	public void addLabelsString(String label)
+	{
+		if(!labelsString.contains(label)){
+			labelsString.add(label);		  
+		}		
+	}
+	public ArrayList<String> getLabelsString(){
+		return this.labelsString;
+	}
 	
 	
 	
