@@ -530,5 +530,17 @@ public class Algorithms {
 	public static boolean AF(ArrayList<State> states, Expression expression) {
 		return true;
 	}
-
+    
+	// EX, EG, EU
+	public static boolean EX(ArrayList<State> states, Expression expression){
+		return true;
+	}
+	
+	public static boolean EU(ArrayList<State> states, Expression expression){
+		return true;
+	}
+	
+	public static boolean E(ArrayList<State> states, Expression expression){
+		return true;
+	}	
 }
