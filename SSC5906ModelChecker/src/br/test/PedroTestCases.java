@@ -14,55 +14,65 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import br.algorithms.Algorithms;
+import br.exceptions.MalformedExpression;
 import br.mef.Expression;
 import br.mef.Property;
 import br.mef.State;
 
 public class PedroTestCases extends Assert {
 
-	@Test
-	public void testOR() {
-		ArrayList<State> states = new ArrayList<State>();
-		// Essa MEF e suas propriedas é a mesma do exemplo do Adenilso nas suas aulas
+	ArrayList<State> states;
+	Expression expression;
+
+	@Before
+	public void initialize() {
+		states = new ArrayList<State>();
+		// Essa MEF e suas propriedas é a mesma do exemplo do Adenilso nas suas
+		// aulas
 		State s0 = new State("S0");
 		State s1 = new State("S1");
 		State s2 = new State("S2");
 		State s3 = new State("S3");
-		
+
 		s0.addChild(s2);
 		s0.addChild(s1);
 		s0.addLabelsString("p");
 		s0.addLabelsString("q");
-		
+		s0.addLabelsString("x");
+
 		s1.addChild(s0);
 		s1.addLabelsString("q");
 		s1.addLabelsString("r");
-		
+
 		s2.addChild(s3);
 		s2.addLabelsString("r");
-		
+
 		s3.addChild(s3);
 		s3.addLabelsString("q");
 		s3.addLabelsString("r");
-		
+
 		states.add(s0);
 		states.add(s1);
 		states.add(s2);
 		states.add(s3);
+	}
+
+	@Test
+	public void testOR() throws Exception {
 
 		// criacao da arvore de derivacao da expressao
-		Expression expression = new Expression("p OR q");
+		expression = new Expression("p OR q");
 		expression.setExp1(new Expression("p"));
 		expression.setExp2(new Expression("q"));
 		expression.setType("OR");
-		
+
 		// Ainda não contém Assert
 		ArrayList<State> validStates = Algorithms.OR(states, expression);
 
 		// imprime todos os estados com seus respectivos labels e propriedades
 		// A partir daqui é só System.out.print
 		System.out.println("Expression: " + expression.getName());
-		
+
 		for (Iterator iterator = states.iterator(); iterator.hasNext();) {
 			State state = (State) iterator.next();
 			System.out.println("\nState: " + "\"" + state.getName() + "\"");
@@ -73,27 +83,117 @@ public class PedroTestCases extends Assert {
 				System.out.print("\"" + string + "\"" + " ");
 			}
 		}
-		
+
 		System.out.println("\nValid States:");
 		for (Iterator iterator = validStates.iterator(); iterator.hasNext();) {
 			State state = (State) iterator.next();
 			System.out.print(state.getName() + " ");
 		}
 	}
+
+	@Test
+	public void testNOT() throws MalformedExpression {
+		// criacao da arvore de derivacao da expressao
+		expression = new Expression("NOT p");
+		expression.setExp1(new Expression("p"));
+		expression.setType("NOT");
+
+		assertFalse(Algorithms.NOT(this.states.get(0), expression));
+		assertTrue(Algorithms.NOT(this.states.get(1), expression));
+		assertTrue(Algorithms.NOT(this.states.get(2), expression));
+		assertTrue(Algorithms.NOT(this.states.get(3), expression));
+
+		// criacao da arvore de derivacao da expressao
+		expression = new Expression("NOT q");
+		expression.setExp1(new Expression("q"));
+		expression.setType("NOT");
+
+		assertFalse(Algorithms.NOT(this.states.get(0), expression));
+		assertFalse(Algorithms.NOT(this.states.get(1), expression));
+		assertTrue(Algorithms.NOT(this.states.get(2), expression));
+		assertFalse(Algorithms.NOT(this.states.get(3), expression));
+	}
+
+	@Test
+	public void testIMP() throws Exception {
+		expression = new Expression("p -> q");
+		expression.setExp1(new Expression("p"));
+		expression.setExp2(new Expression("q"));
+		expression.setType("IMP");
+
+		assertTrue(Algorithms.IMP(this.states.get(0), expression));
+		assertTrue(Algorithms.IMP(this.states.get(1), expression));
+		assertTrue(Algorithms.IMP(this.states.get(2), expression));
+		assertTrue(Algorithms.IMP(this.states.get(3), expression));
+		
+		expression = new Expression("r -> q");
+		expression.setExp1(new Expression("r"));
+		expression.setExp2(new Expression("q"));
+		expression.setType("IMP");
+
+		assertTrue(Algorithms.IMP(this.states.get(0), expression));
+		assertTrue(Algorithms.IMP(this.states.get(1), expression));
+		assertFalse(Algorithms.IMP(this.states.get(2), expression));
+		assertTrue(Algorithms.IMP(this.states.get(3), expression));
+	}
 	
 	@Test
-	public void testNOT() {
-		fail("Not yet implemented"); // TODO
+	public void testEG() throws MalformedExpression {
+		expression = new Expression("EG p");
+		expression.setExp1(new Expression("p"));
+		expression.setType("EG");
+		assertFalse(Algorithms.EG(this.states.get(0), expression));
+		assertFalse(Algorithms.EG(this.states.get(1), expression));
+		assertFalse(Algorithms.EG(this.states.get(2), expression));
+		assertFalse(Algorithms.EG(this.states.get(3), expression));
+		
+		expression = new Expression("EG q");
+		expression.setExp1(new Expression("q"));
+		expression.setType("EG");
+		assertTrue(Algorithms.EG(this.states.get(0), expression));
+		assertTrue(Algorithms.EG(this.states.get(1), expression));
+		assertFalse(Algorithms.EG(this.states.get(2), expression));
+		assertTrue(Algorithms.EG(this.states.get(3), expression));
+		
+		expression = new Expression("EG r");
+		expression.setExp1(new Expression("r"));
+		expression.setType("EG");
+		assertFalse(Algorithms.EG(this.states.get(0), expression));
+		assertFalse(Algorithms.EG(this.states.get(1), expression));
+		assertTrue(Algorithms.EG(this.states.get(2), expression));
+		assertTrue(Algorithms.EG(this.states.get(3), expression));
 	}
 
 	@Test
-	public void testEG() {
-		fail("Not yet implemented"); // TODO
-	}
-
-	@Test
-	public void testEF() {
-		fail("Not yet implemented"); // TODO
+	public void testEF() throws MalformedExpression {
+		expression = new Expression("EF p");
+		expression.setExp1(new Expression("p"));
+		expression.setType("EF");
+		assertTrue(Algorithms.EF(this.states.get(0), expression));
+		assertTrue(Algorithms.EF(this.states.get(1), expression));
+		assertFalse(Algorithms.EF(this.states.get(2), expression));
+		assertFalse(Algorithms.EF(this.states.get(3), expression));
+		
+		expression = new Expression("EF q");
+		expression.setExp1(new Expression("q"));
+		expression.setType("EF");
+		assertTrue(Algorithms.EF(this.states.get(0), expression));
+		assertTrue(Algorithms.EF(this.states.get(1), expression));
+		assertTrue(Algorithms.EF(this.states.get(2), expression));
+		assertTrue(Algorithms.EF(this.states.get(3), expression));
+		
+		expression = new Expression("EF r");
+		expression.setExp1(new Expression("r"));
+		expression.setType("EF");
+		assertTrue(Algorithms.EF(this.states.get(0), expression));
+		assertTrue(Algorithms.EF(this.states.get(1), expression));
+		assertTrue(Algorithms.EF(this.states.get(2), expression));
+		assertTrue(Algorithms.EF(this.states.get(3), expression));
+		
+		expression = new Expression("EF x");
+		expression.setExp1(new Expression("x"));
+		expression.setType("EF");
+		assertFalse(Algorithms.EF(this.states.get(3), expression));
 	}
 
 }

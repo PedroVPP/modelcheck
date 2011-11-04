@@ -96,4 +96,11 @@ public class Expression {
 	public ArrayList<Expression> getExpressions(){
 		return this.expressions;
 	}
+
+	/**
+	 * @return retorna o nome da expressao
+	 */
+	public String toString() {
+		return name;
+	}
 }
