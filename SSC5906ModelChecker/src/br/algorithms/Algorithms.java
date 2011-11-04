@@ -583,6 +583,34 @@ public class Algorithms {
 
 	}
 
+	/**
+	 * Implementacao do algoritmo EX exp - se existe um cominho tal que no 
+	 * proximo esta a propriedade e' verdade
+	 * 
+	 * @author Mauricio Arimoto
+	 * @param st
+	 *            Conjunto de estados da MEF em que se deseja verificar se uma
+	 *      	  expressao e' valida
+	 * @param exp
+	 *            Expressao CTL que se deseja verificar.
+	 *
+	 */
+	public static List<State> EX(ArrayList<State> st, Expression exp) {
+		List<State> validStates = new ArrayList<State>();
+
+		for (int i = 0; i < st.size(); i++) {
+			State state = st.get(i);
+			for (Iterator iterator = state.getChildren().iterator(); iterator.hasNext();) {
+				State state_child = (State) iterator.next();
+				if (state_child.getLabelsString().contains(exp.getName())){
+					validStates.add(state_child);
+				}
+			}
+		}
+		return validStates;
+	}
+	
+	
 	// AU, EU
 
 	public static boolean EU(ArrayList<State> states, Expression expression) {
