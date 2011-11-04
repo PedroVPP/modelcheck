@@ -229,7 +229,7 @@ public class Algorithms {
 
 		for (int i = 0; i < states.size(); i++) {
 			int nextState = i + 1;
-			if (states.get(nextState).getLabelsString().contains(expression)) {
+			if (states.get(nextState).getLabelsString().contains(expression.getName())) {
 				validStates.add(states.get(nextState));
 			}
 		}
