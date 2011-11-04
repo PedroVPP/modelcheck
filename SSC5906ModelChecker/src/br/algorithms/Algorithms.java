@@ -498,30 +498,22 @@ public class Algorithms {
 	 */
 	public static boolean AG(ArrayList<State> states, Expression expression) {
 		boolean flag = false;
-		if (states.get(0).getLabelsString().contains(expression.getName())) {
-			for (int i = 1; i < states.size(); i++) {
+
+		for (int i = 0; i < states.size(); i++) {
+			if (states.get(i).getLabelsString().contains(expression.getName())) {
 				// marca os estados da MEF caso o estado inicial contenha AG
-				states.get(i).addLabel(i);
-			}
-			flag = true;
-		} else {
+				int value = 0;
+				states.get(i).addLabel(value);
 
-			for (int i = 0; i < states.size(); i++) {
-				if (states.get(i).getLabelsString()
-						.contains(expression.getName())) {
-					// marca os estados da MEF caso o estado inicial contenha AG
-					int value = 0;
-					states.get(i).addLabel(value);
-
-					for (int j = i + 1; j < states.size(); j++) {
-						int auxvalue = value;
-						states.get(j).addLabel(auxvalue++);
-					}
-					flag = true;
-				} else {
-					flag = false;
+				for (int j = i + 1; j < states.size(); j++) {
+					int auxvalue = value;
+					states.get(j).addLabel(auxvalue++);
 				}
+				flag = true;
+			} else {
+				flag = false;
 			}
+
 		}
 		return flag;
 
@@ -585,7 +577,7 @@ public class Algorithms {
 
 	}
 
-	//AU, EU
+	// AU, EU
 
 	public static boolean EU(ArrayList<State> states, Expression expression) {
 		return true;
@@ -595,5 +587,4 @@ public class Algorithms {
 		return true;
 	}
 
-	
 }
