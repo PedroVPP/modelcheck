@@ -426,7 +426,7 @@ public class Algorithms {
 	 * 1 - Ele ja deve ter sido visitado
 	 * 2 - Ele deve ser valido para aquela propriedade
 	 * 
-	 *  Se ele ja foi visitado e tambem e valido para a propriedade, significa que foi iniciado um encontrado um caminho que leva a um loop
+	 *  Se ele ja foi visitado e tambem e valido para a propriedade, significa que foi encontrado um caminho que leva a um loop
 	 *  onde aquela propriedade sempre vale. Ao encontrar isso o algoritmo retorna 'true' ate chegar no metodo principal EG.
 	 * @author Pedro Pinheiro
 	 * @param state
