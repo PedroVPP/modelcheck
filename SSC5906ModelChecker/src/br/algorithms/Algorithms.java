@@ -200,8 +200,8 @@ public class Algorithms {
 					// marca os estados da MEF caso o estado inicial contenha AG
 					int value = 0;
 					states.get(i).addLabel(value);
-				
-					for(int j = i+1; j< states.size(); j++){
+
+					for (int j = i + 1; j < states.size(); j++) {
 						int auxvalue = value;
 						states.get(j).addLabel(auxvalue++);
 					}
@@ -215,19 +215,25 @@ public class Algorithms {
 
 	}
 
-	/**Método para avaliar a expressão CTL AX, que significa que no próximo 
+	/**
+	 * Método para avaliar a expressão CTL AX, que significa que no próximo
 	 * estado a propriedade é válida
+	 * 
 	 * @param states
-	 * 		Conjunto de estados da MEF
+	 *            Conjunto de estados da MEF
 	 * @param expression
-	 * 		Representa a expressão CTL que está sendo avaliada 
+	 *            Representa a expressão CTL que está sendo avaliada
 	 * */
-	public static ArrayList<State> AX(ArrayList<State> states, 
-			Expression expression) {
+	public static List<State> AX(ArrayList<State> states, Expression expression) {
 		List<State> validStates = new ArrayList<State>();
-		for(int i = 0; i < states.size(); i++){}
-		
-		return null;
+
+		for (int i = 0; i < states.size(); i++) {
+			int nextState = i + 1;
+			if (states.get(nextState).getLabelsString().contains(expression)) {
+				validStates.add(states.get(nextState));
+			}
+		}
+		return validStates;
 	}
 
 	public static boolean AF(ArrayList<State> states, Expression expression) {
