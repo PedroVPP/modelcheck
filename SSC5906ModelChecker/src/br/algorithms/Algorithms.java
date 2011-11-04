@@ -216,11 +216,13 @@ public class Algorithms {
 	}
 
 	/**
-	 * Metodo 'implica'. Ex: p -> q
-	 * 
-	 * @param state
-	 * @param expression
-	 * @return
+	 * Esse metodo implementa o algoritmo de 'implica', ex: p -> q
+	 * ele converte o p -> q para seu equivalente ~p v q, ou seja, (NOT p) OR q
+	 * e assim usa os algoritmos OR e NOT para verificar a validade da expressao
+	 * @author Pedro Pinheiro
+	 * @param state estado em que se deseja verificar se a expressao e valida
+	 * @param expression a expressao a ser verificada
+	 * @return retorna true se a expressao e valida e false caso contrario
 	 * @throws Exception
 	 */
 	public static boolean IMP(State state, Expression expression)
@@ -232,13 +234,14 @@ public class Algorithms {
 
 		// p -> q = (NOT p) OR q
 		Expression not = new Expression("NOT " + expression1.getName()); // NOT
-																			// p
-		not.setExp1(new Expression(expression1.getName()));
+		not.setExp1(new Expression(expression1.getName())); //p
+		not.setType("NOT");
 
 		Expression or = new Expression(not.getName() + " OR "
 				+ expression2.getName());
 		or.setExp1(not);
 		or.setExp2(new Expression(expression2.getName()));
+		or.setType("OR");
 
 		NOT(state, not);
 
@@ -250,6 +253,24 @@ public class Algorithms {
 		return validExpression;
 	}
 
+	/**
+	 * Esse método executa o algoritmo EF. O EF consiste do seguinte:
+	 * - Dada uma expressao, verificar se ela e valida para pelo menos um estado
+	 * a partir de um estado inicial
+	 * 
+	 * O EF para fucionar utiliza dois métodos: 
+	 * - static boolean EF(State state, Expression expression)
+	 * - static boolean recursiveEF(State state, String label)
+	 * 
+	 * O primeiro metodo checa o primeiro estado enviado. E possivel descobrir se a expressao e valida
+	 * logo a partir desse primeiro estado. Caso ele ainda nao seja valido e necessario checar suas conexoes (filhos)
+	 * para ver se pelo menos um deles e valido. Para isso usa-se o segundo metodo, o qual tem o comportamento recursivo.
+	 * @author Pedro Pinheiro
+	 * @param state
+	 * @param expression
+	 * @return
+	 * @throws MalformedExpression
+	 */
 	public static boolean EF(State state, Expression expression)
 			throws MalformedExpression {
 		boolean validExpression = false;
@@ -303,6 +324,19 @@ public class Algorithms {
 	}
 
 	// find one STATE that contains this "label" among its children
+	/**
+	 * Este metodo e o responsavel por achar pelo menos UM estado que contem a label enviada pelo metodo EF.
+	 * Ele possui o comportamento recursivo para checar todos os seus filhos, e os filhos desses filhos, e assim em diante.
+	 * Para evitar que o algoritmo fique em um loop entre dois ou mais estados, foi declarada a variavel 'visited'
+	 * na classe State. Devido a isso sempre que o algoritmo de EF ou EG for executado sempre deve-se resetar
+	 * todas as variaveis 'visited' dos estados da MEF para o valor 'false', caso contrario o algoritmo ira
+	 * achar que todos os estados ja foram visitados. Caso alguem tenha uma sugestao melhor de implementacao
+	 * dessa informacao de visitado, por favor se manifeste.  
+	 * @author Pedro Pinheiro
+	 * @param state
+	 * @param label
+	 * @return
+	 */
 	public static boolean recursiveEF(State state, String label) {
 		boolean valid = false;
 		
@@ -324,6 +358,23 @@ public class Algorithms {
 		return valid;
 	}
 
+	/**
+	 * Esse método executa o algoritmo EG. O EG consiste do seguinte:
+	 * - Dada uma expressao, verificar se ela e' valida para TODOS os estados de pelo menos UM caminho
+	 * na minha MEF a partir de um estado inicial
+	 * 
+	 * O EG para fucionar utiliza dois métodos: 
+	 * - static boolean EG(State state, Expression expression)
+	 * - static boolean recursiveEG(State state, String label)
+	 * 
+	 * O primeiro metodo checa o primeiro estado enviado. Apos isso e usado o segundo metodo para percorrer os filhos
+	 * e achar um caminho para satisfazer o EG. Para mais informacoes checar os comentarios do metodo 'recursiveEG'
+	 * @author Pedro Pinheiro
+	 * @param state
+	 * @param expression
+	 * @return
+	 * @throws MalformedExpression
+	 */	
 	public static boolean EG(State state, Expression expression)
 			throws MalformedExpression {
 		boolean validExpression = false;
@@ -360,7 +411,28 @@ public class Algorithms {
 		return validExpression;
 	}
 
-	// find one PATH that contains this "label" among its children
+	/**
+	 * Este metodo e o responsavel por achar pelo menos UM CAMINHO onde TODOS os estados satisfazem uma propriedade.
+	 * Ele possui o comportamento recursivo para checar todos os seus filhos, e os filhos desses filhos, e assim em diante.
+	 * Para evitar que o algoritmo fique em um loop entre dois ou mais estados, foi declarada a variavel 'visited'
+	 * na classe State. Devido a isso sempre que o algoritmo de EF ou EG for executado sempre deve-se resetar
+	 * todas as variaveis 'visited' dos estados da MEF para o valor 'false', caso contrario o algoritmo ira
+	 * achar que todos os estados ja foram visitados. Caso alguem tenha uma sugestao melhor de implementacao
+	 * dessa informacao de visitado, por favor se manifeste.
+	 * 
+	 * O ponto principal deste algoritmo e' que para saber se ja foi encontrado um caminho onde sempre a propriedade 
+	 * se repete (ou seja o EG e' valido), o estado atual deve ser valido e o proximo estado a ser checado deve obrigatoriamente 
+	 * satisfazer essas duas condicoes:
+	 * 1 - Ele ja deve ter sido visitado
+	 * 2 - Ele deve ser valido para aquela propriedade
+	 * 
+	 *  Se ele ja foi visitado e tambem e valido para a propriedade, significa que foi iniciado um encontrado um caminho que leva a um loop
+	 *  onde aquela propriedade sempre vale. Ao encontrar isso o algoritmo retorna 'true' ate chegar no metodo principal EG.
+	 * @author Pedro Pinheiro
+	 * @param state
+	 * @param label
+	 * @return
+	 */
 	public static boolean recursiveEG(State state, String label) {
 		boolean valid = false;
 		
