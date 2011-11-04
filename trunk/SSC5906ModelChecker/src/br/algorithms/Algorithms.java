@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import br.exceptions.MalformedExpression;
 import br.mef.Expression;
 import br.mef.Property;
 import br.mef.State;
@@ -45,47 +46,6 @@ public class Algorithms {
 
 	/**
 	 * @author Pedro Pinheiro
-	 * @param states
-	 *            Consiste do array de estados da MEF inteira.
-	 * @param expression
-	 *            Consiste da expressao que se deseja verificar se e'
-	 *            verdadeira.
-	 * @return retorna os estados em que a expressao fornecida e' valida
-	 * @throws Exception
-	 */
-	public static ArrayList<State> OR(ArrayList<State> states,
-			Expression expression) {
-		/*
-		 * Ex: Expressao: p OR q
-		 * 
-		 * Expression 1 name = p OR q exp1 = p exp2 = q
-		 * 
-		 * Expression 2 name = p exp1 = null exp2 = null
-		 * 
-		 * Expression 3 name = q exp1 = null exp2 = null
-		 */
-
-		// Expression expression = "p OR q"
-		Expression expression1 = expression.getExp1(); // = p
-		Expression expression2 = expression.getExp2(); // = q
-		ArrayList<State> validStates = new ArrayList<State>();
-
-		for (Iterator iterator = states.iterator(); iterator.hasNext();) {
-			State state = (State) iterator.next();
-
-			if (state.getLabelsString().contains(expression1.getName())
-					|| state.getLabelsString().contains(expression2.getName())) {
-				// adiciona o label pois a expressao e verdadeira
-				state.addLabelsString(expression.getName());
-				validStates.add(state);
-			}
-
-		}
-		return validStates;
-	}
-
-	/**
-	 * @author Pedro Pinheiro
 	 * @param state
 	 *            Consiste do estado especifico da MEF em que se deseja
 	 *            verificar se uma expressao e' verdadeira
@@ -98,11 +58,19 @@ public class Algorithms {
 	 */
 	public static boolean OR(State state, Expression expression)
 			throws Exception {
-		// Expression expression = "p OR q"
+		/*
+		 * Ex: Expressao: p OR q
+		 * 
+		 * Expression 1 name = p OR q exp1 = p exp2 = q
+		 * 
+		 * Expression 2 name = p exp1 = null exp2 = null
+		 * 
+		 * Expression 3 name = q exp1 = null exp2 = null
+		 */
 		Expression expression1 = expression.getExp1(); // = p
 		Expression expression2 = expression.getExp2(); // = q
-		if (state.getLabelsString().contains(expression1)
-				|| state.getLabelsString().contains(expression2)) {
+		if (state.getLabelsString().contains(expression1.getName())
+				|| state.getLabelsString().contains(expression2.getName())) {
 			// adiciona o label pois a expressao e verdadeira
 			state.addLabelsString(expression.getName());
 			return true;
@@ -112,7 +80,30 @@ public class Algorithms {
 	}
 
 	/**
-	 * @author Pedro Pinheiro and André Luiz
+	 * @author Pedro Pinheiro
+	 * @param states
+	 *            Consiste do array de estados da MEF inteira.
+	 * @param expression
+	 *            Consiste da expressao que se deseja verificar se e'
+	 *            verdadeira.
+	 * @return retorna os estados em que a expressao fornecida e' valida
+	 * @throws Exception
+	 */
+	public static ArrayList<State> OR(ArrayList<State> states,
+			Expression expression) throws Exception {
+		ArrayList<State> validStates = new ArrayList<State>();
+
+		for (Iterator iterator = states.iterator(); iterator.hasNext();) {
+			State state = (State) iterator.next();
+			if (OR(state, expression)) {
+				validStates.add(state);
+			}
+		}
+		return validStates;
+	}
+
+	/**
+	 * @author Pedro Pinheiro and Andrï¿½ Luiz
 	 * @param state
 	 *            Consiste do estado especifico da MEF em que se deseja
 	 *            verificar se uma expressao e' verdadeira
@@ -128,8 +119,8 @@ public class Algorithms {
 		// Expression expression = "p AND q"
 		Expression expression1 = expression.getExp1(); // = p
 		Expression expression2 = expression.getExp2(); // = q
-		if (state.getLabelsString().contains(expression1)
-				&& state.getLabelsString().contains(expression2)) {
+		if (state.getLabelsString().contains(expression1.getName())
+				&& state.getLabelsString().contains(expression2.getName())) {
 			// adiciona o label pois a expressao e verdadeira
 			state.addLabelsString(expression.getName());
 			return true;
@@ -138,11 +129,31 @@ public class Algorithms {
 		}
 	}
 
-	// TODO: Fazer um mÃ©todo que de pra percorrer a MEF toda atravÃ©s de
-	// getChild...
+	/**
+	 * @author Pedro Pinheiro e Andre Luiz
+	 * @param states
+	 *            Consiste do array de estados da MEF inteira.
+	 * @param expression
+	 *            Consiste da expressao que se deseja verificar se e'
+	 *            verdadeira.
+	 * @return retorna os estados em que a expressao fornecida e' valida
+	 * @throws Exception
+	 */
+	public static ArrayList<State> AND(ArrayList<State> states,
+			Expression expression) throws Exception {
+		ArrayList<State> validStates = new ArrayList<State>();
+
+		for (Iterator iterator = states.iterator(); iterator.hasNext();) {
+			State state = (State) iterator.next();
+			if (AND(state, expression)) {
+				validStates.add(state);
+			}
+		}
+		return validStates;
+	}
 
 	/**
-	 * @author Pedro Pinheiro and André Luiz
+	 * @author Pedro Pinheiro and Andrï¿½ Luiz
 	 * @param state
 	 *            Consiste do estado especifico da MEF em que se deseja
 	 *            verificar se uma expressao e' verdadeira
@@ -150,44 +161,251 @@ public class Algorithms {
 	 *            Consiste da expressao que se deseja verificar se e'
 	 *            verdadeira.
 	 * @return retorna true se a expressao e' verdadeira para aquele estado, e
-	 *         caso contrario retorna 'false'
+	 *         caso contrario retorna false
 	 */
-	public static boolean NOT(State state, Expression expression) {
-
+	public static boolean NOT(State state, Expression expression)
+			throws MalformedExpression {
+		boolean validExpression = false;
+		// ex: Expression.name = ~p
 		Expression expression1 = expression.getExp1(); // = p
-		Expression expression2 = expression.getExp2(); // = q
+		Expression expression2 = expression.getExp2(); // = null
 
-		if (!state.getLabelsString().contains(expression1)
-				&& !state.getLabelsString().contains(expression2)) {
-			// adiciona o label pois a expressao e verdadeira
-			state.addLabelsString(expression.getName());
-			return true;
-		} else {
-			return false;
+		if (expression1 == null && expression2 == null || expression1 != null
+				&& expression2 != null) {
+			throw new MalformedExpression();
 		}
-	}
 
-	public static boolean EG(ArrayList<State> states, Expression expression) {
-		return true;
-	}
+		if (expression1 == null) {
+			if (!state.getLabelsString().contains(expression2.getName())) {
+				state.addLabelsString(expression.getName());
+				validExpression = true;
+			}
+		}
 
-	public static boolean EF(ArrayList<State> states, Expression expression) {
-		return true;
+		if (expression2 == null) {
+			if (!state.getLabelsString().contains(expression1.getName())) {
+				state.addLabelsString(expression.getName());
+				validExpression = true;
+			}
+		}
+
+		return validExpression;
 	}
 
 	/**
-	 * @author André Luiz
+	 * @author Pedro Pinheiro e Andre Luiz
+	 * @param states
+	 *            Consiste do array de estados da MEF inteira.
+	 * @param expression
+	 *            Consiste da expressao que se deseja verificar se e'
+	 *            verdadeira.
+	 * @return retorna os estados em que a expressao fornecida e' valida
+	 * @throws Exception
+	 */
+	public static ArrayList<State> NOT(ArrayList<State> states,
+			Expression expression) throws Exception {
+		ArrayList<State> validStates = new ArrayList<State>();
+
+		for (Iterator iterator = states.iterator(); iterator.hasNext();) {
+			State state = (State) iterator.next();
+			if (NOT(state, expression)) {
+				validStates.add(state);
+			}
+		}
+		return validStates;
+	}
+
+	/**
+	 * Metodo 'implica'. Ex: p -> q
+	 * 
+	 * @param state
+	 * @param expression
+	 * @return
+	 * @throws Exception
+	 */
+	public static boolean IMP(State state, Expression expression)
+			throws Exception {
+		boolean validExpression = false;
+		// Expression expression = "p -> q"
+		Expression expression1 = expression.getExp1(); // = p
+		Expression expression2 = expression.getExp2(); // = q
+
+		// p -> q = (NOT p) OR q
+		Expression not = new Expression("NOT " + expression1.getName()); // NOT
+																			// p
+		not.setExp1(new Expression(expression1.getName()));
+
+		Expression or = new Expression(not.getName() + " OR "
+				+ expression2.getName());
+		or.setExp1(not);
+		or.setExp2(new Expression(expression2.getName()));
+
+		NOT(state, not);
+
+		if (OR(state, or)) {
+			validExpression = true;
+			state.addLabelsString(expression.getName());
+		}
+
+		return validExpression;
+	}
+
+	public static boolean EF(State state, Expression expression)
+			throws MalformedExpression {
+		boolean validExpression = false;
+		// ex: Expression.name = EF p
+		Expression expression1 = expression.getExp1(); // = p
+		Expression expression2 = expression.getExp2(); // = null
+
+		if (expression1 == null && expression2 == null || expression1 != null
+				&& expression2 != null) {
+			throw new MalformedExpression();
+		}
+
+		if (expression1 == null) {
+			if (state.getLabelsString().contains(expression2.getName())) {
+				validExpression = true;
+				state.addLabelsString(expression.getName());
+			} else {
+				state.setVisited(true);
+				ArrayList<State> children = state.getChildren();
+				for (Iterator iterator = children.iterator(); iterator
+						.hasNext();) {
+					State state2 = (State) iterator.next();
+					if (recursiveEF(state2, expression2.getName())) {
+						validExpression = true;
+						state.addLabelsString(expression.getName());
+					}
+				}
+			}
+		}
+
+		if (expression2 == null) {
+
+			if (state.getLabelsString().contains(expression1.getName())) {
+				validExpression = true;
+				state.addLabelsString(expression.getName());
+			} else {
+				state.setVisited(true);
+				ArrayList<State> children = state.getChildren();
+				for (Iterator iterator = children.iterator(); iterator
+						.hasNext();) {
+					State state2 = (State) iterator.next();
+					if (recursiveEF(state2, expression1.getName())) {
+						validExpression = true;
+						state.addLabelsString(expression.getName());
+					}
+				}
+			}
+		}
+
+		return validExpression;
+	}
+
+	// find one STATE that contains this "label" among its children
+	public static boolean recursiveEF(State state, String label) {
+		boolean valid = false;
+		
+		if (state.getLabelsString().contains(label)) {
+			valid = true;
+		} else {
+			ArrayList<State> children = state.getChildren();
+			for (Iterator iterator = children.iterator(); iterator.hasNext();) {
+				State state2 = (State) iterator.next();
+				if (!state2.isVisited()) {
+					state.setVisited(true);
+					valid = recursiveEF(state2, label);
+					if(valid) {
+						break;
+					}
+				}
+			}
+		}
+		return valid;
+	}
+
+	public static boolean EG(State state, Expression expression)
+			throws MalformedExpression {
+		boolean validExpression = false;
+		state.setVisited(true);
+		// ex: Expression.name = EG p
+		Expression expression1 = expression.getExp1(); // = p
+		Expression expression2 = expression.getExp2(); // = null
+
+		if (expression1 == null && expression2 == null || expression1 != null
+				&& expression2 != null) {
+			throw new MalformedExpression();
+		}
+
+		if (expression1 == null) {
+		}
+
+		if (expression2 == null) {
+			if (state.getLabelsString().contains(expression1.getName())) {
+
+				ArrayList<State> children = state.getChildren();
+				for (Iterator iterator = children.iterator(); iterator
+						.hasNext();) {
+					State state2 = (State) iterator.next();
+					// se ele achar um caminho (ciclo) em que a expressao seja valida
+					if (recursiveEF(state2, expression1.getName())) {
+						// entao marcar a expressao como valida
+						validExpression = true;
+						state.addLabelsString(expression.getName());
+					}
+				}
+			}
+		}
+
+		return validExpression;
+	}
+
+	// find one PATH that contains this "label" among its children
+	public static boolean recursiveEG(State state, String label) {
+		boolean valid = false;
+		
+		if(state.getLabelsString().contains(label)) {
+			state.setVisited(true);
+			
+			ArrayList<State> children = state.getChildren();
+			for (Iterator iterator = children.iterator(); iterator
+					.hasNext();) {
+				State state2 = (State) iterator.next();
+				
+				if(state2.isVisited() && state2.getLabelsString().contains(label)) {
+					valid = true;
+					break;
+				}
+				
+				if(state2.isVisited() && !state2.getLabelsString().contains(label)) {
+					valid = false;
+				}
+				
+				if(!state2.isVisited()) {
+					valid = recursiveEG(state2, label);
+				}
+			}
+			
+		} else {
+			valid = false;
+		}
+		
+		return valid;
+	}
+
+	/**
+	 * @author Andrï¿½ Luiz
 	 * @param states
 	 *            Conjunto de estados da MEF em que se deseja verificar se uma
-	 *            expressao é verdadeira
+	 *            expressao ï¿½ verdadeira
 	 * @param expression
-	 *            Expressao CTL que deseja verificar se é verdadeira.
-	 * @return retorna true se a expressao é verdadeira para aquele estado, e
+	 *            Expressao CTL que deseja verificar se ï¿½ verdadeira.
+	 * @return retorna true se a expressao ï¿½ verdadeira para aquele estado, e
 	 *         caso contrario retorna 'false'
 	 */
 	public static boolean AG(ArrayList<State> states, Expression expression) {
 		boolean flag = false;
-		if (states.get(0).getLabelsString().contains(expression)) {
+		if (states.get(0).getLabelsString().contains(expression.getName())) {
 			for (int i = 1; i < states.size(); i++) {
 				// marca os estados da MEF caso o estado inicial contenha AG
 				states.get(i).addLabel(i);
@@ -196,7 +414,8 @@ public class Algorithms {
 		} else {
 
 			for (int i = 0; i < states.size(); i++) {
-				if (states.get(i).getLabelsString().contains(expression)) {
+				if (states.get(i).getLabelsString()
+						.contains(expression.getName())) {
 					// marca os estados da MEF caso o estado inicial contenha AG
 					int value = 0;
 					states.get(i).addLabel(value);
@@ -216,13 +435,13 @@ public class Algorithms {
 	}
 
 	/**
-	 * Método para avaliar a expressão CTL AX, que significa que no próximo
-	 * estado a propriedade é válida
+	 * Mï¿½todo para avaliar a expressï¿½o CTL AX, que significa que no prï¿½ximo
+	 * estado a propriedade ï¿½ vï¿½lida
 	 * 
 	 * @param states
 	 *            Conjunto de estados da MEF
 	 * @param expression
-	 *            Representa a expressão CTL que está sendo avaliada
+	 *            Representa a expressï¿½o CTL que estï¿½ sendo avaliada
 	 * */
 	public static List<State> AX(ArrayList<State> states, Expression expression) {
 		List<State> validStates = new ArrayList<State>();
