@@ -347,7 +347,7 @@ public class Algorithms {
 	 * @param label
 	 * @return
 	 */
-	public static boolean recursiveEF(State state, String label) {
+	private static boolean recursiveEF(State state, String label) {
 		boolean valid = false;
 
 		if (state.getLabelsString().contains(label)) {
@@ -453,7 +453,7 @@ public class Algorithms {
 	 * @param label
 	 * @return
 	 */
-	public static boolean recursiveEG(State state, String label) {
+	private static boolean recursiveEG(State state, String label) {
 		boolean valid = false;
 
 		if (state.getLabelsString().contains(label)) {
