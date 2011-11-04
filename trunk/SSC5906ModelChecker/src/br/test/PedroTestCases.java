@@ -46,6 +46,7 @@ public class PedroTestCases extends Assert {
 
 		s2.addChild(s3);
 		s2.addLabelsString("r");
+//		s2.addLabelsString("q");
 
 		s3.addChild(s3);
 		s3.addLabelsString("q");
@@ -194,6 +195,33 @@ public class PedroTestCases extends Assert {
 		expression.setExp1(new Expression("x"));
 		expression.setType("EF");
 		assertFalse(Algorithms.EF(this.states.get(3), expression));
+	}
+	
+	@Test
+	public void testAG() throws MalformedExpression {
+		expression = new Expression("AG p");
+		expression.setExp1(new Expression("p"));
+		expression.setType("AG");
+		assertFalse(Algorithms.AG(this.states, expression));
+//		assertFalse(Algorithms.AG(this.states.get(1), expression));
+//		assertFalse(Algorithms.AG(this.states.get(2), expression));
+//		assertFalse(Algorithms.AG(this.states.get(3), expression));
+		
+		expression = new Expression("AG q");
+		expression.setExp1(new Expression("q"));
+		expression.setType("AG");
+		assertFalse(Algorithms.AG(this.states, expression));
+//		assertTrue(Algorithms.AG(this.states.get(1), expression));
+//		assertFalse(Algorithms.AG(this.states.get(2), expression));
+//		assertTrue(Algorithms.AG(this.states.get(3), expression));
+		
+		expression = new Expression("AG r");
+		expression.setExp1(new Expression("r"));
+		expression.setType("AG");
+		assertFalse(Algorithms.AG(this.states, expression));
+//		assertFalse(Algorithms.AG(this.states.get(1), expression));
+//		assertTrue(Algorithms.AG(this.states.get(2), expression));
+//		assertTrue(Algorithms.AG(this.states.get(3), expression));
 	}
 
 }
