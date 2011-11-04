@@ -413,7 +413,7 @@ public class Algorithms {
 					State state2 = (State) iterator.next();
 					// se ele achar um caminho (ciclo) em que a expressao seja
 					// valida
-					if (recursiveEF(state2, expression1.getName())) {
+					if (recursiveEG(state2, expression1.getName())) {
 						// entao marcar a expressao como valida
 						validExpression = true;
 						state.addLabelsString(expression.getName());
@@ -498,9 +498,10 @@ public class Algorithms {
 	 */
 	public static boolean AG(ArrayList<State> states, Expression expression) {
 		boolean flag = false;
-
+		Expression expression1 = expression.getExp1();
+		
 		for (int i = 0; i < states.size(); i++) {
-			if (states.get(i).getLabelsString().contains(expression.getName())) {
+			if (states.get(i).getLabelsString().contains(expression1.getName())) {
 				// marca os estados da MEF caso o estado inicial contenha AG
 				int value = 0;
 				states.get(i).addLabel(value);
@@ -512,8 +513,13 @@ public class Algorithms {
 				flag = true;
 			} else {
 				flag = false;
+				break;
 			}
 
+		}
+		if(flag) {
+			// so da pra colocar o label para o estado inicial
+			states.get(0).addLabelsString(expression.getName());
 		}
 		return flag;
 
