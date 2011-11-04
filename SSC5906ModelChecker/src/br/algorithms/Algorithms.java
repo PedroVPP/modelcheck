@@ -216,12 +216,15 @@ public class Algorithms {
 	}
 
 	/**
-	 * Esse metodo implementa o algoritmo de 'implica', ex: p -> q
-	 * ele converte o p -> q para seu equivalente ~p v q, ou seja, (NOT p) OR q
-	 * e assim usa os algoritmos OR e NOT para verificar a validade da expressao
+	 * Esse metodo implementa o algoritmo de 'implica', ex: p -> q ele converte
+	 * o p -> q para seu equivalente ~p v q, ou seja, (NOT p) OR q e assim usa
+	 * os algoritmos OR e NOT para verificar a validade da expressao
+	 * 
 	 * @author Pedro Pinheiro
-	 * @param state estado em que se deseja verificar se a expressao e valida
-	 * @param expression a expressao a ser verificada
+	 * @param state
+	 *            estado em que se deseja verificar se a expressao e valida
+	 * @param expression
+	 *            a expressao a ser verificada
 	 * @return retorna true se a expressao e valida e false caso contrario
 	 * @throws Exception
 	 */
@@ -234,7 +237,7 @@ public class Algorithms {
 
 		// p -> q = (NOT p) OR q
 		Expression not = new Expression("NOT " + expression1.getName()); // NOT
-		not.setExp1(new Expression(expression1.getName())); //p
+		not.setExp1(new Expression(expression1.getName())); // p
 		not.setType("NOT");
 
 		Expression or = new Expression(not.getName() + " OR "
@@ -254,17 +257,20 @@ public class Algorithms {
 	}
 
 	/**
-	 * Esse método executa o algoritmo EF. O EF consiste do seguinte:
-	 * - Dada uma expressao, verificar se ela e valida para pelo menos um estado
-	 * a partir de um estado inicial
+	 * Esse método executa o algoritmo EF. O EF consiste do seguinte: - Dada
+	 * uma expressao, verificar se ela e valida para pelo menos um estado a
+	 * partir de um estado inicial
 	 * 
-	 * O EF para fucionar utiliza dois métodos: 
-	 * - static boolean EF(State state, Expression expression)
-	 * - static boolean recursiveEF(State state, String label)
+	 * O EF para fucionar utiliza dois métodos: - static boolean EF(State
+	 * state, Expression expression) - static boolean recursiveEF(State state,
+	 * String label)
 	 * 
-	 * O primeiro metodo checa o primeiro estado enviado. E possivel descobrir se a expressao e valida
-	 * logo a partir desse primeiro estado. Caso ele ainda nao seja valido e necessario checar suas conexoes (filhos)
-	 * para ver se pelo menos um deles e valido. Para isso usa-se o segundo metodo, o qual tem o comportamento recursivo.
+	 * O primeiro metodo checa o primeiro estado enviado. E possivel descobrir
+	 * se a expressao e valida logo a partir desse primeiro estado. Caso ele
+	 * ainda nao seja valido e necessario checar suas conexoes (filhos) para ver
+	 * se pelo menos um deles e valido. Para isso usa-se o segundo metodo, o
+	 * qual tem o comportamento recursivo.
+	 * 
 	 * @author Pedro Pinheiro
 	 * @param state
 	 * @param expression
@@ -325,13 +331,17 @@ public class Algorithms {
 
 	// find one STATE that contains this "label" among its children
 	/**
-	 * Este metodo e o responsavel por achar pelo menos UM estado que contem a label enviada pelo metodo EF.
-	 * Ele possui o comportamento recursivo para checar todos os seus filhos, e os filhos desses filhos, e assim em diante.
-	 * Para evitar que o algoritmo fique em um loop entre dois ou mais estados, foi declarada a variavel 'visited'
-	 * na classe State. Devido a isso sempre que o algoritmo de EF ou EG for executado sempre deve-se resetar
-	 * todas as variaveis 'visited' dos estados da MEF para o valor 'false', caso contrario o algoritmo ira
-	 * achar que todos os estados ja foram visitados. Caso alguem tenha uma sugestao melhor de implementacao
-	 * dessa informacao de visitado, por favor se manifeste.  
+	 * Este metodo e o responsavel por achar pelo menos UM estado que contem a
+	 * label enviada pelo metodo EF. Ele possui o comportamento recursivo para
+	 * checar todos os seus filhos, e os filhos desses filhos, e assim em
+	 * diante. Para evitar que o algoritmo fique em um loop entre dois ou mais
+	 * estados, foi declarada a variavel 'visited' na classe State. Devido a
+	 * isso sempre que o algoritmo de EF ou EG for executado sempre deve-se
+	 * resetar todas as variaveis 'visited' dos estados da MEF para o valor
+	 * 'false', caso contrario o algoritmo ira achar que todos os estados ja
+	 * foram visitados. Caso alguem tenha uma sugestao melhor de implementacao
+	 * dessa informacao de visitado, por favor se manifeste.
+	 * 
 	 * @author Pedro Pinheiro
 	 * @param state
 	 * @param label
@@ -339,7 +349,7 @@ public class Algorithms {
 	 */
 	public static boolean recursiveEF(State state, String label) {
 		boolean valid = false;
-		
+
 		if (state.getLabelsString().contains(label)) {
 			valid = true;
 		} else {
@@ -349,7 +359,7 @@ public class Algorithms {
 				if (!state2.isVisited()) {
 					state.setVisited(true);
 					valid = recursiveEF(state2, label);
-					if(valid) {
+					if (valid) {
 						break;
 					}
 				}
@@ -359,22 +369,25 @@ public class Algorithms {
 	}
 
 	/**
-	 * Esse método executa o algoritmo EG. O EG consiste do seguinte:
-	 * - Dada uma expressao, verificar se ela e' valida para TODOS os estados de pelo menos UM caminho
-	 * na minha MEF a partir de um estado inicial
+	 * Esse método executa o algoritmo EG. O EG consiste do seguinte: - Dada
+	 * uma expressao, verificar se ela e' valida para TODOS os estados de pelo
+	 * menos UM caminho na minha MEF a partir de um estado inicial
 	 * 
-	 * O EG para fucionar utiliza dois métodos: 
-	 * - static boolean EG(State state, Expression expression)
-	 * - static boolean recursiveEG(State state, String label)
+	 * O EG para fucionar utiliza dois métodos: - static boolean EG(State
+	 * state, Expression expression) - static boolean recursiveEG(State state,
+	 * String label)
 	 * 
-	 * O primeiro metodo checa o primeiro estado enviado. Apos isso e usado o segundo metodo para percorrer os filhos
-	 * e achar um caminho para satisfazer o EG. Para mais informacoes checar os comentarios do metodo 'recursiveEG'
+	 * O primeiro metodo checa o primeiro estado enviado. Apos isso e usado o
+	 * segundo metodo para percorrer os filhos e achar um caminho para
+	 * satisfazer o EG. Para mais informacoes checar os comentarios do metodo
+	 * 'recursiveEG'
+	 * 
 	 * @author Pedro Pinheiro
 	 * @param state
 	 * @param expression
 	 * @return
 	 * @throws MalformedExpression
-	 */	
+	 */
 	public static boolean EG(State state, Expression expression)
 			throws MalformedExpression {
 		boolean validExpression = false;
@@ -398,7 +411,8 @@ public class Algorithms {
 				for (Iterator iterator = children.iterator(); iterator
 						.hasNext();) {
 					State state2 = (State) iterator.next();
-					// se ele achar um caminho (ciclo) em que a expressao seja valida
+					// se ele achar um caminho (ciclo) em que a expressao seja
+					// valida
 					if (recursiveEF(state2, expression1.getName())) {
 						// entao marcar a expressao como valida
 						validExpression = true;
@@ -412,22 +426,28 @@ public class Algorithms {
 	}
 
 	/**
-	 * Este metodo e o responsavel por achar pelo menos UM CAMINHO onde TODOS os estados satisfazem uma propriedade.
-	 * Ele possui o comportamento recursivo para checar todos os seus filhos, e os filhos desses filhos, e assim em diante.
-	 * Para evitar que o algoritmo fique em um loop entre dois ou mais estados, foi declarada a variavel 'visited'
-	 * na classe State. Devido a isso sempre que o algoritmo de EF ou EG for executado sempre deve-se resetar
-	 * todas as variaveis 'visited' dos estados da MEF para o valor 'false', caso contrario o algoritmo ira
-	 * achar que todos os estados ja foram visitados. Caso alguem tenha uma sugestao melhor de implementacao
+	 * Este metodo e o responsavel por achar pelo menos UM CAMINHO onde TODOS os
+	 * estados satisfazem uma propriedade. Ele possui o comportamento recursivo
+	 * para checar todos os seus filhos, e os filhos desses filhos, e assim em
+	 * diante. Para evitar que o algoritmo fique em um loop entre dois ou mais
+	 * estados, foi declarada a variavel 'visited' na classe State. Devido a
+	 * isso sempre que o algoritmo de EF ou EG for executado sempre deve-se
+	 * resetar todas as variaveis 'visited' dos estados da MEF para o valor
+	 * 'false', caso contrario o algoritmo ira achar que todos os estados ja
+	 * foram visitados. Caso alguem tenha uma sugestao melhor de implementacao
 	 * dessa informacao de visitado, por favor se manifeste.
 	 * 
-	 * O ponto principal deste algoritmo e' que para saber se ja foi encontrado um caminho onde sempre a propriedade 
-	 * se repete (ou seja o EG e' valido), o estado atual deve ser valido e o proximo estado a ser checado deve obrigatoriamente 
-	 * satisfazer essas duas condicoes:
-	 * 1 - Ele ja deve ter sido visitado
-	 * 2 - Ele deve ser valido para aquela propriedade
+	 * O ponto principal deste algoritmo e' que para saber se ja foi encontrado
+	 * um caminho onde sempre a propriedade se repete (ou seja o EG e' valido),
+	 * o estado atual deve ser valido e o proximo estado a ser checado deve
+	 * obrigatoriamente satisfazer essas duas condicoes: 1 - Ele ja deve ter
+	 * sido visitado 2 - Ele deve ser valido para aquela propriedade
 	 * 
-	 *  Se ele ja foi visitado e tambem e valido para a propriedade, significa que foi encontrado um caminho que leva a um loop
-	 *  onde aquela propriedade sempre vale. Ao encontrar isso o algoritmo retorna 'true' ate chegar no metodo principal EG.
+	 * Se ele ja foi visitado e tambem e valido para a propriedade, significa
+	 * que foi encontrado um caminho que leva a um loop onde aquela propriedade
+	 * sempre vale. Ao encontrar isso o algoritmo retorna 'true' ate chegar no
+	 * metodo principal EG.
+	 * 
 	 * @author Pedro Pinheiro
 	 * @param state
 	 * @param label
@@ -435,33 +455,34 @@ public class Algorithms {
 	 */
 	public static boolean recursiveEG(State state, String label) {
 		boolean valid = false;
-		
-		if(state.getLabelsString().contains(label)) {
+
+		if (state.getLabelsString().contains(label)) {
 			state.setVisited(true);
-			
+
 			ArrayList<State> children = state.getChildren();
-			for (Iterator iterator = children.iterator(); iterator
-					.hasNext();) {
+			for (Iterator iterator = children.iterator(); iterator.hasNext();) {
 				State state2 = (State) iterator.next();
-				
-				if(state2.isVisited() && state2.getLabelsString().contains(label)) {
+
+				if (state2.isVisited()
+						&& state2.getLabelsString().contains(label)) {
 					valid = true;
 					break;
 				}
-				
-				if(state2.isVisited() && !state2.getLabelsString().contains(label)) {
+
+				if (state2.isVisited()
+						&& !state2.getLabelsString().contains(label)) {
 					valid = false;
 				}
-				
-				if(!state2.isVisited()) {
+
+				if (!state2.isVisited()) {
 					valid = recursiveEG(state2, label);
 				}
 			}
-			
+
 		} else {
 			valid = false;
 		}
-		
+
 		return valid;
 	}
 
@@ -507,8 +528,8 @@ public class Algorithms {
 	}
 
 	/**
-	 * M�todo para avaliar a express�o CTL AX, que significa que no pr�ximo
-	 * estado a propriedade � v�lida
+	 * M�todo para avaliar a express�o CTL AX, que significa que no
+	 * pr�ximo estado a propriedade � v�lida
 	 * 
 	 * @param states
 	 *            Conjunto de estados da MEF
@@ -520,7 +541,8 @@ public class Algorithms {
 
 		for (int i = 0; i < states.size(); i++) {
 			int nextState = i + 1;
-			if (states.get(nextState).getLabelsString().contains(expression.getName())) {
+			if (states.get(nextState).getLabelsString()
+					.contains(expression.getName())) {
 				validStates.add(states.get(nextState));
 			}
 		}
@@ -528,19 +550,50 @@ public class Algorithms {
 	}
 
 	public static boolean AF(ArrayList<State> states, Expression expression) {
+		boolean validExpression = false;
+		// ex: Expression.name = AF p
+		Expression expression1 = expression.getExp1(); // = p
+		Expression expression2 = expression.getExp2(); // = null
+
+		for (int i = 0; i < states.size(); i++) {
+			if (expression1 == null) {
+				if (states.get(i).getLabelsString()
+						.contains(expression2.getName())) {
+					validExpression = true;
+					states.get(i).addLabelsString(expression.getName());
+				} else {
+					states.get(i).setVisited(true);
+					validExpression = false;
+
+				}
+			}
+
+			if (expression2 == null) {
+
+				if (states.get(i).getLabelsString()
+						.contains(expression1.getName())) {
+					validExpression = true;
+					states.get(i).addLabelsString(expression.getName());
+				} else {
+					states.get(i).setVisited(true);
+					validExpression = false;
+				}
+			}
+
+		}
+		return validExpression;
+
+	}
+
+	//AU, EU
+
+	public static boolean EU(ArrayList<State> states, Expression expression) {
 		return true;
 	}
-    
-	// EX, EG, EU
-	public static boolean EX(ArrayList<State> states, Expression expression){
+
+	public static boolean AU(ArrayList<State> states, Expression expression) {
 		return true;
 	}
+
 	
-	public static boolean EU(ArrayList<State> states, Expression expression){
-		return true;
-	}
-	
-	public static boolean E(ArrayList<State> states, Expression expression){
-		return true;
-	}	
 }
