@@ -216,9 +216,12 @@ public class Algorithms {
 	}
 
 	/**
-	 * Esse metodo implementa o algoritmo de 'implica', ex: p -> q ele converte
+	 * OLD - Ate a r52 este método era assim: Esse metodo implementa o algoritmo de 'implica', ex: p -> q ele converte
 	 * o p -> q para seu equivalente ~p v q, ou seja, (NOT p) OR q e assim usa
-	 * os algoritmos OR e NOT para verificar a validade da expressao
+	 * os algoritmos OR e NOT para verificar a validade da expressao.
+	 * 
+	 * NEW: A partir da r53 ele foi melhorado para simplesmente utilizar os conceitos
+	 * da tabela verdade do implica.
 	 * 
 	 * @author Pedro Pinheiro
 	 * @param state
@@ -249,7 +252,7 @@ public class Algorithms {
 		
 		return validExpression;
 	}
-
+	
 	/**
 	 * Esse método executa o algoritmo EF. O EF consiste do seguinte: - Dada
 	 * uma expressao, verificar se ela e valida para pelo menos um estado a
