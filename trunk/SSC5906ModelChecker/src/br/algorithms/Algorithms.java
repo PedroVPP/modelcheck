@@ -230,29 +230,23 @@ public class Algorithms {
 	 */
 	public static boolean IMP(State state, Expression expression)
 			throws Exception {
-		boolean validExpression = false;
+		boolean validExpression = true;
 		// Expression expression = "p -> q"
 		Expression expression1 = expression.getExp1(); // = p
 		Expression expression2 = expression.getExp2(); // = q
 
-		// p -> q = (NOT p) OR q
-		Expression not = new Expression("NOT " + expression1.getName()); // NOT
-		not.setExp1(new Expression(expression1.getName())); // p
-		not.setType("NOT");
-
-		Expression or = new Expression(not.getName() + " OR "
-				+ expression2.getName());
-		or.setExp1(not);
-		or.setExp2(new Expression(expression2.getName()));
-		or.setType("OR");
-
-		NOT(state, not);
-
-		if (OR(state, or)) {
-			validExpression = true;
-			state.addLabelsString(expression.getName());
+//		tabela verdade
+//		p   q  p->q
+//		V 	V 	V
+//		V 	F 	F
+//		F 	V 	V
+//		F 	F 	V
+		
+		if(state.getLabelsString().contains(expression1.getName()) && 
+				!state.getLabelsString().contains(expression2.getName())) {
+			validExpression = false;
 		}
-
+		
 		return validExpression;
 	}
 
