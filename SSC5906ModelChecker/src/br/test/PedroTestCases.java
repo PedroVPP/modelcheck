@@ -14,7 +14,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import br.algorithms.Algorithms;
-import br.exceptions.MalformedExpression;
 import br.mef.Expression;
 import br.mef.Property;
 import br.mef.State;
@@ -74,26 +73,26 @@ public class PedroTestCases extends Assert {
 		// A partir daqui é só System.out.print
 		System.out.println("Expression: " + expression.getName());
 
-		for (Iterator iterator = states.iterator(); iterator.hasNext();) {
+		for (Iterator<State> iterator = states.iterator(); iterator.hasNext();) {
 			State state = (State) iterator.next();
 			System.out.println("\nState: " + "\"" + state.getName() + "\"");
 			ArrayList<String> labels = state.getLabelsString();
 			System.out.println("Labels: ");
-			for (Iterator iterator2 = labels.iterator(); iterator2.hasNext();) {
+			for (Iterator<String> iterator2 = labels.iterator(); iterator2.hasNext();) {
 				String string = (String) iterator2.next();
 				System.out.print("\"" + string + "\"" + " ");
 			}
 		}
 
 		System.out.println("\nValid States:");
-		for (Iterator iterator = validStates.iterator(); iterator.hasNext();) {
+		for (Iterator<State> iterator = validStates.iterator(); iterator.hasNext();) {
 			State state = (State) iterator.next();
 			System.out.print(state.getName() + " ");
 		}
 	}
 
 	@Test
-	public void testNOT() throws MalformedExpression {
+	public void testNOT() {
 		// criacao da arvore de derivacao da expressao
 		expression = new Expression("NOT p");
 		expression.setExp1(new Expression("p"));
@@ -139,7 +138,7 @@ public class PedroTestCases extends Assert {
 	}
 	
 	@Test
-	public void testEG() throws MalformedExpression {
+	public void testEG() {
 		expression = new Expression("EG p");
 		expression.setExp1(new Expression("p"));
 		expression.setType("EG");
@@ -166,7 +165,7 @@ public class PedroTestCases extends Assert {
 	}
 
 	@Test
-	public void testEF() throws MalformedExpression {
+	public void testEF() {
 		expression = new Expression("EF p");
 		expression.setExp1(new Expression("p"));
 		expression.setType("EF");
@@ -198,7 +197,7 @@ public class PedroTestCases extends Assert {
 	}
 	
 	@Test
-	public void testAG() throws MalformedExpression {
+	public void testAG() {
 		expression = new Expression("AG p");
 		expression.setExp1(new Expression("p"));
 		expression.setType("AG");
