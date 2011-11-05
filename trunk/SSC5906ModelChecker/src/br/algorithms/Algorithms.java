@@ -249,7 +249,9 @@ public class Algorithms {
 				!state.getLabelsString().contains(expression2.getName())) {
 			validExpression = false;
 		}
-		
+		if(validExpression) {
+			state.addLabelsString(expression.getName());
+		}
 		return validExpression;
 	}
 	
