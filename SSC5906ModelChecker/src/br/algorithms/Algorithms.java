@@ -445,16 +445,15 @@ public class Algorithms {
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
 				State state2 = (State) iterator.next();
 
-				if (state2.isVisited()
-						&& state2.getLabelsString().contains(label)) {
+				if (state2.isVisited()) {//&& state2.getLabelsString().contains(label)) {
 					valid = true;
 					break;
 				}
 
-				if (state2.isVisited()
-						&& !state2.getLabelsString().contains(label)) {
-					valid = false;
-				}
+//				if (state2.isVisited()
+//						&& !state2.getLabelsString().contains(label)) {
+//					valid = false;
+//				}
 
 				if (!state2.isVisited()) {
 					valid = recursiveEG(state2, label);
@@ -501,7 +500,7 @@ public class Algorithms {
 				if (!recursiveAG(state2, expression1.getName())) {
 					// entao marcar a expressao como não valida
 					validExpression = false;
-					state.addLabelsString(expression.getName());
+//					state.addLabelsString(expression.getName());
 					break;
 				}
 			}
@@ -510,7 +509,10 @@ public class Algorithms {
 			validExpression = false;
 		}
 
-		graphvizFileMaker.finishFile();
+//		graphvizFileMaker.finishFile();
+		if(validExpression) {
+			state.addLabelsString(expression.getName());
+		}
 		return validExpression;
 	}
 
@@ -531,7 +533,7 @@ public class Algorithms {
 				
 				System.out.println("Recursive2:" + state2.getName());
 				if (!state2.isVisited()) {
-					System.out.println("Entrei");	
+					System.out.println("Entrei");
 					valid = recursiveAG(state2, label);
 					if (!valid) {
 						break;
