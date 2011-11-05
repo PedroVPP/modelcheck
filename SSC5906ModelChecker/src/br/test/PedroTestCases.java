@@ -33,23 +33,28 @@ public class PedroTestCases extends Assert {
 		State s2 = new State("S2");
 		State s3 = new State("S3");
 
-		s0.addChild(s2);
-		s0.addChild(s1);
 		s0.addLabelsString("p");
 		s0.addLabelsString("q");
 		s0.addLabelsString("x");
-
-		s1.addChild(s0);
+		s1.addLabelsString("r");
+		
 		s1.addLabelsString("q");
 		s1.addLabelsString("r");
-
-		s2.addChild(s3);
+		
 		s2.addLabelsString("r");
 //		s2.addLabelsString("q");
-
-		s3.addChild(s3);
+		
 		s3.addLabelsString("q");
 		s3.addLabelsString("r");
+		
+		s0.addChild(s2);
+		s0.addChild(s1);
+
+		s1.addChild(s0);
+
+		s2.addChild(s3);
+
+		s3.addChild(s3);
 
 		states.add(s0);
 		states.add(s1);
@@ -143,57 +148,82 @@ public class PedroTestCases extends Assert {
 		expression.setExp1(new Expression("p"));
 		expression.setType("EG");
 		assertFalse(Algorithms.EG(this.states.get(0), expression));
+		State.resetVisited(states);
 		assertFalse(Algorithms.EG(this.states.get(1), expression));
+		State.resetVisited(states);
 		assertFalse(Algorithms.EG(this.states.get(2), expression));
+		State.resetVisited(states);
 		assertFalse(Algorithms.EG(this.states.get(3), expression));
+		State.resetVisited(states);
 		
 		expression = new Expression("EG q");
 		expression.setExp1(new Expression("q"));
 		expression.setType("EG");
 		assertTrue(Algorithms.EG(this.states.get(0), expression));
+		State.resetVisited(states);
 		assertTrue(Algorithms.EG(this.states.get(1), expression));
+		State.resetVisited(states);
 		assertFalse(Algorithms.EG(this.states.get(2), expression));
+		State.resetVisited(states);
 		assertTrue(Algorithms.EG(this.states.get(3), expression));
+		State.resetVisited(states);
 		
 		expression = new Expression("EG r");
 		expression.setExp1(new Expression("r"));
 		expression.setType("EG");
 		assertFalse(Algorithms.EG(this.states.get(0), expression));
+		State.resetVisited(states);
 		assertFalse(Algorithms.EG(this.states.get(1), expression));
+		State.resetVisited(states);
 		assertTrue(Algorithms.EG(this.states.get(2), expression));
+		State.resetVisited(states);
 		assertTrue(Algorithms.EG(this.states.get(3), expression));
+		State.resetVisited(states);
 	}
 
 	@Test
 	public void testEF() {
-		expression = new Expression("EF p");
-		expression.setExp1(new Expression("p"));
-		expression.setType("EF");
-		assertTrue(Algorithms.EF(this.states.get(0), expression));
-		assertTrue(Algorithms.EF(this.states.get(1), expression));
-		assertFalse(Algorithms.EF(this.states.get(2), expression));
-		assertFalse(Algorithms.EF(this.states.get(3), expression));
-		
-		expression = new Expression("EF q");
-		expression.setExp1(new Expression("q"));
-		expression.setType("EF");
-		assertTrue(Algorithms.EF(this.states.get(0), expression));
-		assertTrue(Algorithms.EF(this.states.get(1), expression));
-		assertTrue(Algorithms.EF(this.states.get(2), expression));
-		assertTrue(Algorithms.EF(this.states.get(3), expression));
-		
-		expression = new Expression("EF r");
-		expression.setExp1(new Expression("r"));
-		expression.setType("EF");
-		assertTrue(Algorithms.EF(this.states.get(0), expression));
-		assertTrue(Algorithms.EF(this.states.get(1), expression));
-		assertTrue(Algorithms.EF(this.states.get(2), expression));
-		assertTrue(Algorithms.EF(this.states.get(3), expression));
+//		expression = new Expression("EF p");
+//		expression.setExp1(new Expression("p"));
+//		expression.setType("EF");
+//		assertTrue(Algorithms.EF(this.states.get(0), expression));
+//		State.resetVisited(states);
+//		assertTrue(Algorithms.EF(this.states.get(1), expression));
+//		State.resetVisited(states);
+//		assertFalse(Algorithms.EF(this.states.get(2), expression));
+//		State.resetVisited(states);
+//		assertFalse(Algorithms.EF(this.states.get(3), expression));
+//		State.resetVisited(states);
+//		
+//		expression = new Expression("EF q");
+//		expression.setExp1(new Expression("q"));
+//		expression.setType("EF");
+//		assertTrue(Algorithms.EF(this.states.get(0), expression));
+//		State.resetVisited(states);
+//		assertTrue(Algorithms.EF(this.states.get(1), expression));
+//		State.resetVisited(states);
+//		assertTrue(Algorithms.EF(this.states.get(2), expression));
+//		State.resetVisited(states);
+//		assertTrue(Algorithms.EF(this.states.get(3), expression));
+//		State.resetVisited(states);
+//		
+//		expression = new Expression("EF r");
+//		expression.setExp1(new Expression("r"));
+//		expression.setType("EF");
+//		assertTrue(Algorithms.EF(this.states.get(0), expression));
+		State.resetVisited(states);
+//		assertTrue(Algorithms.EF(this.states.get(1), expression));
+		State.resetVisited(states);
+//		assertTrue(Algorithms.EF(this.states.get(2), expression));
+		State.resetVisited(states);
+//		assertTrue(Algorithms.EF(this.states.get(3), expression));
+		State.resetVisited(states);
 		
 		expression = new Expression("EF x");
 		expression.setExp1(new Expression("x"));
 		expression.setType("EF");
 		assertFalse(Algorithms.EF(this.states.get(3), expression));
+		State.resetVisited(states);
 	}
 	
 	@Test
@@ -201,26 +231,38 @@ public class PedroTestCases extends Assert {
 		expression = new Expression("AG p");
 		expression.setExp1(new Expression("p"));
 		expression.setType("AG");
-		assertFalse(Algorithms.AG(this.states, expression));
-//		assertFalse(Algorithms.AG(this.states.get(1), expression));
-//		assertFalse(Algorithms.AG(this.states.get(2), expression));
-//		assertFalse(Algorithms.AG(this.states.get(3), expression));
+		assertFalse(Algorithms.AG(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.AG(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.AG(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.AG(this.states.get(3), expression));
+		State.resetVisited(states);
 		
 		expression = new Expression("AG q");
 		expression.setExp1(new Expression("q"));
 		expression.setType("AG");
-		assertFalse(Algorithms.AG(this.states, expression));
-//		assertTrue(Algorithms.AG(this.states.get(1), expression));
-//		assertFalse(Algorithms.AG(this.states.get(2), expression));
-//		assertTrue(Algorithms.AG(this.states.get(3), expression));
+		assertFalse(Algorithms.AG(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.AG(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.AG(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AG(this.states.get(3), expression));
+		State.resetVisited(states);
 		
 		expression = new Expression("AG r");
 		expression.setExp1(new Expression("r"));
 		expression.setType("AG");
-		assertFalse(Algorithms.AG(this.states, expression));
-//		assertFalse(Algorithms.AG(this.states.get(1), expression));
-//		assertTrue(Algorithms.AG(this.states.get(2), expression));
-//		assertTrue(Algorithms.AG(this.states.get(3), expression));
+		assertFalse(Algorithms.AG(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.AG(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AG(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AG(this.states.get(3), expression));
+		State.resetVisited(states);
 	}
 
 }
