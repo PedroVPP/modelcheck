@@ -567,12 +567,15 @@ public class Algorithms {
 	 *
 	 */
 	public static List<State> EX(ArrayList<State> st, Expression exp) {
+		
 		List<State> validStates = new ArrayList<State>();
 
 		for (int i = 0; i < st.size(); i++) {
 			State state = st.get(i);
+			
 			for (Iterator<State> iterator = state.getChildren().iterator(); iterator.hasNext();) {
 				State state_child = (State) iterator.next();
+				
 				if (state_child.getLabelsString().contains(exp.getName())){
 					validStates.add(state_child);
 				}
@@ -580,14 +583,48 @@ public class Algorithms {
 		}
 		return validStates;
 	}
+	
+	
+	/**
+	 * Implementando o algoritmo EU -- E(p U q) --> se existe um caminho tal que
+	 * existe um estado em que p e' verdade ate que q seja verdade
+	 * 
+	 * @author Mauricio Arimoto
+	 * @param st
+	 *            Conjunto de estados da MEF em que se deseja verificar se uma
+	 *      	  expressao e' valida
+	 * @param exp
+	 *            Expressao CTL que se deseja verificar.
+	 *
+	 */
+	
+	public static boolean EU(State st, Expression exp) {
 		
-	// AU, EU
+		boolean validExpression = false;
+		st.setVisited(true);
+		
+		Expression exp1 = exp.getExp1(); 
+		Expression exp2 = exp.getExp2();
+		
+		if (st.getLabelsString().contains(exp1.getName())) {
+			ArrayList<State> children = st.getChildren();
+			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
+				State st2 = (State) iterator.next();
+				
+				if (st.getLabelsString().contains(exp2.getName())) {
+				
+					//....
+					
+				}
+				
+			}
+		}
 
-	public static boolean EU(ArrayList<State> states, Expression expression) {
-		//TODO
-		return true;
+		return validExpression;
 	}
+	
 
+	//Implementando algoritmo AU
 	public static boolean AU(ArrayList<State> states, Expression expression) {
 		//TODO
 		return true;
