@@ -622,44 +622,75 @@ public class Algorithms {
 		
 		return validExpression;
 	}
-	
-	
+
 	/**
+	 * This formula is TRUE in a state s0 if for SOME PATH starting 
+	 * with s0, there exists an initial prefix of that path such that f2 
+	 * holds at the last state of the prefix and f1 holds at all other 
+	 * states along the prefix.
+	 * 
 	 * Implementando o algoritmo EU -- E(p U q) --> se existe um caminho tal que
 	 * existe um estado em que p e' verdade ate que q seja verdade
 	 * 
-	 * @author Mauricio Arimoto
+	 * @author Mauricio Arimoto e Pedro Pinheiro
 	 * @param st
-	 *            Conjunto de estados da MEF em que se deseja verificar se uma
+	 *            Estado da MEF em que se deseja verificar se uma
 	 *      	  expressao e' valida
 	 * @param exp
 	 *            Expressao CTL que se deseja verificar.
-	 *
+	 *            
+	 * @param state
+	 * @param expression
+	 * @return
 	 */
-	
-	public static boolean EU(State st, Expression exp) {
-		
+	public static boolean EU(State state, Expression expression) {
 		boolean validExpression = false;
-		st.setVisited(true);
+		// ex: Expression.name = E (p U q)
+		Expression expression1 = expression.getExp1(); // = p
+		Expression expression2 = expression.getExp2(); // = q
 		
-		Expression exp1 = exp.getExp1(); 
-		Expression exp2 = exp.getExp2();
-		
-		if (st.getLabelsString().contains(exp1.getName())) {
-			ArrayList<State> children = st.getChildren();
+		if(state.getLabelsString().contains(expression2.getName())) {
+			validExpression = true;
+		} else if(state.getLabelsString().contains(expression1.getName())) {
+			state.setVisited(true);
+			
+			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
-				State st2 = (State) iterator.next();
+				State state2 = (State) iterator.next();
 				
-				if (st.getLabelsString().contains(exp2.getName())) {
-				
-					//....
-					
+				validExpression = recursiveEU(state2, expression1.getName(), expression2.getName());
+				if (validExpression) {
+					break;
 				}
-				
 			}
 		}
-
+		
+		if(validExpression) {
+			state.addLabelsString(expression.getName());
+		}
 		return validExpression;
+	}
+
+	private static boolean recursiveEU(State state, String firstExpression, String secondExpression) {
+		boolean valid = false;
+		
+		if(state.getLabelsString().contains(secondExpression)) {
+			valid = true;
+		} else if(state.getLabelsString().contains(firstExpression)) {
+			state.setVisited(true);
+			
+			ArrayList<State> children = state.getChildren();
+			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
+				State state2 = (State) iterator.next();
+				if(!state2.isVisited()) {
+					valid = recursiveEU(state2, firstExpression, secondExpression);
+					if (valid) {
+						break;
+					}
+				}
+			}
+		}
+		return valid;
 	}
 	
 
@@ -669,48 +700,7 @@ public class Algorithms {
 		return true;
 	}
 	
-	/**
-	 * This formula is TRUE in a state s0 if for SOME PATH starting 
-	 * with s0, there exists an initial prefix of that path such that f2 
-	 * holds at the last state of the prefix and f1 holds at all other 
-	 * states along the prefix
-	 * @param state
-	 * @param expression
-	 * @return
-	 */
-//	public static boolean EU(State state, Expression expression) {
-//		TODO
-//		boolean validExpression = false;
-//		state.setVisited(true);
-		
-		// ex: Expression.name = E (p U q)
-//		Expression expression1 = expression.getExp1(); // = p
-//		Expression expression2 = expression.getExp2(); // = q
-		
-//		if(state.getLabelsString().contains(expression2.getName())) {
-//			validExpression = true;
-//		} else if (state.getLabelsString().contains(expression1.getName())) {
-//			 I need to find at least one path that contains the expression q, if I don't find it, then I need at least
-			// to find the expression1 and keep looking in other states.
-//			ArrayList<State> children = state.getChildren();
-//			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
-//				State state2 = (State) iterator.next();
-//				validExpression = recursiveEU(state2, expression1.getName(),expression2.getName());
-//				if (validExpression) {
-//					state.addLabelsString(expression.getName());
-//					break;
-//				}
-//			}
-//		}
-		
-//		return validExpression;
-//	}
-
-//	private static boolean recursiveEU(State state, String firstExpression, String secondExpression) {
-		
-		
-//		return false;
-//	}
+	
 
 	/**
 	 * This formula is TRUE in a state s0 if for EVERY PATH starting 
