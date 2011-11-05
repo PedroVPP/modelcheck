@@ -1,6 +1,7 @@
 package br.mef;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class State {
 
@@ -136,5 +137,11 @@ public class State {
 	public void resetVisited() {
 		this.visited = false;
 	}
-
+	
+	public static void resetVisited(ArrayList<State> states) {
+		for (Iterator<State> iterator = states.iterator(); iterator.hasNext();) {
+			State state = (State) iterator.next();
+			state.resetVisited();
+		}
+	}
 }

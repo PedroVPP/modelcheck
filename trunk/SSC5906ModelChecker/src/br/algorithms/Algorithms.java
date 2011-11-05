@@ -7,9 +7,12 @@ import java.util.List;
 import br.mef.Expression;
 import br.mef.Property;
 import br.mef.State;
+import br.util.GraphvizFileMaker;
 
 public class Algorithms {
 
+	static GraphvizFileMaker graphvizFileMaker; 
+	
 	public static boolean Alg_E(State st, Expression exp1, Expression exp2) {
 		boolean resposta = false;
 		// algoritmo para verificar se uma express�o e � v�lida
@@ -268,6 +271,9 @@ public class Algorithms {
 	}
 	
 	/**
+	 * This formula is TRUE in a state s0 if formula f holds in
+	 * the future of some path from s0.
+	 * 
 	 * Esse método executa o algoritmo EF. O EF consiste do seguinte: - Dada
 	 * uma expressao, verificar se ela e valida para pelo menos um estado a
 	 * partir de um estado inicial
@@ -306,6 +312,7 @@ public class Algorithms {
 				if (recursiveEF(state2, expression1.getName())) {
 					validExpression = true;
 					state.addLabelsString(expression.getName());
+					break;
 				}
 			}
 		}
@@ -352,6 +359,9 @@ public class Algorithms {
 	}
 
 	/**
+	 * This formula is TRUE in a state s0 if there exists some path
+	 * from s0 on which f holds at every state. Formally
+	 * 
 	 * Esse método executa o algoritmo EG. O EG consiste do seguinte: - Dada
 	 * uma expressao, verificar se ela e' valida para TODOS os estados de pelo
 	 * menos UM caminho na minha MEF a partir de um estado inicial
@@ -389,6 +399,7 @@ public class Algorithms {
 					// entao marcar a expressao como valida
 					validExpression = true;
 					state.addLabelsString(expression.getName());
+					break;
 				}
 			}
 		}
@@ -458,7 +469,10 @@ public class Algorithms {
 	}
 
 	/**
-	 * @author Andr� Luiz
+	 * This formula is TRUE in a state s0 if formula f holds at 
+	 * every state on every path from s0.
+	 * 
+	 * @author Andr� Luiz e Pedro Pinheiro
 	 * @param states
 	 *            Conjunto de estados da MEF em que se deseja verificar se uma
 	 *            expressao � verdadeira
@@ -467,33 +481,70 @@ public class Algorithms {
 	 * @return retorna true se a expressao � verdadeira para aquele estado, e
 	 *         caso contrario retorna 'false'
 	 */
-	public static boolean AG(ArrayList<State> states, Expression expression) {
-		boolean flag = false;
-		Expression expression1 = expression.getExp1();
+	public static boolean AG(State state, Expression expression) {
+		boolean validExpression = true;
+		graphvizFileMaker = new GraphvizFileMaker(expression.getType()+(int)(Math.random()*1000)+".dot"); 
 		
-		for (int i = 0; i < states.size(); i++) {
-			if (states.get(i).getLabelsString().contains(expression1.getName())) {
-				// marca os estados da MEF caso o estado inicial contenha AG
-				int value = 0;
-				states.get(i).addLabel(value);
-
-				for (int j = i + 1; j < states.size(); j++) {
-					int auxvalue = value;
-					states.get(j).addLabel(auxvalue++);
+		state.setVisited(true);
+		// ex: Expression.name = AG p
+		Expression expression1 = expression.getExp1(); // = p
+//		Expression expression2 = expression.getExp2(); // = null
+		System.out.println(state.getName());
+		if (state.getLabelsString().contains(expression1.getName())) {
+			graphvizFileMaker.addValidState(state.getName());
+			ArrayList<State> children = state.getChildren();
+			for (Iterator<State> iterator = children.iterator(); iterator
+					.hasNext();) {
+				State state2 = (State) iterator.next();
+				graphvizFileMaker.addBranch(state.getName(), state2.getName());
+				// se ele achar um caminho (ciclo) em que a expressao não seja valida
+				if (!recursiveAG(state2, expression1.getName())) {
+					// entao marcar a expressao como não valida
+					validExpression = false;
+					state.addLabelsString(expression.getName());
+					break;
 				}
-				flag = true;
-			} else {
-				flag = false;
-				break;
+			}
+		} else {
+			graphvizFileMaker.addInvalidState(state.getName());
+			validExpression = false;
+		}
+
+		graphvizFileMaker.finishFile();
+		return validExpression;
+	}
+
+	private static boolean recursiveAG(State state, String label) {
+		boolean valid = true;
+		System.out.println("Recursive:" + state.getName());
+		if (state.getLabelsString().contains(label)) {
+			graphvizFileMaker.addValidState(state.getName());
+			state.setVisited(true);
+
+			ArrayList<State> children = state.getChildren();
+			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
+				State state2 = (State) iterator.next();
+				graphvizFileMaker.addBranch(state.getName(), state2.getName());
+//				if(state2 == state) {
+//					continue;
+//				}
+				
+				System.out.println("Recursive2:" + state2.getName());
+				if (!state2.isVisited()) {
+					System.out.println("Entrei");	
+					valid = recursiveAG(state2, label);
+					if (!valid) {
+						break;
+					}
+				}
 			}
 
+		} else {
+			graphvizFileMaker.addInvalidState(state.getName());
+			valid = false;
 		}
-		if(flag) {
-			// so da pra colocar o label para o estado inicial
-			states.get(0).addLabelsString(expression.getName());
-		}
-		return flag;
 
+		return valid;
 	}
 
 	/**
@@ -629,5 +680,62 @@ public class Algorithms {
 		//TODO
 		return true;
 	}
+	
+	/**
+	 * This formula is TRUE in a state s0 if for SOME PATH starting 
+	 * with s0, there exists an initial prefix of that path such that f2 
+	 * holds at the last state of the prefix and f1 holds at all other 
+	 * states along the prefix
+	 * @param state
+	 * @param expression
+	 * @return
+	 */
+//	public static boolean EU(State state, Expression expression) {
+//		TODO
+//		boolean validExpression = false;
+//		state.setVisited(true);
+		
+		// ex: Expression.name = E (p U q)
+//		Expression expression1 = expression.getExp1(); // = p
+//		Expression expression2 = expression.getExp2(); // = q
+		
+//		if(state.getLabelsString().contains(expression2.getName())) {
+//			validExpression = true;
+//		} else if (state.getLabelsString().contains(expression1.getName())) {
+//			 I need to find at least one path that contains the expression q, if I don't find it, then I need at least
+			// to find the expression1 and keep looking in other states.
+//			ArrayList<State> children = state.getChildren();
+//			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
+//				State state2 = (State) iterator.next();
+//				validExpression = recursiveEU(state2, expression1.getName(),expression2.getName());
+//				if (validExpression) {
+//					state.addLabelsString(expression.getName());
+//					break;
+//				}
+//			}
+//		}
+		
+//		return validExpression;
+//	}
+
+//	private static boolean recursiveEU(State state, String firstExpression, String secondExpression) {
+		
+		
+//		return false;
+//	}
+
+	/**
+	 * This formula is TRUE in a state s0 if for EVERY PATH starting 
+	 * with s0, there exists an initial prefix of that path such that f2 
+	 * holds at the last state of the prefix and f1 holds at all other 
+	 * states along the prefix.
+	 * @param states
+	 * @param expression
+	 * @return
+	 */
+//	public static boolean AU(ArrayList<State> states, Expression expression) {
+//		TODO
+//		return true;
+//	}
 
 }
