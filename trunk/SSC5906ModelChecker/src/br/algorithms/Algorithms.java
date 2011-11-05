@@ -56,7 +56,6 @@ public class Algorithms {
 	 *            verdadeira.
 	 * @return retorna true se a expressao e' verdadeira para aquele estado, e
 	 *         caso contrario retorna 'false'
-	 * @throws Exception
 	 */
 	public static boolean OR(State state, Expression expression)
 			throws Exception {
@@ -90,7 +89,6 @@ public class Algorithms {
 	 *            Consiste da expressao que se deseja verificar se e'
 	 *            verdadeira.
 	 * @return retorna os estados em que a expressao fornecida e' valida
-	 * @throws Exception
 	 */
 	public static ArrayList<State> OR(ArrayList<State> states,
 			Expression expression) throws Exception {
@@ -115,7 +113,6 @@ public class Algorithms {
 	 *            verdadeira.
 	 * @return retorna true se a expressao e' verdadeira para aquele estado, e
 	 *         caso contrario retorna 'false'
-	 * @throws Exception
 	 */
 	public static boolean AND(State state, Expression expression)
 			throws Exception {
@@ -141,7 +138,6 @@ public class Algorithms {
 	 *            Consiste da expressao que se deseja verificar se e'
 	 *            verdadeira.
 	 * @return retorna os estados em que a expressao fornecida e' valida
-	 * @throws Exception
 	 */
 	public static ArrayList<State> AND(ArrayList<State> states,
 			Expression expression) throws Exception {
@@ -191,7 +187,6 @@ public class Algorithms {
 	 *            Consiste da expressao que se deseja verificar se e'
 	 *            verdadeira.
 	 * @return retorna os estados em que a expressao fornecida e' valida
-	 * @throws Exception
 	 */
 	public static ArrayList<State> NOT(ArrayList<State> states,
 			Expression expression) throws Exception {
@@ -220,7 +215,6 @@ public class Algorithms {
 	 * @param expression
 	 *            a expressao a ser verificada
 	 * @return retorna true se a expressao e valida e false caso contrario
-	 * @throws Exception
 	 */
 	public static boolean IMP(State state, Expression expression)
 			throws Exception {
@@ -309,11 +303,14 @@ public class Algorithms {
 			for (Iterator<State> iterator = children.iterator(); iterator
 					.hasNext();) {
 				State state2 = (State) iterator.next();
+				// se o recursiveEF encontrar (true ou false) um estado que seja valido em 
+				// algum caminho a partir de algum dos filhos
 				if (recursiveEF(state2, expression1.getName())) {
 					validExpression = true;
 					state.addLabelsString(expression.getName());
 					break;
 				}
+				
 			}
 		}
 
@@ -343,11 +340,11 @@ public class Algorithms {
 		if (state.getLabelsString().contains(label)) {
 			valid = true;
 		} else {
+			state.setVisited(true);
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
 				State state2 = (State) iterator.next();
-				if (!state2.isVisited()) {
-					state.setVisited(true);
+				if (!state2.isVisited()) { // se o estado ainda não foi visitado
 					valid = recursiveEF(state2, label);
 					if (valid) {
 						break;
@@ -360,7 +357,7 @@ public class Algorithms {
 
 	/**
 	 * This formula is TRUE in a state s0 if there exists some path
-	 * from s0 on which f holds at every state. Formally
+	 * from s0 on which f holds at every state.
 	 * 
 	 * Esse método executa o algoritmo EG. O EG consiste do seguinte: - Dada
 	 * uma expressao, verificar se ela e' valida para TODOS os estados de pelo
@@ -379,27 +376,25 @@ public class Algorithms {
 	 * @param state
 	 * @param expression
 	 * @return
-	 * @throws MalformedExpression
 	 */
 	public static boolean EG(State state, Expression expression) {
+//		This formula is TRUE in a state s0 if there exists some path from s0 on which f holds at every state.
 		boolean validExpression = false;
-		state.setVisited(true);
 		// ex: Expression.name = EG p
 		Expression expression1 = expression.getExp1(); // = p
 //		Expression expression2 = expression.getExp2(); // = null
-
 		if (state.getLabelsString().contains(expression1.getName())) {
+			state.setVisited(true);
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator
 					.hasNext();) {
 				State state2 = (State) iterator.next();
-				// se ele achar um caminho (ciclo) em que a expressao seja
-				// valida
+				// se ele achar um caminho (ciclo) em que a expressao seja valida
 				if (recursiveEG(state2, expression1.getName())) {
 					// entao marcar a expressao como valida
 					validExpression = true;
 					state.addLabelsString(expression.getName());
-					break;
+					break; // pode quebrar porque ele ja achou um caminho
 				}
 			}
 		}
@@ -445,17 +440,10 @@ public class Algorithms {
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
 				State state2 = (State) iterator.next();
 
-				if (state2.isVisited()) {//&& state2.getLabelsString().contains(label)) {
+				if (state2.isVisited()) { // se ele foi visitado
 					valid = true;
 					break;
-				}
-
-//				if (state2.isVisited()
-//						&& !state2.getLabelsString().contains(label)) {
-//					valid = false;
-//				}
-
-				if (!state2.isVisited()) {
+				} else { // se ele não foi visitado
 					valid = recursiveEG(state2, label);
 				}
 			}
@@ -466,7 +454,7 @@ public class Algorithms {
 
 		return valid;
 	}
-
+	
 	/**
 	 * This formula is TRUE in a state s0 if formula f holds at 
 	 * every state on every path from s0.
@@ -481,74 +469,52 @@ public class Algorithms {
 	 *         caso contrario retorna 'false'
 	 */
 	public static boolean AG(State state, Expression expression) {
+//		 This formula is TRUE in a state s0 if formula f holds at every state on every path from s0.
 		boolean validExpression = true;
-		graphvizFileMaker = new GraphvizFileMaker(expression.getType()+(int)(Math.random()*1000)+".dot"); 
-		
-		state.setVisited(true);
-		// ex: Expression.name = AG p
 		Expression expression1 = expression.getExp1(); // = p
-//		Expression expression2 = expression.getExp2(); // = null
-		System.out.println(state.getName());
 		if (state.getLabelsString().contains(expression1.getName())) {
-			graphvizFileMaker.addValidState(state.getName());
+			state.setVisited(true);
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator
 					.hasNext();) {
 				State state2 = (State) iterator.next();
-				graphvizFileMaker.addBranch(state.getName(), state2.getName());
-				// se ele achar um caminho (ciclo) em que a expressao não seja valida
-				if (!recursiveAG(state2, expression1.getName())) {
-					// entao marcar a expressao como não valida
-					validExpression = false;
-//					state.addLabelsString(expression.getName());
+				validExpression = recursiveAG(state2, expression1.getName());
+				if(!validExpression) { // se o método achar um estado em algum caminho que seja falso então invalida a expressao
 					break;
 				}
 			}
 		} else {
-			graphvizFileMaker.addInvalidState(state.getName());
-			validExpression = false;
+			return false;
 		}
-
-//		graphvizFileMaker.finishFile();
+		
 		if(validExpression) {
 			state.addLabelsString(expression.getName());
 		}
+		
 		return validExpression;
 	}
 
 	private static boolean recursiveAG(State state, String label) {
 		boolean valid = true;
-		System.out.println("Recursive:" + state.getName());
 		if (state.getLabelsString().contains(label)) {
-			graphvizFileMaker.addValidState(state.getName());
 			state.setVisited(true);
 
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
 				State state2 = (State) iterator.next();
-				graphvizFileMaker.addBranch(state.getName(), state2.getName());
-//				if(state2 == state) {
-//					continue;
-//				}
-				
-				System.out.println("Recursive2:" + state2.getName());
-				if (!state2.isVisited()) {
-					System.out.println("Entrei");
+				if(!state2.isVisited()) {
 					valid = recursiveAG(state2, label);
 					if (!valid) {
 						break;
 					}
 				}
 			}
-
 		} else {
-			graphvizFileMaker.addInvalidState(state.getName());
-			valid = false;
+			return false;
 		}
-
 		return valid;
 	}
-
+	
 	/**
 	 * M�todo para avaliar a express�o CTL AX, que significa que no
 	 * pr�ximo estado a propriedade � v�lida
@@ -571,40 +537,52 @@ public class Algorithms {
 		return validStates;
 	}
 
-	public static boolean AF(ArrayList<State> states, Expression expression) {
-		boolean validExpression = false;
-		// ex: Expression.name = AF p
-		Expression expression1 = expression.getExp1(); // = p
-		Expression expression2 = expression.getExp2(); // = null
+	public static boolean AF(State state, Expression expression) {
+		boolean validExpression = true;
+		Expression expression1 = expression.getExp1();
 
-		for (int i = 0; i < states.size(); i++) {
-			if (expression1 == null) {
-				if (states.get(i).getLabelsString()
-						.contains(expression2.getName())) {
-					validExpression = true;
-					states.get(i).addLabelsString(expression.getName());
-				} else {
-					states.get(i).setVisited(true);
+		if (!state.getLabelsString().contains(expression1.getName())) {
+			state.setVisited(true);
+			ArrayList<State> children = state.getChildren();
+			for (Iterator<State> iterator = children.iterator(); iterator
+					.hasNext();) {
+				State state2 = (State) iterator.next();
+				// se ele achar um caminho onde a expressão não é válida
+				if (!recursiveAF(state2, expression1.getName())) {
 					validExpression = false;
-
+					break;
 				}
+				
 			}
-
-			if (expression2 == null) {
-
-				if (states.get(i).getLabelsString()
-						.contains(expression1.getName())) {
-					validExpression = true;
-					states.get(i).addLabelsString(expression.getName());
-				} else {
-					states.get(i).setVisited(true);
-					validExpression = false;
-				}
-			}
-
 		}
-		return validExpression;
 
+		if(validExpression) {
+			state.addLabelsString(expression.getName());
+		}
+		
+		return validExpression;
+	}
+
+	private static boolean recursiveAF(State state, String label) {
+		boolean valid = true;
+
+		if (!state.getLabelsString().contains(label)) {
+			state.setVisited(true);
+			ArrayList<State> children = state.getChildren();
+			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
+				State state2 = (State) iterator.next();
+				if(state2.isVisited() && !state2.getLabelsString().contains(label)) {
+					valid = false;
+					break;
+				}
+				
+				valid = recursiveAF(state2, label);
+				if (!valid) {
+					break;
+				}
+			}
+		}
+		return valid;
 	}
 
 	/**
@@ -739,5 +717,4 @@ public class Algorithms {
 //		TODO
 //		return true;
 //	}
-
 }

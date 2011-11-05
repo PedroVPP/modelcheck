@@ -35,14 +35,11 @@ public class PedroTestCases extends Assert {
 
 		s0.addLabelsString("p");
 		s0.addLabelsString("q");
-		s0.addLabelsString("x");
-		s1.addLabelsString("r");
 		
 		s1.addLabelsString("q");
 		s1.addLabelsString("r");
 		
 		s2.addLabelsString("r");
-//		s2.addLabelsString("q");
 		
 		s3.addLabelsString("q");
 		s3.addLabelsString("r");
