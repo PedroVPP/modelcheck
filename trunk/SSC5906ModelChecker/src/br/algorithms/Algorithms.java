@@ -516,25 +516,33 @@ public class Algorithms {
 	}
 	
 	/**
-	 * M�todo para avaliar a express�o CTL AX, que significa que no
-	 * pr�ximo estado a propriedade � v�lida
+	 * M�todo para avaliar a expressão CTL AX. This formula is TRUE in a state s0 if formula f is TRUE 
+	 * in every immediate successor of s0.
 	 * 
 	 * @param states
 	 *            Conjunto de estados da MEF
 	 * @param expression
 	 *            Representa a express�o CTL que est� sendo avaliada
 	 * */
-	public static List<State> AX(ArrayList<State> states, Expression expression) {
-		List<State> validStates = new ArrayList<State>();
-
-		for (int i = 0; i < states.size(); i++) {
-			int nextState = i + 1;
-			if (states.get(nextState).getLabelsString()
-					.contains(expression.getName())) {
-				validStates.add(states.get(nextState));
+	public static boolean AX(State state, Expression expression) {
+		boolean validExpression = true;
+		
+		ArrayList<State> children = state.getChildren();
+		for (Iterator<State> iterator = children.iterator(); iterator
+				.hasNext();) {
+			State state2 = (State) iterator.next();
+			
+			if (!state2.getLabelsString().contains(expression.getExp1())) {
+				validExpression = false;
+				break;
 			}
 		}
-		return validStates;
+		
+		if(validExpression) {
+			state.addLabelsString(expression.getName());
+		}
+		
+		return validExpression;
 	}
 
 	public static boolean AF(State state, Expression expression) {
@@ -586,10 +594,10 @@ public class Algorithms {
 	}
 
 	/**
-	 * Implementacao do algoritmo EX exp - se existe um cominho tal que no 
-	 * proximo esta a propriedade e' verdade
+	 * Implementacao do algoritmo EX exp - This formula is TRUE in a state s0 if formula f is TRUE
+	 * in one or more immediate successors of s0.
 	 * 
-	 * @author Mauricio Arimoto
+	 * @author Mauricio Arimoto e Pedro Pinheiro
 	 * @param st
 	 *            Conjunto de estados da MEF em que se deseja verificar se uma
 	 *      	  expressao e' valida
@@ -597,22 +605,22 @@ public class Algorithms {
 	 *            Expressao CTL que se deseja verificar.
 	 *
 	 */
-	public static List<State> EX(ArrayList<State> st, Expression exp) {
+	public static boolean EX(State state, Expression expression) {
+		boolean validExpression = false;
 		
-		List<State> validStates = new ArrayList<State>();
-
-		for (int i = 0; i < st.size(); i++) {
-			State state = st.get(i);
+		ArrayList<State> children = state.getChildren();
+		for (Iterator<State> iterator = children.iterator(); iterator
+				.hasNext();) {
+			State state2 = (State) iterator.next();
 			
-			for (Iterator<State> iterator = state.getChildren().iterator(); iterator.hasNext();) {
-				State state_child = (State) iterator.next();
-				
-				if (state_child.getLabelsString().contains(exp.getName())){
-					validStates.add(state_child);
-				}
+			if (state2.getLabelsString().contains(expression.getExp1())) {
+				validExpression = true;
+				state.addLabelsString(expression.getName());
+				break;
 			}
 		}
-		return validStates;
+		
+		return validExpression;
 	}
 	
 	
