@@ -695,24 +695,54 @@ public class Algorithms {
 	
 
 	//Implementando algoritmo AU
-	public static boolean AU(ArrayList<State> states, Expression expression) {
-		//TODO
-		return true;
-	}
-	
-	
-
 	/**
 	 * This formula is TRUE in a state s0 if for EVERY PATH starting 
 	 * with s0, there exists an initial prefix of that path such that f2 
 	 * holds at the last state of the prefix and f1 holds at all other 
 	 * states along the prefix.
-	 * @param states
+	 * 
+	 * @author Mauricio Arimoto
+	 * @param state
 	 * @param expression
-	 * @return
+	 * @return validExpression
 	 */
-//	public static boolean AU(ArrayList<State> states, Expression expression) {
-//		TODO
-//		return true;
-//	}
+	
+	public static boolean AU(State state, Expression expression) {
+		boolean validExpression = true;
+		
+		// ex: Expression.name = A (p U q)
+		Expression expression1 = expression.getExp1(); // = p
+		Expression expression2 = expression.getExp2(); // = q
+		
+		if(state.getLabelsString().contains(expression2.getName())) {
+			validExpression = true;
+		} else if(state.getLabelsString().contains(expression1.getName())) {
+			state.setVisited(true);
+			
+			ArrayList<State> children = state.getChildren();
+		
+			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
+				State state2 = (State) iterator.next();
+				
+				validExpression = recursiveAU(state2, expression1.getName(), expression2.getName());
+				if (validExpression) {
+					break;
+				}
+			}
+		}
+		
+		if(validExpression) {
+			state.addLabelsString(expression.getName());
+		}
+		return validExpression;
+	}
+	
+	
+	private static boolean recursiveAU(State state, String firstExpression, String secondExpression) {
+	
+		return false;
+		// TO DO
+		
+	}
+	
 }
