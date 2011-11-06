@@ -734,7 +734,7 @@ public class Algorithms {
 	 */
 	
 	public static boolean AU(State state, Expression expression) {
-		boolean validExpression = false;
+		boolean validExpression = true;
 		
 		// ex: Expression.name = A (p U q)
 		Expression expression1 = expression.getExp1(); // = p
