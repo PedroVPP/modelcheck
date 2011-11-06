@@ -532,10 +532,15 @@ public class Algorithms {
 				.hasNext();) {
 			State state2 = (State) iterator.next();
 			
-			if (!state2.getLabelsString().contains(expression.getExp1())) {
-				validExpression = false;
+			validExpression = recursiveAX(state2, expression.getName());
+			if(!validExpression) { // se o método achar um estado em algum caminho que seja falso então invalida a expressao
 				break;
 			}
+			
+			//if (!state2.getLabelsString().contains(expression.getExp1())) {
+				//validExpression = false;
+				//break;
+			//}
 		}
 		
 		if(validExpression) {
@@ -543,6 +548,27 @@ public class Algorithms {
 		}
 		
 		return validExpression;
+	}
+	
+	public static boolean recursiveAX(State state, String label){
+		boolean valid = true;
+		if (state.getLabelsString().contains(label)) {
+			state.setVisited(true);
+
+			ArrayList<State> children = state.getChildren();
+			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
+				State state2 = (State) iterator.next();
+				if(!state2.isVisited()) {
+					valid = recursiveAX(state2, label);
+					if (!valid) {
+						break;
+					}
+				}
+			}
+		} else {
+			return false;
+		}
+		return valid;
 	}
 
 	public static boolean AF(State state, Expression expression) {
