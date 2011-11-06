@@ -323,6 +323,46 @@ public class PedroTestCases extends Assert {
 		State.resetVisited(states);
 	}
 	
+	@Test
+	public void testEX() {
+		// This formula is TRUE in a state s0 if formula f holds in the future along every path from s0
+		expression = new Expression("EX p");
+		expression.setExp1(new Expression("p"));
+		expression.setType("EX");
+		assertFalse(Algorithms.EX(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.EX(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.EX(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.EX(this.states.get(3), expression));
+		State.resetVisited(states);
+
+		expression = new Expression("EX q");
+		expression.setExp1(new Expression("q"));
+		expression.setType("EX");
+		assertTrue(Algorithms.EX(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.EX(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.EX(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.EX(this.states.get(3), expression));
+		State.resetVisited(states);
+
+		expression = new Expression("EX r");
+		expression.setExp1(new Expression("r"));
+		expression.setType("EX");
+		assertTrue(Algorithms.EX(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.EX(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.EX(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.EX(this.states.get(3), expression));
+		State.resetVisited(states);
+	}
+	
 	public void printLabelsInformation() {
 		// Ainda não contém Assert
 //		ArrayList<State> validStates = Algorithms.OR(states, expression);
