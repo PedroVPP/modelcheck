@@ -550,7 +550,7 @@ public class Algorithms {
 		return validExpression;
 	}
 	
-	public static boolean recursiveAX(State state, String label){
+	private static boolean recursiveAX(State state, String label){
 		boolean valid = true;
 		if (state.getLabelsString().contains(label)) {
 			state.setVisited(true);
