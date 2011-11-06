@@ -644,7 +644,7 @@ public class Algorithms {
 				.hasNext();) {
 			State state2 = (State) iterator.next();
 			
-			if (state2.getLabelsString().contains(expression.getExp1())) {
+			if (state2.getLabelsString().contains(expression.getExp1().getName())) {
 				validExpression = true;
 				state.addLabelsString(expression.getName());
 				break;
