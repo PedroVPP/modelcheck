@@ -708,15 +708,15 @@ public class Algorithms {
 	 */
 	
 	public static boolean AU(State state, Expression expression) {
-		boolean validExpression = true;
+		boolean validExpression = false;
 		
 		// ex: Expression.name = A (p U q)
 		Expression expression1 = expression.getExp1(); // = p
 		Expression expression2 = expression.getExp2(); // = q
 		
-		if(state.getLabelsString().contains(expression2.getName())) {
+		if (state.getLabelsString().contains(expression2.getName())) {
 			validExpression = true;
-		} else if(state.getLabelsString().contains(expression1.getName())) {
+		} else if (state.getLabelsString().contains(expression1.getName())) {
 			state.setVisited(true);
 			
 			ArrayList<State> children = state.getChildren();
@@ -725,18 +725,18 @@ public class Algorithms {
 				State state2 = (State) iterator.next();
 				
 				validExpression = recursiveAU(state2, expression1.getName(), expression2.getName());
+				
 				if (validExpression) {
 					break;
 				}
 			}
 		}
 		
-		if(validExpression) {
+		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
 		return validExpression;
 	}
-	
 	
 	private static boolean recursiveAU(State state, String firstExpression, String secondExpression) {
 	
