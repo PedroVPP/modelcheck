@@ -575,7 +575,7 @@ public class Algorithms {
 		boolean validExpression = true;
 		Expression expression1 = expression.getExp1();
 
-		if (!state.getLabelsString().contains(expression1.getName())) {
+		if (state.getLabelsString().contains(expression1.getName())) { // se ele contem a expressão 1
 			state.setVisited(true);
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator
@@ -588,6 +588,8 @@ public class Algorithms {
 				}
 				
 			}
+		} else {
+			validExpression = false;
 		}
 
 		if(validExpression) {
@@ -599,22 +601,25 @@ public class Algorithms {
 
 	private static boolean recursiveAF(State state, String label) {
 		boolean valid = true;
-
-		if (!state.getLabelsString().contains(label)) {
+		if (state.getLabelsString().contains(label)) {
 			state.setVisited(true);
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
 				State state2 = (State) iterator.next();
-				if(state2.isVisited() && !state2.getLabelsString().contains(label)) {
-					valid = false;
-					break;
-				}
+//				if(state2.isVisited() && !state2.getLabelsString().contains(label)) {
+//					valid = false;
+//					break;
+//				}
 				
-				valid = recursiveAF(state2, label);
-				if (!valid) {
-					break;
+				if(!state2.isVisited()) {
+					valid = recursiveAF(state2, label);
+					if (!valid) {
+						break;
+					}
 				}
 			}
+		} else {
+			valid = false;
 		}
 		return valid;
 	}
@@ -719,8 +724,6 @@ public class Algorithms {
 		return valid;
 	}
 	
-
-	//Implementando algoritmo AU
 	/**
 	 * This formula is TRUE in a state s0 if for EVERY PATH starting 
 	 * with s0, there exists an initial prefix of that path such that f2 
