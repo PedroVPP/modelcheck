@@ -765,10 +765,26 @@ public class Algorithms {
 	}
 	
 	private static boolean recursiveAU(State state, String firstExpression, String secondExpression) {
-	
-		return false;
-		// TO DO
+		boolean valid = true;
+		if (state.getLabelsString().contains(secondExpression)) {
+			valid = true;
+		} else if (state.getLabelsString().contains(firstExpression)) {
+			state.setVisited(true);
+			
+			ArrayList<State> children = state.getChildren();
 		
+			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
+				State state2 = (State) iterator.next();
+				
+				valid = recursiveAU(state2, firstExpression, secondExpression);
+				
+				if (valid) {
+					break;
+				}
+			}
+		}
+		return valid;
+				
 	}
 	
 }
