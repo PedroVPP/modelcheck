@@ -81,7 +81,51 @@ public class PedroTestCases extends Assert {
 		assertTrue(Algorithms.OR(this.states.get(1), expression));
 		assertTrue(Algorithms.OR(this.states.get(2), expression));
 		assertTrue(Algorithms.OR(this.states.get(3), expression));
+		
+		expression = new Expression("p OR r");
+		expression.setExp1(new Expression("p"));
+		expression.setExp2(new Expression("r"));
+		expression.setType("OR");
+		
+		assertTrue(Algorithms.OR(this.states.get(0), expression));
+		assertTrue(Algorithms.OR(this.states.get(1), expression));
+		assertTrue(Algorithms.OR(this.states.get(2), expression));
+		assertTrue(Algorithms.OR(this.states.get(3), expression));
 
+	}
+	
+	@Test
+	public void testAND() throws Exception {
+		// criacao da arvore de derivacao da expressao
+		expression = new Expression("p AND q");
+		expression.setExp1(new Expression("p"));
+		expression.setExp2(new Expression("q"));
+		expression.setType("AND");
+		
+		assertTrue(Algorithms.AND(this.states.get(0), expression));
+		assertFalse(Algorithms.AND(this.states.get(1), expression));
+		assertFalse(Algorithms.AND(this.states.get(2), expression));
+		assertFalse(Algorithms.AND(this.states.get(3), expression));
+		
+		expression = new Expression("q AND r");
+		expression.setExp1(new Expression("q"));
+		expression.setExp2(new Expression("r"));
+		expression.setType("AND");
+		
+		assertFalse(Algorithms.AND(this.states.get(0), expression));
+		assertTrue(Algorithms.AND(this.states.get(1), expression));
+		assertFalse(Algorithms.AND(this.states.get(2), expression));
+		assertTrue(Algorithms.AND(this.states.get(3), expression));
+		
+		expression = new Expression("p AND r");
+		expression.setExp1(new Expression("p"));
+		expression.setExp2(new Expression("r"));
+		expression.setType("AND");
+		
+		assertFalse(Algorithms.AND(this.states.get(0), expression));
+		assertFalse(Algorithms.AND(this.states.get(1), expression));
+		assertFalse(Algorithms.AND(this.states.get(2), expression));
+		assertFalse(Algorithms.AND(this.states.get(3), expression));
 	}
 
 	@Test
@@ -133,7 +177,7 @@ public class PedroTestCases extends Assert {
 		assertTrue(Algorithms.IMP(this.states.get(1), expression));
 		assertTrue(Algorithms.IMP(this.states.get(2), expression));
 		assertTrue(Algorithms.IMP(this.states.get(3), expression));
-
+		
 		expression = new Expression("r -> q");
 		expression.setExp1(new Expression("r"));
 		expression.setExp2(new Expression("q"));
@@ -142,6 +186,26 @@ public class PedroTestCases extends Assert {
 		assertTrue(Algorithms.IMP(this.states.get(0), expression));
 		assertTrue(Algorithms.IMP(this.states.get(1), expression));
 		assertFalse(Algorithms.IMP(this.states.get(2), expression));
+		assertTrue(Algorithms.IMP(this.states.get(3), expression));
+		
+		expression = new Expression("r -> p");
+		expression.setExp1(new Expression("r"));
+		expression.setExp2(new Expression("p"));
+		expression.setType("IMP");
+
+		assertTrue(Algorithms.IMP(this.states.get(0), expression));
+		assertFalse(Algorithms.IMP(this.states.get(1), expression));
+		assertFalse(Algorithms.IMP(this.states.get(2), expression));
+		assertFalse(Algorithms.IMP(this.states.get(3), expression));
+		
+		expression = new Expression("p -> r");
+		expression.setExp1(new Expression("p"));
+		expression.setExp2(new Expression("r"));
+		expression.setType("IMP");
+
+		assertFalse(Algorithms.IMP(this.states.get(0), expression));
+		assertTrue(Algorithms.IMP(this.states.get(1), expression));
+		assertTrue(Algorithms.IMP(this.states.get(2), expression));
 		assertTrue(Algorithms.IMP(this.states.get(3), expression));
 		
 		expression = new Expression("q -> p");
@@ -285,7 +349,6 @@ public class PedroTestCases extends Assert {
 
 	@Test
 	public void testAF() {
-		// This formula is TRUE in a state s0 if formula f holds in the future along every path from s0
 		expression = new Expression("AF p");
 		expression.setExp1(new Expression("p"));
 		expression.setType("AF");
@@ -325,7 +388,6 @@ public class PedroTestCases extends Assert {
 	
 	@Test
 	public void testEX() {
-		// This formula is TRUE in a state s0 if formula f holds in the future along every path from s0
 		expression = new Expression("EX p");
 		expression.setExp1(new Expression("p"));
 		expression.setType("EX");
@@ -360,6 +422,215 @@ public class PedroTestCases extends Assert {
 		assertTrue(Algorithms.EX(this.states.get(2), expression));
 		State.resetVisited(states);
 		assertTrue(Algorithms.EX(this.states.get(3), expression));
+		State.resetVisited(states);
+	}
+	
+	@Test
+	public void testAX() {
+		expression = new Expression("AX p");
+		expression.setExp1(new Expression("p"));
+		expression.setType("AX");
+		assertFalse(Algorithms.AX(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AX(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.AX(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.AX(this.states.get(3), expression));
+		State.resetVisited(states);
+
+		expression = new Expression("AX q");
+		expression.setExp1(new Expression("q"));
+		expression.setType("AX");
+		assertFalse(Algorithms.AX(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AX(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AX(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AX(this.states.get(3), expression));
+		State.resetVisited(states);
+
+		expression = new Expression("AX r");
+		expression.setExp1(new Expression("r"));
+		expression.setType("AX");
+		assertTrue(Algorithms.AX(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.AX(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AX(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AX(this.states.get(3), expression));
+		State.resetVisited(states);
+	}
+	
+	@Test
+	public void testEU() {
+//		This formula is TRUE in a state s0 if for some path starting
+//		with s0, there exists an initial prefix of that path such that f2
+//		holds at the last state of the prefix and f1 holds at all other
+//		states along the prefix
+		expression = new Expression("E (p U q)");
+		expression.setExp1(new Expression("p"));
+		expression.setExp2(new Expression("q"));
+		expression.setType("EU");
+		assertTrue(Algorithms.EU(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.EU(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.EU(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.EU(this.states.get(3), expression));
+		State.resetVisited(states);
+
+		expression = new Expression("E (q U r)");
+		expression.setExp1(new Expression("q"));
+		expression.setExp2(new Expression("r"));
+		expression.setType("EU");
+		assertTrue(Algorithms.EU(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.EU(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.EU(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.EU(this.states.get(3), expression));
+		State.resetVisited(states);
+		
+		expression = new Expression("E (r U q)");
+		expression.setExp1(new Expression("r"));
+		expression.setExp2(new Expression("q"));
+		expression.setType("EU");
+		assertTrue(Algorithms.EU(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.EU(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.EU(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.EU(this.states.get(3), expression));
+		State.resetVisited(states);
+		
+		expression = new Expression("E (p U r)");
+		expression.setExp1(new Expression("p"));
+		expression.setExp2(new Expression("r"));
+		expression.setType("EU");
+		assertTrue(Algorithms.EU(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.EU(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.EU(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.EU(this.states.get(3), expression));
+		State.resetVisited(states);
+		
+		expression = new Expression("E (r U p)");
+		expression.setExp1(new Expression("r"));
+		expression.setExp2(new Expression("p"));
+		expression.setType("EU");
+		assertTrue(Algorithms.EU(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.EU(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.EU(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.EU(this.states.get(3), expression));
+		State.resetVisited(states);
+		
+		expression = new Expression("E (q U p)");
+		expression.setExp1(new Expression("q"));
+		expression.setExp2(new Expression("p"));
+		expression.setType("EU");
+		assertTrue(Algorithms.EU(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.EU(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.EU(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.EU(this.states.get(3), expression));
+		State.resetVisited(states);
+	}
+	
+	@Test
+	public void testAU() {
+//		This formula is TRUE in a state s0 if for every path starting
+//		with s0, there exists an initial prefix of that path such that f2
+//		holds at the last state of the prefix and f1 holds at all other
+//		states along the prefix.
+		expression = new Expression("A (p U q)");
+		expression.setExp1(new Expression("p"));
+		expression.setExp2(new Expression("q"));
+		expression.setType("AU");
+		assertTrue(Algorithms.AU(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AU(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.AU(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AU(this.states.get(3), expression));
+		State.resetVisited(states);
+
+		expression = new Expression("A (q U r)");
+		expression.setExp1(new Expression("q"));
+		expression.setExp2(new Expression("r"));
+		expression.setType("AU");
+		assertTrue(Algorithms.AU(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AU(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AU(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AU(this.states.get(3), expression));
+		State.resetVisited(states);
+		
+		expression = new Expression("A (r U q)");
+		expression.setExp1(new Expression("r"));
+		expression.setExp2(new Expression("q"));
+		expression.setType("AU");
+		assertTrue(Algorithms.AU(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AU(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AU(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AU(this.states.get(3), expression));
+		State.resetVisited(states);
+		
+		expression = new Expression("A (p U r)");
+		expression.setExp1(new Expression("p"));
+		expression.setExp2(new Expression("r"));
+		expression.setType("AU");
+		assertTrue(Algorithms.AU(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AU(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AU(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AU(this.states.get(3), expression));
+		State.resetVisited(states);
+		
+		expression = new Expression("A (r U p)");
+		expression.setExp1(new Expression("r"));
+		expression.setExp2(new Expression("p"));
+		expression.setType("AU");
+		assertTrue(Algorithms.AU(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AU(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.AU(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.AU(this.states.get(3), expression));
+		State.resetVisited(states);
+		
+		expression = new Expression("A (q U p)");
+		expression.setExp1(new Expression("q"));
+		expression.setExp2(new Expression("p"));
+		expression.setType("AU");
+		assertTrue(Algorithms.AU(this.states.get(0), expression));
+		State.resetVisited(states);
+		assertTrue(Algorithms.AU(this.states.get(1), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.AU(this.states.get(2), expression));
+		State.resetVisited(states);
+		assertFalse(Algorithms.AU(this.states.get(3), expression));
 		State.resetVisited(states);
 	}
 	
