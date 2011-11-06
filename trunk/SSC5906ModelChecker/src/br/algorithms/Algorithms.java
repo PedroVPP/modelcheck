@@ -68,16 +68,22 @@ public class Algorithms {
 		 * 
 		 * Expression 3 name = q exp1 = null exp2 = null
 		 */
+		boolean validExpression = false;
 		Expression expression1 = expression.getExp1(); // = p
 		Expression expression2 = expression.getExp2(); // = q
 		if (state.getLabelsString().contains(expression1.getName())
 				|| state.getLabelsString().contains(expression2.getName())) {
 			// adiciona o label pois a expressao e verdadeira
-			state.addLabelsString(expression.getName());
-			return true;
+			validExpression = true;
 		} else {
-			return false;
+			validExpression = false;
 		}
+		
+		if (validExpression) {
+			state.addLabelsString(expression.getName());
+		}
+		
+		return validExpression;
 	}
 
 	/**
@@ -116,17 +122,22 @@ public class Algorithms {
 	 */
 	public static boolean AND(State state, Expression expression)
 			throws Exception {
+		boolean validExpression = false;
 		// Expression expression = "p AND q"
 		Expression expression1 = expression.getExp1(); // = p
 		Expression expression2 = expression.getExp2(); // = q
 		if (state.getLabelsString().contains(expression1.getName())
 				&& state.getLabelsString().contains(expression2.getName())) {
-			// adiciona o label pois a expressao e verdadeira
-			state.addLabelsString(expression.getName());
-			return true;
+			validExpression = true;
 		} else {
-			return false;
+			validExpression = false;
 		}
+		
+		if (validExpression) {
+			state.addLabelsString(expression.getName());
+		}
+		
+		return validExpression;
 	}
 
 	/**
@@ -171,10 +182,13 @@ public class Algorithms {
 		// sempre a expression 1 não pode ser nula, se não ocasionara o nullpointerexception 
 
 		if (!state.getLabelsString().contains(expression1.getName())) {
-			state.addLabelsString(expression.getName());
 			validExpression = true;
 		}
 
+		if (validExpression) {
+			state.addLabelsString(expression.getName());
+		}
+		
 		return validExpression;
 	}
 
@@ -296,7 +310,6 @@ public class Algorithms {
 
 		if (state.getLabelsString().contains(expression1.getName())) {
 			validExpression = true;
-			state.addLabelsString(expression.getName());
 		} else {
 			state.setVisited(true);
 			ArrayList<State> children = state.getChildren();
@@ -307,13 +320,16 @@ public class Algorithms {
 				// algum caminho a partir de algum dos filhos
 				if (recursiveEF(state2, expression1.getName())) {
 					validExpression = true;
-					state.addLabelsString(expression.getName());
 					break;
 				}
 				
 			}
 		}
 
+		if (validExpression) {
+			state.addLabelsString(expression.getName());
+		}
+		
 		return validExpression;
 	}
 
@@ -393,10 +409,13 @@ public class Algorithms {
 				if (recursiveEG(state2, expression1.getName())) {
 					// entao marcar a expressao como valida
 					validExpression = true;
-					state.addLabelsString(expression.getName());
 					break; // pode quebrar porque ele ja achou um caminho
 				}
 			}
+		}
+		
+		if (validExpression) {
+			state.addLabelsString(expression.getName());
 		}
 
 		return validExpression;
@@ -646,9 +665,12 @@ public class Algorithms {
 			
 			if (state2.getLabelsString().contains(expression.getExp1().getName())) {
 				validExpression = true;
-				state.addLabelsString(expression.getName());
 				break;
 			}
+		}
+		
+		if (validExpression) {
+			state.addLabelsString(expression.getName());
 		}
 		
 		return validExpression;
@@ -755,10 +777,12 @@ public class Algorithms {
 				
 				validExpression = recursiveAU(state2, expression1.getName(), expression2.getName());
 				
-				if (validExpression) {
+				if (!validExpression) {
 					break;
 				}
 			}
+		} else {
+			validExpression = false;
 		}
 		
 		if (validExpression) {
@@ -770,21 +794,28 @@ public class Algorithms {
 	private static boolean recursiveAU(State state, String firstExpression, String secondExpression) {
 		boolean valid = true;
 		if (state.getLabelsString().contains(secondExpression)) {
-			valid = true;
+			state.setVisited(true);
 		} else if (state.getLabelsString().contains(firstExpression)) {
 			state.setVisited(true);
 			
 			ArrayList<State> children = state.getChildren();
-		
+
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
 				State state2 = (State) iterator.next();
+				if(!state2.isVisited()) {
+					valid = recursiveAU(state2, firstExpression, secondExpression);
+					if (!valid) {
+						break;
+					}
+				}
 				
-				valid = recursiveAU(state2, firstExpression, secondExpression);
-				
-				if (valid) {
+				if(state2.isVisited() && !state2.getLabelsString().contains(secondExpression)) {
+					valid = false;
 					break;
 				}
 			}
+		} else {
+			valid = false;
 		}
 		return valid;
 				
