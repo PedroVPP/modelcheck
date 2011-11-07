@@ -146,6 +146,14 @@ public class Expression {
 		}
 	}
 	
+	public boolean isBIC() {
+		if(type == ExpressionType.BIC) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public boolean isEX() {
 		if(type == ExpressionType.EX) {
 			return true;

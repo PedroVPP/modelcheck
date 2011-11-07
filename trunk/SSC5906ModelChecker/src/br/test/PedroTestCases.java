@@ -229,6 +229,75 @@ public class PedroTestCases extends Assert {
 		assertTrue(Algorithms.IMP(this.states.get(2), expression));
 		assertTrue(Algorithms.IMP(this.states.get(3), expression));
 	}
+	
+	@Test
+	public void testBIC() throws Exception {
+//		tabela verdade
+//		p   q  p<->q
+//		V 	V 	V
+//		V 	F 	F
+//		F 	V 	F
+//		F 	F 	V
+		expression = new Expression("p <-> q");
+		expression.setExp1(new Expression("p"));
+		expression.setExp2(new Expression("q"));
+		expression.setType(ExpressionType.BIC);
+
+		assertTrue(Algorithms.BIC(this.states.get(0), expression));
+		assertFalse(Algorithms.BIC(this.states.get(1), expression));
+		assertTrue(Algorithms.BIC(this.states.get(2), expression));
+		assertFalse(Algorithms.BIC(this.states.get(3), expression));
+		
+		expression = new Expression("r <-> q");
+		expression.setExp1(new Expression("r"));
+		expression.setExp2(new Expression("q"));
+		expression.setType(ExpressionType.BIC);
+
+		assertFalse(Algorithms.BIC(this.states.get(0), expression));
+		assertTrue(Algorithms.BIC(this.states.get(1), expression));
+		assertFalse(Algorithms.BIC(this.states.get(2), expression));
+		assertTrue(Algorithms.BIC(this.states.get(3), expression));
+		
+		expression = new Expression("r <-> p");
+		expression.setExp1(new Expression("r"));
+		expression.setExp2(new Expression("p"));
+		expression.setType(ExpressionType.BIC);
+
+		assertFalse(Algorithms.BIC(this.states.get(0), expression));
+		assertFalse(Algorithms.BIC(this.states.get(1), expression));
+		assertFalse(Algorithms.BIC(this.states.get(2), expression));
+		assertFalse(Algorithms.BIC(this.states.get(3), expression));
+		
+		expression = new Expression("p <-> r");
+		expression.setExp1(new Expression("p"));
+		expression.setExp2(new Expression("r"));
+		expression.setType(ExpressionType.BIC);
+
+		assertFalse(Algorithms.BIC(this.states.get(0), expression));
+		assertFalse(Algorithms.BIC(this.states.get(1), expression));
+		assertFalse(Algorithms.BIC(this.states.get(2), expression));
+		assertFalse(Algorithms.BIC(this.states.get(3), expression));
+		
+		expression = new Expression("q <-> p");
+		expression.setExp1(new Expression("q"));
+		expression.setExp2(new Expression("p"));
+		expression.setType(ExpressionType.BIC);
+
+		assertTrue(Algorithms.BIC(this.states.get(0), expression));
+		assertFalse(Algorithms.BIC(this.states.get(1), expression));
+		assertTrue(Algorithms.BIC(this.states.get(2), expression));
+		assertFalse(Algorithms.BIC(this.states.get(3), expression));
+		
+		expression = new Expression("q <-> r");
+		expression.setExp1(new Expression("q"));
+		expression.setExp2(new Expression("r"));
+		expression.setType(ExpressionType.BIC);
+
+		assertFalse(Algorithms.BIC(this.states.get(0), expression));
+		assertTrue(Algorithms.BIC(this.states.get(1), expression));
+		assertFalse(Algorithms.BIC(this.states.get(2), expression));
+		assertTrue(Algorithms.BIC(this.states.get(3), expression));
+	}
 
 	@Test
 	public void testEG() {

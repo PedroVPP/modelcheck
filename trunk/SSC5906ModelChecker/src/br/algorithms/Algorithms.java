@@ -289,6 +289,50 @@ public class Algorithms {
 	}
 	
 	/**
+	 * Algoritmo do bicondicional
+	 * @param state
+	 * @param expression
+	 * @return
+	 */
+	public static boolean BIC(State state, Expression expression) {
+		
+		if(state.getLabelsString().contains(expression.getName())) {
+			return true;
+		}
+		
+		if(!expression.getExp1().isProperty()) {
+			executeProperOperation(state, expression, expression.getExp1());
+		}
+		if(!expression.getExp2().isProperty()) {
+			executeProperOperation(state, expression, expression.getExp2());
+		}
+		
+		boolean validExpression = true;
+		// p <-> q
+		Expression expression1 = expression.getExp1(); // = p
+		Expression expression2 = expression.getExp2(); // = q
+
+//		tabela verdade
+//		p   q  p<->q
+//		V 	V 	V
+//		V 	F 	F
+//		F 	V 	F
+//		F 	F 	V
+		
+		if(state.getLabelsString().contains(expression1.getName()) && 
+				!state.getLabelsString().contains(expression2.getName())
+				||
+		   !state.getLabelsString().contains(expression1.getName()) && 
+				state.getLabelsString().contains(expression2.getName())) {
+			validExpression = false;
+		}
+		if(validExpression) {
+			state.addLabelsString(expression.getName());
+		}
+		return validExpression;
+	}
+	
+	/**
 	 * @author Pedro Pinheiro e Andre Luiz
 	 * Metodo que executa o IMP para todos os estados do parametro states
 	 * @param states
@@ -902,71 +946,19 @@ public class Algorithms {
 	
 	private static void executeProperOperation(State state, Expression expression, Expression subExpression) {
 		
-		if(expression.isLogicalOperator()) {
-			if(expression.isNOT()) { // NOT
-				executeOperation(state, subExpression);
-			} else if(expression.isAND()) { // AND 
-				executeOperation(state, subExpression);
-			} else if(expression.isOR()) { // OR 
-				executeOperation(state, subExpression);
-			} else { // IMP
-				executeOperation(state, subExpression);
-			}
-			
+		if(expression.isLogicalOperator()) { // NOT, AND, OR, IMP e BIC
+			executeOperation(state, subExpression);
 			
 		} else if(expression.isTemporalOperator()) {
 
-			if(expression.isEX()) { // EX
+			if(expression.isEX() || expression.isAX()) { // EX ou AX
 				ArrayList<State> mustExecuteStates = state.getChildren();
 				for (Iterator<State> iterator = mustExecuteStates.iterator(); iterator
 						.hasNext();) {
 					State state2 = (State) iterator.next();
 					executeOperation(state2, subExpression);
 				}
-				
-			} else if(expression.isAX()) { // AX
-				ArrayList<State> mustExecuteStates = state.getChildren();
-				for (Iterator<State> iterator = mustExecuteStates.iterator(); iterator
-						.hasNext();) {
-					State state2 = (State) iterator.next();
-					executeOperation(state2, subExpression);
-				}
-			} else if(expression.isAU()) { // AU
-				ArrayList<State> mustExecuteStates = getConnectingStates(state);
-				for (Iterator<State> iterator = mustExecuteStates.iterator(); iterator
-						.hasNext();) {
-					State state2 = (State) iterator.next();
-					executeOperation(state2, subExpression);
-				}
-			} else if(expression.isEU()) { // EU 
-				ArrayList<State> mustExecuteStates = getConnectingStates(state);
-				for (Iterator<State> iterator = mustExecuteStates.iterator(); iterator
-						.hasNext();) {
-					State state2 = (State) iterator.next();
-					executeOperation(state2, subExpression);
-				}
-			} else if(expression.isAF()) { // AF
-				ArrayList<State> mustExecuteStates = getConnectingStates(state);
-				for (Iterator<State> iterator = mustExecuteStates.iterator(); iterator
-						.hasNext();) {
-					State state2 = (State) iterator.next();
-					executeOperation(state2, subExpression);
-				}
-			} else if(expression.isEF()) { // EF 
-				ArrayList<State> mustExecuteStates = getConnectingStates(state);
-				for (Iterator<State> iterator = mustExecuteStates.iterator(); iterator
-						.hasNext();) {
-					State state2 = (State) iterator.next();
-					executeOperation(state2, subExpression);
-				}
-			} else if(expression.isEG()) { // EG 
-				ArrayList<State> mustExecuteStates = getConnectingStates(state);
-				for (Iterator<State> iterator = mustExecuteStates.iterator(); iterator
-						.hasNext();) {
-					State state2 = (State) iterator.next();
-					executeOperation(state2, subExpression);
-				}
-			} else if(expression.isAG()) { // AG 
+			} else { // AU, EU, AF, EF, EG e AG
 				ArrayList<State> mustExecuteStates = getConnectingStates(state);
 				for (Iterator<State> iterator = mustExecuteStates.iterator(); iterator
 						.hasNext();) {
@@ -994,10 +986,11 @@ public class Algorithms {
 				validOperation = AND(state, expression);
 			} else if(expression.isOR()) { // OR 
 				validOperation = OR(state, expression);
-			} else { // IMP
+			} else if(expression.isIMP()){ // IMP
 				validOperation = IMP(state, expression);
+			} else { // BIC
+				validOperation = BIC(state, expression);
 			}
-			
 			
 		} else if(expression.isTemporalOperator()) {
 
