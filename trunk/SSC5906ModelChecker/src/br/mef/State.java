@@ -8,28 +8,12 @@ public class State {
 
 	private String name;
 	private ArrayList<Integer> labels = new ArrayList<Integer>();
-	// nesse atributo ficaria guardado todos os labels das express�es
-	// fiz isso considerando o exemplo que o Ades deu em aula
-	// por ex, a express�o EX EG r, o label de r � (1), o label de EG r � (2)
-	// o label de EX EG r � (3)
-	// ao chamar os algoritmos, eles adicionariam os labels v�lidos em cada
-	// state
-	// depois, pra saber se a express�o � v�lida, bastaria verificar se ela
-	// possui o label
-	// a parte que ficou faltando � associar um label para cada express�o...
-
-	// Criei essa outra variável porque achei melhor que os labels sejam as
-	// expressoes
-	// ao inves inteiros representando elas. Alem de expressoes tambem sao
-	// colocadas aqui
-	// as propriedades dos estados by Pedro
 	private ArrayList<String> labelsString = new ArrayList<String>();
-	// essa variavel serve como um indicador se aquele estado ja foi visitado ou
-	// nao pelo algortimo
 	private static ArrayList<State> visitedStates = new ArrayList<State>();
 
 	public State(String name) {
 		this.name = name;
+		addValidProperties(new Property("TRUE"));
 	}
 
 	public void removeState(int index) {
@@ -139,4 +123,15 @@ public class State {
 	public static boolean isStateVisited(State state) {
 		return State.visitedStates.contains(state);
 	}
+	
+    @Override
+    public boolean equals(Object st){
+        try{
+        	return (this.getName().equals(((State) st).getName()));
+        }
+        catch(java.lang.RuntimeException e){
+            return false;
+        }
+
+    }	
 }

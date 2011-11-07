@@ -318,11 +318,21 @@ Expression ctlGrammar():
   //<VERIFYING> // por eqto, a definicao de propriedades é apenas um texto verifying. Aqui será nosso trabalho
   // toDo, definir essa gramática seguindo normas de CTL    (     
 	( t = <IDENTIFIER> | //identificador
+	  {
+	    exp = new Expression(t.toString());
+	    exp.setType(null);
+	  }
+	
 	  t = <TRUE > | // definicao de tautologia
+	  {
+	    exp = new Expression(t.toString());
+	    exp.setType(null);
+	  }
+	  
 	  t = <FALSE> // definicao de contradicao
 	  {
 	    exp = new Expression(t.toString());
-	    exp.setType("Id");
+	    exp.setType(null);
 	  }
 	)   				
    | 
@@ -371,7 +381,7 @@ Expression negation():
     {            exp1 = ctlGrammar();
       exp = new Expression(t.toString() + exp1.getName());
       exp.setExp1(exp1);
-      exp.setType(t.toString());
+      exp.setType(ExpressionType.NOT);
 	  //Expression e = new Expression(ctlExpression);
 	  //expressions.add(e);      
       return exp;    }    
@@ -384,12 +394,12 @@ Expression dualRelations():
   Expression exp;
   Expression exp1;
   Expression exp2;
+  ExpressionType ep = null;
 }{
   	exp1 = ctlGrammar()
   	(
-  	 t = <AND> 
-  	 | //conjunction
-	 t = <OR>
+  	   	   t = <AND>     	   	 | //conjunction
+	 t = <OR>	 
   	 |  //disjunction
   	 t = <IMPLICATION>
 	 | //material implication - if  .. then
@@ -399,7 +409,14 @@ Expression dualRelations():
   	{exp = new Expression(exp1.getName() + t.toString() + exp2.getName());
   	     exp.setExp1(exp1);
   	     exp.setExp2(exp2);
-  	     exp.setType(t.toString());
+  	  if (t.toString().equals("^"))
+  	   ep = ExpressionType.AND;
+  	  else if (t.toString().toUpperCase().equals("V"))   	  	ep = ExpressionType.OR;  	  else if (t.toString().equals("->")) 
+  	  	ep = ExpressionType.IMP;
+  	  else if (t.toString().equals("<->")) 
+  	  	ep = ExpressionType.BIC;
+  	       
+  	     exp.setType(ep);
   	    //Expression e = new Expression(exppartial);
 		//expressions.add(e);              
         return exp; 		  					  					
@@ -408,7 +425,8 @@ Expression dualRelations():
 
 Expression ctlSpecifications():
 {
-    Token t = new Token(); }{ ( t = <AX> //em todos os próximos estados as propriedade e valida
+    Token t = new Token();
+    ExpressionType ep = null; }{ ( t = <AX> //em todos os próximos estados as propriedade e valida
   | t = <EX> //existe um próximo estado no qual a propriedade vale     
   | t = <AF> //todas as execucoes fazem o caminho valer em algum lugar
   | t = <EF> //em algum lugar, é possível que aconteça   
@@ -417,19 +435,36 @@ Expression ctlSpecifications():
   )
   {
     Expression exp = new Expression(t.toString());
-    exp.setType(t.toString());
+    if (t.toString().toUpperCase().equals("AX"))
+    	ep = ExpressionType.AX;
+    else if (t.toString().toUpperCase().equals("EX"))
+    	ep = ExpressionType.EX;
+    else if (t.toString().toUpperCase().equals("AF"))
+    	ep = ExpressionType.AF;
+    else if (t.toString().toUpperCase().equals("EF"))
+    	ep = ExpressionType.EF;
+    else if (t.toString().toUpperCase().equals("AG"))
+    	ep = ExpressionType.AG;
+    else if (t.toString().toUpperCase().equals("EG"))
+    	ep = ExpressionType.EG;    	    	    	    
+    exp.setType(ep);
 	return exp;  					  					
   }	        }
 
 Expression unionAux() :
 {
   String tipo = "";
-  Expression exp;}
+  Expression exp;
+  ExpressionType ep = null;}
 {
  tipo = unionDec()
  exp = union()
  {
-   exp.setType(tipo + "U");	
+   if (tipo.toUpperCase().equals("A"))
+     ep = ExpressionType.AU;
+   else if   (tipo.toUpperCase().equals("E"))
+     ep = ExpressionType.EU;
+   exp.setType(ep);	
    MEF.getInstance().getExpressions().add(exp);
    return exp; }}
 

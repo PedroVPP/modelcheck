@@ -224,4 +224,15 @@ public class Expression {
 	public String toString() {
 		return name;
 	}
+	
+    @Override
+    public boolean equals(Object exp){
+        try{
+        	return (this.getName().equals(((Expression) exp).getName()));
+        }
+        catch(java.lang.RuntimeException e){
+            return false;
+        }
+
+    }	
 }
