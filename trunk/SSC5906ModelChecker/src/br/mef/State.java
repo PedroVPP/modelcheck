@@ -1,7 +1,6 @@
 package br.mef;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class State {
 
@@ -25,10 +24,9 @@ public class State {
 	// colocadas aqui
 	// as propriedades dos estados by Pedro
 	private ArrayList<String> labelsString = new ArrayList<String>();
-
 	// essa variavel serve como um indicador se aquele estado ja foi visitado ou
 	// nao pelo algortimo
-	private boolean visited = false;
+	private static ArrayList<State> visitedStates = new ArrayList<State>();
 
 	public State(String name) {
 		this.name = name;
@@ -126,22 +124,19 @@ public class State {
 		return this.labelsString;
 	}
 
-	public boolean isVisited() {
-		return visited;
+	public static ArrayList<State> getVisitedStates() {
+		return visitedStates;
 	}
 
-	public void setVisited(boolean visited) {
-		this.visited = visited;
-	}
-
-	public void resetVisited() {
-		this.visited = false;
+	public static void addVisitedState(State state) {
+		State.visitedStates.add(state);
 	}
 	
-	public static void resetVisited(ArrayList<State> states) {
-		for (Iterator<State> iterator = states.iterator(); iterator.hasNext();) {
-			State state = (State) iterator.next();
-			state.resetVisited();
-		}
+	public static void clearVisitedStates() {
+		State.visitedStates.clear();
+	}
+	
+	public static boolean isStateVisited(State state) {
+		return State.visitedStates.contains(state);
 	}
 }
