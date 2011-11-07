@@ -15,12 +15,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import br.algorithms.Algorithms;
 import br.gui.util.TableModelDefine;
@@ -114,7 +118,9 @@ public class Principal extends javax.swing.JFrame {
         jtStatesExp = new javax.swing.JTable();
         pnlMEF = new javax.swing.JPanel();
         jlbImagem = new javax.swing.JLabel();
-
+        pnlMEFCP = new javax.swing.JPanel();
+        jlbImagemCP = new javax.swing.JLabel();
+        
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new java.awt.GridLayout(1, 1));
 
@@ -600,6 +606,13 @@ public class Principal extends javax.swing.JFrame {
 
             }
         ));
+        jtExpressions.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) {
+            	initStatesAnswer();
+            	initMEFCP(false);
+    			pnlMEFCP.setVisible(false);   				
+            }
+        });        
         jtExpressions.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jtExpressionsMouseClicked(evt);
@@ -658,6 +671,11 @@ public class Principal extends javax.swing.JFrame {
             }
         ));
 
+        jtStatesExp.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jtStatesExpMouseClicked(evt);
+            }
+        });        
 
         jScrollPane6.setViewportView(jtStatesExp);
 
@@ -723,6 +741,12 @@ public class Principal extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("MEF", pnlMEF);
 
+        pnlMEFCP.setBackground(new java.awt.Color(255, 255, 255));
+        pnlMEFCP.setLayout(new java.awt.GridLayout());
+        pnlMEFCP.add(jlbImagemCP);
+        pnlMEFCP.setVisible(false);
+
+        //jTabbedPane1.addTab("Contra Prova", pnlMEFCP);        
         getContentPane().add(jTabbedPane1);
 
         pack();
@@ -741,21 +765,27 @@ public class Principal extends javax.swing.JFrame {
     }
 
     private void btnAddStatesActionPerformed(java.awt.event.ActionEvent evt) {
-        if (this.state == null){
-            State newState = new State(txtState.getText());
-            this.states.add(newState);
-            
-            StateAnswer staw = new StateAnswer(txtState.getText());
-            this.statesAnswer.add(staw);
-        }
-        else{
-            state.setName(txtState.getText());
-            this.stateAnswer.setName(txtState.getText());
-        }
-        ((TableModelState)jtStates.getModel()).fireTableDataChanged();
-        ((TableModelState)jtStates2.getModel()).fireTableDataChanged();
-        ((TableModelStateAnswer)jtStatesExp.getModel()).fireTableDataChanged();        
-        txtState.setText("");    	
+        if (!txtState.getText().trim().equals("")){
+        	if (this.state == null) {        	
+                State newState = new State(txtState.getText());
+                if (!states.contains(newState)){
+                	this.states.add(newState);
+                    StateAnswer staw = new StateAnswer(txtState.getText());
+                    this.statesAnswer.add(staw); 
+                    txtState.setText("");
+                }
+            }
+            else{
+                state.setName(txtState.getText());
+                this.stateAnswer.setName(txtState.getText());
+                txtState.setText("");
+            }
+            ((TableModelState)jtStates.getModel()).fireTableDataChanged();
+            ((TableModelState)jtStates2.getModel()).fireTableDataChanged();
+            ((TableModelStateAnswer)jtStatesExp.getModel()).fireTableDataChanged();        
+                    	
+        }   	
+    	
     }
 
     private void jtStatesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtStatesMouseClicked
@@ -796,16 +826,24 @@ public class Principal extends javax.swing.JFrame {
     }
 
     private void btnAddPropertiesActionPerformed(java.awt.event.ActionEvent evt) {
-        if (this.property == null){
-            Property newProperty = new Property(txtProperties.getText());
-            this.properties.add(newProperty); 
-        }
-        else{
-            property.setName(txtProperties.getText());
-        }
-        ((TableModelProperties)jtProperties.getModel()).fireTableDataChanged();
-        txtProperties.setText("");
+    	if (!txtProperties.getText().trim().equals("")){
+            if (this.property == null){
+                Property newProperty = new Property(txtProperties.getText());
+                if (!properties.contains(newProperty)){
+                	this.properties.add(newProperty);
+                	txtProperties.setText("");
+                }
+                 
+            }
+            else{
+                property.setName(txtProperties.getText());
+                txtProperties.setText("");
+            }
+            ((TableModelProperties)jtProperties.getModel()).fireTableDataChanged();
+    		
+    	}        
     }
+    
 
     private void jtPropertiesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtPropertiesMouseClicked
         // TODO add your handling code here:
@@ -866,9 +904,9 @@ public class Principal extends javax.swing.JFrame {
 	 	    this.setDefines(new ArrayList(0));
 	 	    this.setExpressions(MEF.getInstance().getExpressions());
 	    
-			
-	    	for (int i = 0; i < this.states.size(); ++i) {
-	    		State st = (State) this.states.get(i);
+           	for(int i=0; i<states.size(); i++){
+            	State st = (State) states.get(i);
+
 	    		Define def = new Define();
 	    		def.setState(st);
 				ArrayList<Property> props = st.getValidProperties();
@@ -935,6 +973,56 @@ public class Principal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_pnlStates4FocusLost
 
+    private void jtStatesExpMouseClicked(java.awt.event.MouseEvent evt) {                                         
+    	if (evt.getClickCount() == 2){
+    		if (jtExpressions.getSelectedRowCount() == 1){
+    		   if (jtStatesExp.getSelectedRowCount() == 1){ 
+           		Expression exp = ((TableModelExpressions)jtExpressions.getModel()).getValores(jtExpressions.getSelectedRow());
+        		StateAnswer staw = ((TableModelStateAnswer)jtStatesExp.getModel()).getValores(jtStatesExp.getSelectedRow());
+        		State st = MEF.getInstance().getState(staw.getName());
+        		boolean isValid = analyzeExpressions(exp);
+        		if (isValid){
+        			staw.setValid("Yes");
+        			initMEFCP(false);
+        		}
+        		else{
+        			staw.setValid("False");
+        			initMEFCP(true);
+        		}
+        		((TableModelStateAnswer)jtStatesExp.getModel()).fireTableDataChanged();
+    			   
+    		   }
+    		   else{
+    			   JOptionPane.showMessageDialog(null,"Select one state.","Alerta",JOptionPane.WARNING_MESSAGE);   
+    		   }
+    			
+    		}
+    		else{
+    			JOptionPane.showMessageDialog(null,"Select one expression.","Alerta",JOptionPane.WARNING_MESSAGE);
+    		}
+    	}
+    } 
+
+    private void initStatesAnswer(){
+    	for(int i=0; i<statesAnswer.size(); i++){
+        	StateAnswer st = (StateAnswer) statesAnswer.get(i);
+        	st.setValid("");
+    	}
+    	((TableModelStateAnswer)jtStatesExp.getModel()).fireTableDataChanged();
+    	
+    }
+    private void initMEFCP(boolean habilita){
+    	if (habilita){
+			pnlMEFCP.setVisible(true);
+			jTabbedPane1.addTab("Contra Prova", pnlMEFCP);    		
+    	}
+    	else{
+			pnlMEFCP.setVisible(false);
+			if (jTabbedPane1.countComponents() == 4){
+				jTabbedPane1.removeTabAt(3);
+			}	
+    	}
+    }
     private void btNewDefineActionPerformed(java.awt.event.ActionEvent evt) {
         if (this.define == null){
             Define newDefine = new Define();
@@ -1109,10 +1197,14 @@ public class Principal extends javax.swing.JFrame {
          }
     }
     
+    public boolean analyzeExpressions(Expression e){
+    	return false;
+    }
+    
     //pra mim esse método serviria pra percorrer as expressões e 
     // rotular os estados pra ver se a expressão seria válida naquele 
     //estado
-    public void analyzeExpressions(Expression e){
+    /*public void analyzeExpressions(Expression e){
 		for (int i = 0; i < states.size(); ++i) {
      		State est = (State) states.get(i);
 		  	  if (!e.getType().equals("CS"))
@@ -1146,7 +1238,7 @@ public class Principal extends javax.swing.JFrame {
 			  }
     	}
     	
-    }
+    }*/
     
     public void inicializa(){
  	   this.setStates(new ArrayList(0));
@@ -1185,6 +1277,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel31;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel pnlMEF;
+    private javax.swing.JPanel pnlMEFCP;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -1201,6 +1294,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton jbImport;
     private javax.swing.JToggleButton jbtPesquisar;
     private javax.swing.JLabel jlbImagem;
+    private javax.swing.JLabel jlbImagemCP;
     private javax.swing.JTable jtProperties;
     private javax.swing.JTable jtStates;
     private javax.swing.JTable jtDefine;
