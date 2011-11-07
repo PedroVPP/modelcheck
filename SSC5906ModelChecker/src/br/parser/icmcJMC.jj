@@ -318,23 +318,17 @@ Expression ctlGrammar():
   //<VERIFYING> // por eqto, a definicao de propriedades é apenas um texto verifying. Aqui será nosso trabalho
   // toDo, definir essa gramática seguindo normas de CTL    (     
 	( t = <IDENTIFIER> | //identificador
-	  {
-	    exp = new Expression(t.toString());
-	    exp.setType(null);
-	  }
 	
 	  t = <TRUE > | // definicao de tautologia
-	  {
-	    exp = new Expression(t.toString());
-	    exp.setType(null);
-	  }
-	  
+  
 	  t = <FALSE> // definicao de contradicao
+
+	)
+	(
 	  {
 	    exp = new Expression(t.toString());
 	    exp.setType(null);
-	  }
-	)   				
+	  }	  	)   				
    | 
    // definicao de propriedade atomica
   <Lparentheses>
