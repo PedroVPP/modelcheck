@@ -1119,10 +1119,10 @@ public class Principal extends javax.swing.JFrame {
 		this.setJlbImagem(label);
 		pnlMEF.add(this.jlbImagem);
 		this.jlbImagem.setHorizontalAlignment(SwingConstants.CENTER);
-		Expression e = (Expression) MEF.getInstance().getExpressions().get(MEF.getInstance().getExpressions().size() -1);
+		//Expression e = (Expression) MEF.getInstance().getExpressions().get(MEF.getInstance().getExpressions().size() -1);
 		//considerar somente o último elemento do  vetor
 		//ver comentário do icmcJMC.jj
-		analyzeExpressions(e);
+		//analyzeExpressions(e);
 		//depois de analisar as expressões, para saber se ela é válida, bastaria verificar se ela 
 		//possui o label da expressão (verificar comentários das classes State e Algorithms
 		//percorrer os estados e setar o statesAnswer
