@@ -341,8 +341,10 @@ Expression ctlGrammar():
   
 )
   {
-    if (exp1 != null)    {		exp.setExp1(exp1); 
+    if (exp1 != null)    {		exp.setExp1(exp1);
+		
     }
+    MEF.getInstance().getExpressions().add(exp);
     return exp;
   }  
 }
@@ -459,7 +461,7 @@ Expression unionAux() :
    else if   (tipo.toUpperCase().equals("E"))
      ep = ExpressionType.EU;
    exp.setType(ep);	
-   MEF.getInstance().getExpressions().add(exp);
+   //MEF.getInstance().getExpressions().add(exp);
    return exp; }}
 
 String unionDec():
