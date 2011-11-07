@@ -1023,7 +1023,7 @@ public class Principal extends javax.swing.JFrame {
     }
 
     private void setImgMEF(){
-    	MEF.getInstance().createMEF();
+    	MEF.getInstance().createMEF(); 
 		ImageIcon img = new ImageIcon("mef.jpg");
 		JLabel label = new JLabel(img);
 		label.setBounds(0, 0, img.getIconWidth() + 10, img.getIconHeight() + 10);
