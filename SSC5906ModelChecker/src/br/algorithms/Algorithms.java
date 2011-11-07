@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import br.mef.Expression;
+import br.mef.ExpressionType;
 import br.mef.Property;
 import br.mef.State;
 import br.util.GraphvizFileMaker;
@@ -24,7 +25,12 @@ public class Algorithms {
 	 *         caso contrario retorna 'false'
 	 */
 	public static boolean OR(State state, Expression expression) {
-		
+		Information info = new Information();
+		info.setAlgorithmName(ExpressionType.OR.toString());
+		info.setStateName(state.getName());
+		info.addStates(state);
+		info.setExp1(expression.getExp1().getName());
+		info.setExp2(expression.getExp2().getName());
 		if(state.getLabelsString().contains(expression.getName())) {
 			return true;
 		}
@@ -36,15 +42,6 @@ public class Algorithms {
 			executeProperOperation(state, expression, expression.getExp2());
 		}
 
-		/*
-		 * Ex: Expressao: p OR q
-		 * 
-		 * Expression 1 name = p OR q exp1 = p exp2 = q
-		 * 
-		 * Expression 2 name = p exp1 = null exp2 = null
-		 * 
-		 * Expression 3 name = q exp1 = null exp2 = null
-		 */
 		boolean validExpression = false;
 		Expression expression1 = expression.getExp1(); // = p
 		Expression expression2 = expression.getExp2(); // = q
@@ -59,7 +56,7 @@ public class Algorithms {
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
-		
+		info.setResult(validExpression);
 		return validExpression;
 	}
 
