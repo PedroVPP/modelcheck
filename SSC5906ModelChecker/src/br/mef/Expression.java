@@ -8,7 +8,7 @@ public class Expression {
 	private Expression exp1 = null;
 	private Expression exp2 = null;
 	//(o type = null indica que a expressão em questão e' uma propriedade e nao uma expressao)
-	private String type = null;
+	private ExpressionType type = null;
 	
 	//unnecessary?
 	private ArrayList<Expression> expressions;
@@ -49,11 +49,11 @@ public class Expression {
 	}
 
 	
-	public String getType() {
+	public ExpressionType getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(ExpressionType type) {
 		this.type = type;
 	}
 
@@ -97,6 +97,119 @@ public class Expression {
 		return this.expressions;
 	}
 
+	public boolean isProperty() {
+		if (exp1 == null && exp2 == null &&
+				type == null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean isLogicalOperator() {
+		return ExpressionType.isLogicalOperator(type);
+	}
+	
+	public boolean isTemporalOperator() {
+		return ExpressionType.isTemporalOperator(type);
+	}
+	
+	public boolean isNOT() {
+		if(type == ExpressionType.NOT) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean isAND() {
+		if(type == ExpressionType.AND) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean isOR() {
+		if(type == ExpressionType.OR) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean isIMP() {
+		if(type == ExpressionType.IMP) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean isEX() {
+		if(type == ExpressionType.EX) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean isAX() {
+		if(type == ExpressionType.AX) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean isAU() {
+		if(type == ExpressionType.AU) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean isEU() {
+		if(type == ExpressionType.EU) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean isAF() {
+		if(type == ExpressionType.AF) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean isEF() {
+		if(type == ExpressionType.EF) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean isEG() {
+		if(type == ExpressionType.EG) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean isAG() {
+		if(type == ExpressionType.AG) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	/**
 	 * @return retorna o nome da expressao
 	 */

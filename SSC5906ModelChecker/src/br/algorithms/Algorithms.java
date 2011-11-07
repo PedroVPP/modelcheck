@@ -2,7 +2,6 @@ package br.algorithms;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import br.mef.Expression;
 import br.mef.Property;
@@ -11,7 +10,7 @@ import br.util.GraphvizFileMaker;
 
 public class Algorithms {
 
-	static GraphvizFileMaker graphvizFileMaker; 
+	public static GraphvizFileMaker graphvizFileMaker; 
 	
 	public static boolean Alg_E(State st, Expression exp1, Expression exp2) {
 		boolean resposta = false;
@@ -57,8 +56,19 @@ public class Algorithms {
 	 * @return retorna true se a expressao e' verdadeira para aquele estado, e
 	 *         caso contrario retorna 'false'
 	 */
-	public static boolean OR(State state, Expression expression)
-			throws Exception {
+	public static boolean OR(State state, Expression expression) {
+		
+		if(state.getLabelsString().contains(expression.getName())) {
+			return true;
+		}
+		
+		if(!expression.getExp1().isProperty()) {
+			executeProperOperation(state, expression, expression.getExp1());
+		}
+		if(!expression.getExp2().isProperty()) {
+			executeProperOperation(state, expression, expression.getExp2());
+		}
+
 		/*
 		 * Ex: Expressao: p OR q
 		 * 
@@ -97,7 +107,7 @@ public class Algorithms {
 	 * @return retorna os estados em que a expressao fornecida e' valida
 	 */
 	public static ArrayList<State> OR(ArrayList<State> states,
-			Expression expression) throws Exception {
+			Expression expression) {
 		ArrayList<State> validStates = new ArrayList<State>();
 
 		for (Iterator<State> iterator = states.iterator(); iterator.hasNext();) {
@@ -120,10 +130,20 @@ public class Algorithms {
 	 * @return retorna true se a expressao e' verdadeira para aquele estado, e
 	 *         caso contrario retorna 'false'
 	 */
-	public static boolean AND(State state, Expression expression)
-			throws Exception {
+	public static boolean AND(State state, Expression expression) {
+		
+		if(state.getLabelsString().contains(expression.getName())) {
+			return true;
+		}
+		
+		if(!expression.getExp1().isProperty()) {
+			executeProperOperation(state, expression, expression.getExp1());
+		}
+		if(!expression.getExp2().isProperty()) {
+			executeProperOperation(state, expression, expression.getExp2());
+		}
+		
 		boolean validExpression = false;
-		// Expression expression = "p AND q"
 		Expression expression1 = expression.getExp1(); // = p
 		Expression expression2 = expression.getExp2(); // = q
 		if (state.getLabelsString().contains(expression1.getName())
@@ -151,7 +171,7 @@ public class Algorithms {
 	 * @return retorna os estados em que a expressao fornecida e' valida
 	 */
 	public static ArrayList<State> AND(ArrayList<State> states,
-			Expression expression) throws Exception {
+			Expression expression) {
 		ArrayList<State> validStates = new ArrayList<State>();
 
 		for (Iterator<State> iterator = states.iterator(); iterator.hasNext();) {
@@ -175,12 +195,17 @@ public class Algorithms {
 	 *         caso contrario retorna false
 	 */
 	public static boolean NOT(State state, Expression expression) {
+		if(state.getLabelsString().contains(expression.getName())) {
+			return true;
+		}
+		
+		if(!expression.getExp1().isProperty()) {
+			executeProperOperation(state, expression, expression.getExp1());
+		}
+		
 		boolean validExpression = false;
-		// ex: Expression.name = ~p
 		Expression expression1 = expression.getExp1(); // = p
-//		Expression expression2 = expression.getExp2(); // = null
 		// sempre a expression 1 não pode ser nula, se não ocasionara o nullpointerexception 
-
 		if (!state.getLabelsString().contains(expression1.getName())) {
 			validExpression = true;
 		}
@@ -188,7 +213,6 @@ public class Algorithms {
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
-		
 		return validExpression;
 	}
 
@@ -230,10 +254,20 @@ public class Algorithms {
 	 *            a expressao a ser verificada
 	 * @return retorna true se a expressao e valida e false caso contrario
 	 */
-	public static boolean IMP(State state, Expression expression)
-			throws Exception {
+	public static boolean IMP(State state, Expression expression) {
+		
+		if(state.getLabelsString().contains(expression.getName())) {
+			return true;
+		}
+		
+		if(!expression.getExp1().isProperty()) {
+			executeProperOperation(state, expression, expression.getExp1());
+		}
+		if(!expression.getExp2().isProperty()) {
+			executeProperOperation(state, expression, expression.getExp2());
+		}
+		
 		boolean validExpression = true;
-		// Expression expression = "p -> q"
 		Expression expression1 = expression.getExp1(); // = p
 		Expression expression2 = expression.getExp2(); // = q
 
@@ -266,7 +300,7 @@ public class Algorithms {
 	 * @throws Exception
 	 */
 	public static ArrayList<State> IMP(ArrayList<State> states,
-			Expression expression) throws Exception {
+			Expression expression) {
 		ArrayList<State> validStates = new ArrayList<State>();
 
 		for (Iterator<State> iterator = states.iterator(); iterator.hasNext();) {
@@ -303,15 +337,23 @@ public class Algorithms {
 	 * @throws MalformedExpression
 	 */
 	public static boolean EF(State state, Expression expression) {
+		
+		if(state.getLabelsString().contains(expression.getName())) {
+			return true;
+		}
+		
+		if(!expression.getExp1().isProperty()) {
+			executeProperOperation(state, expression, expression.getExp1());
+		}
+		
 		boolean validExpression = false;
-		// ex: Expression.name = EF p
+
 		Expression expression1 = expression.getExp1(); // = p
-//		Expression expression2 = expression.getExp2(); // = null
 
 		if (state.getLabelsString().contains(expression1.getName())) {
 			validExpression = true;
 		} else {
-			state.setVisited(true);
+			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator
 					.hasNext();) {
@@ -322,14 +364,13 @@ public class Algorithms {
 					validExpression = true;
 					break;
 				}
-				
 			}
 		}
 
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
-		
+		State.clearVisitedStates();
 		return validExpression;
 	}
 
@@ -356,11 +397,12 @@ public class Algorithms {
 		if (state.getLabelsString().contains(label)) {
 			valid = true;
 		} else {
-			state.setVisited(true);
+			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
 				State state2 = (State) iterator.next();
-				if (!state2.isVisited()) { // se o estado ainda não foi visitado
+				if (!State.isStateVisited(state2)) { // se o estado ainda não foi visitado
+					
 					valid = recursiveEF(state2, label);
 					if (valid) {
 						break;
@@ -394,13 +436,18 @@ public class Algorithms {
 	 * @return
 	 */
 	public static boolean EG(State state, Expression expression) {
-//		This formula is TRUE in a state s0 if there exists some path from s0 on which f holds at every state.
+		if(state.getLabelsString().contains(expression.getName())) {
+			return true;
+		}
+		
+		if(!expression.getExp1().isProperty()) {
+			executeProperOperation(state, expression, expression.getExp1());
+		}
+		
 		boolean validExpression = false;
-		// ex: Expression.name = EG p
 		Expression expression1 = expression.getExp1(); // = p
-//		Expression expression2 = expression.getExp2(); // = null
 		if (state.getLabelsString().contains(expression1.getName())) {
-			state.setVisited(true);
+			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator
 					.hasNext();) {
@@ -417,7 +464,7 @@ public class Algorithms {
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
-
+		State.clearVisitedStates();
 		return validExpression;
 	}
 
@@ -453,13 +500,14 @@ public class Algorithms {
 		boolean valid = false;
 
 		if (state.getLabelsString().contains(label)) {
-			state.setVisited(true);
+			State.addVisitedState(state);
+			
 
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
 				State state2 = (State) iterator.next();
 
-				if (state2.isVisited()) { // se ele foi visitado
+				if (State.isStateVisited(state2)) {
 					valid = true;
 					break;
 				} else { // se ele não foi visitado
@@ -488,11 +536,18 @@ public class Algorithms {
 	 *         caso contrario retorna 'false'
 	 */
 	public static boolean AG(State state, Expression expression) {
-//		 This formula is TRUE in a state s0 if formula f holds at every state on every path from s0.
+		if(state.getLabelsString().contains(expression.getName())) {
+			return true;
+		}
+		
+		if(!expression.getExp1().isProperty()) {
+			executeProperOperation(state, expression, expression.getExp1());
+		}
+		
 		boolean validExpression = true;
 		Expression expression1 = expression.getExp1(); // = p
 		if (state.getLabelsString().contains(expression1.getName())) {
-			state.setVisited(true);
+			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator
 					.hasNext();) {
@@ -509,19 +564,19 @@ public class Algorithms {
 		if(validExpression) {
 			state.addLabelsString(expression.getName());
 		}
-		
+		State.clearVisitedStates();
 		return validExpression;
 	}
 
 	private static boolean recursiveAG(State state, String label) {
 		boolean valid = true;
 		if (state.getLabelsString().contains(label)) {
-			state.setVisited(true);
-
+			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
 				State state2 = (State) iterator.next();
-				if(!state2.isVisited()) {
+				if(!State.isStateVisited(state2)) {
+					
 					valid = recursiveAG(state2, label);
 					if (!valid) {
 						break;
@@ -543,7 +598,16 @@ public class Algorithms {
 	 * @param expression
 	 *            Representa a express�o CTL que est� sendo avaliada
 	 * */
+
 	public static boolean AX(State state, Expression expression) {
+		if(state.getLabelsString().contains(expression.getName())) {
+			return true;
+		}
+		
+		if(!expression.getExp1().isProperty()) {
+			executeProperOperation(state, expression, expression.getExp1());
+		}
+		
 		boolean validExpression = true;
 		
 		ArrayList<State> children = state.getChildren();
@@ -551,15 +615,10 @@ public class Algorithms {
 				.hasNext();) {
 			State state2 = (State) iterator.next();
 			
-			validExpression = recursiveAX(state2, expression.getName());
-			if(!validExpression) { // se o método achar um estado em algum caminho que seja falso então invalida a expressao
+			if (!state2.getLabelsString().contains(expression.getExp1().getName())) {
+				validExpression = false;
 				break;
 			}
-			
-			//if (!state2.getLabelsString().contains(expression.getExp1())) {
-				//validExpression = false;
-				//break;
-			//}
 		}
 		
 		if(validExpression) {
@@ -569,33 +628,20 @@ public class Algorithms {
 		return validExpression;
 	}
 	
-	private static boolean recursiveAX(State state, String label){
-		boolean valid = true;
-		if (state.getLabelsString().contains(label)) {
-			state.setVisited(true);
-
-			ArrayList<State> children = state.getChildren();
-			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
-				State state2 = (State) iterator.next();
-				if(!state2.isVisited()) {
-					valid = recursiveAX(state2, label);
-					if (!valid) {
-						break;
-					}
-				}
-			}
-		} else {
-			return false;
-		}
-		return valid;
-	}
-
 	public static boolean AF(State state, Expression expression) {
+		if(state.getLabelsString().contains(expression.getName())) {
+			return true;
+		}
+		
+		if(!expression.getExp1().isProperty()) {
+			executeProperOperation(state, expression, expression.getExp1());
+		}
+		
 		boolean validExpression = true;
 		Expression expression1 = expression.getExp1();
 
 		if (state.getLabelsString().contains(expression1.getName())) { // se ele contem a expressão 1
-			state.setVisited(true);
+			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator
 					.hasNext();) {
@@ -614,14 +660,14 @@ public class Algorithms {
 		if(validExpression) {
 			state.addLabelsString(expression.getName());
 		}
-		
+		State.clearVisitedStates();
 		return validExpression;
 	}
 
 	private static boolean recursiveAF(State state, String label) {
 		boolean valid = true;
 		if (state.getLabelsString().contains(label)) {
-			state.setVisited(true);
+			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
 				State state2 = (State) iterator.next();
@@ -630,7 +676,8 @@ public class Algorithms {
 //					break;
 //				}
 				
-				if(!state2.isVisited()) {
+				if(!State.isStateVisited(state2)) {
+					
 					valid = recursiveAF(state2, label);
 					if (!valid) {
 						break;
@@ -656,6 +703,14 @@ public class Algorithms {
 	 *
 	 */
 	public static boolean EX(State state, Expression expression) {
+		if(state.getLabelsString().contains(expression.getName())) {
+			return true;
+		}
+		
+		if(!expression.getExp1().isProperty()) {
+			executeProperOperation(state, expression, expression.getExp1());
+		}
+		
 		boolean validExpression = false;
 		
 		ArrayList<State> children = state.getChildren();
@@ -672,7 +727,6 @@ public class Algorithms {
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
-		
 		return validExpression;
 	}
 
@@ -697,6 +751,17 @@ public class Algorithms {
 	 * @return
 	 */
 	public static boolean EU(State state, Expression expression) {
+		if(state.getLabelsString().contains(expression.getName())) {
+			return true;
+		}
+		
+		if(!expression.getExp1().isProperty()) {
+			executeProperOperation(state, expression, expression.getExp1());
+		}
+		if(!expression.getExp2().isProperty()) {
+			executeProperOperation(state, expression, expression.getExp2());
+		}
+		
 		boolean validExpression = false;
 		// ex: Expression.name = E (p U q)
 		Expression expression1 = expression.getExp1(); // = p
@@ -705,7 +770,7 @@ public class Algorithms {
 		if(state.getLabelsString().contains(expression2.getName())) {
 			validExpression = true;
 		} else if(state.getLabelsString().contains(expression1.getName())) {
-			state.setVisited(true);
+			State.addVisitedState(state);
 			
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
@@ -721,6 +786,7 @@ public class Algorithms {
 		if(validExpression) {
 			state.addLabelsString(expression.getName());
 		}
+		State.clearVisitedStates();
 		return validExpression;
 	}
 
@@ -730,12 +796,13 @@ public class Algorithms {
 		if(state.getLabelsString().contains(secondExpression)) {
 			valid = true;
 		} else if(state.getLabelsString().contains(firstExpression)) {
-			state.setVisited(true);
+			State.addVisitedState(state);
 			
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
 				State state2 = (State) iterator.next();
-				if(!state2.isVisited()) {
+				if(!State.isStateVisited(state2)) {
+					
 					valid = recursiveEU(state2, firstExpression, secondExpression);
 					if (valid) {
 						break;
@@ -759,6 +826,17 @@ public class Algorithms {
 	 */
 	
 	public static boolean AU(State state, Expression expression) {
+		if(state.getLabelsString().contains(expression.getName())) {
+			return true;
+		}
+		
+		if(!expression.getExp1().isProperty()) {
+			executeProperOperation(state, expression, expression.getExp1());
+		}
+		if(!expression.getExp2().isProperty()) {
+			executeProperOperation(state, expression, expression.getExp2());
+		}
+		
 		boolean validExpression = true;
 		
 		// ex: Expression.name = A (p U q)
@@ -768,7 +846,7 @@ public class Algorithms {
 		if (state.getLabelsString().contains(expression2.getName())) {
 			validExpression = true;
 		} else if (state.getLabelsString().contains(expression1.getName())) {
-			state.setVisited(true);
+			State.addVisitedState(state);
 			
 			ArrayList<State> children = state.getChildren();
 		
@@ -788,28 +866,29 @@ public class Algorithms {
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
+		State.clearVisitedStates();
 		return validExpression;
 	}
 	
 	private static boolean recursiveAU(State state, String firstExpression, String secondExpression) {
 		boolean valid = true;
 		if (state.getLabelsString().contains(secondExpression)) {
-			state.setVisited(true);
+			State.addVisitedState(state);
 		} else if (state.getLabelsString().contains(firstExpression)) {
-			state.setVisited(true);
+			State.addVisitedState(state);
 			
 			ArrayList<State> children = state.getChildren();
 
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
 				State state2 = (State) iterator.next();
-				if(!state2.isVisited()) {
+				if (!State.isStateVisited(state2)) {
 					valid = recursiveAU(state2, firstExpression, secondExpression);
 					if (!valid) {
 						break;
 					}
 				}
 				
-				if(state2.isVisited() && !state2.getLabelsString().contains(secondExpression)) {
+				if(State.isStateVisited(state2) && !state2.getLabelsString().contains(secondExpression)) {
 					valid = false;
 					break;
 				}
@@ -821,4 +900,159 @@ public class Algorithms {
 				
 	}
 	
+	private static void executeProperOperation(State state, Expression expression, Expression subExpression) {
+		
+		if(expression.isLogicalOperator()) {
+			if(expression.isNOT()) { // NOT
+				executeOperation(state, subExpression);
+			} else if(expression.isAND()) { // AND 
+				executeOperation(state, subExpression);
+			} else if(expression.isOR()) { // OR 
+				executeOperation(state, subExpression);
+			} else { // IMP
+				executeOperation(state, subExpression);
+			}
+			
+			
+		} else if(expression.isTemporalOperator()) {
+
+			if(expression.isEX()) { // EX
+				ArrayList<State> mustExecuteStates = state.getChildren();
+				for (Iterator<State> iterator = mustExecuteStates.iterator(); iterator
+						.hasNext();) {
+					State state2 = (State) iterator.next();
+					executeOperation(state2, subExpression);
+				}
+				
+			} else if(expression.isAX()) { // AX
+				ArrayList<State> mustExecuteStates = state.getChildren();
+				for (Iterator<State> iterator = mustExecuteStates.iterator(); iterator
+						.hasNext();) {
+					State state2 = (State) iterator.next();
+					executeOperation(state2, subExpression);
+				}
+			} else if(expression.isAU()) { // AU
+				ArrayList<State> mustExecuteStates = getConnectingStates(state);
+				for (Iterator<State> iterator = mustExecuteStates.iterator(); iterator
+						.hasNext();) {
+					State state2 = (State) iterator.next();
+					executeOperation(state2, subExpression);
+				}
+			} else if(expression.isEU()) { // EU 
+				ArrayList<State> mustExecuteStates = getConnectingStates(state);
+				for (Iterator<State> iterator = mustExecuteStates.iterator(); iterator
+						.hasNext();) {
+					State state2 = (State) iterator.next();
+					executeOperation(state2, subExpression);
+				}
+			} else if(expression.isAF()) { // AF
+				ArrayList<State> mustExecuteStates = getConnectingStates(state);
+				for (Iterator<State> iterator = mustExecuteStates.iterator(); iterator
+						.hasNext();) {
+					State state2 = (State) iterator.next();
+					executeOperation(state2, subExpression);
+				}
+			} else if(expression.isEF()) { // EF 
+				ArrayList<State> mustExecuteStates = getConnectingStates(state);
+				for (Iterator<State> iterator = mustExecuteStates.iterator(); iterator
+						.hasNext();) {
+					State state2 = (State) iterator.next();
+					executeOperation(state2, subExpression);
+				}
+			} else if(expression.isEG()) { // EG 
+				ArrayList<State> mustExecuteStates = getConnectingStates(state);
+				for (Iterator<State> iterator = mustExecuteStates.iterator(); iterator
+						.hasNext();) {
+					State state2 = (State) iterator.next();
+					executeOperation(state2, subExpression);
+				}
+			} else if(expression.isAG()) { // AG 
+				ArrayList<State> mustExecuteStates = getConnectingStates(state);
+				for (Iterator<State> iterator = mustExecuteStates.iterator(); iterator
+						.hasNext();) {
+					State state2 = (State) iterator.next();
+					executeOperation(state2, subExpression);
+				}
+			}
+		} else {
+			try {
+				throw new Exception();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static boolean executeOperation(State state, Expression expression) {
+		
+		boolean validOperation = false;
+		
+		if(expression.isLogicalOperator()) {
+			if(expression.isNOT()) { // NOT
+				validOperation = NOT(state, expression);
+			} else if(expression.isAND()) { // AND 
+				validOperation = AND(state, expression);
+			} else if(expression.isOR()) { // OR 
+				validOperation = OR(state, expression);
+			} else { // IMP
+				validOperation = IMP(state, expression);
+			}
+			
+			
+		} else if(expression.isTemporalOperator()) {
+
+			if(expression.isEX()) { // EX
+				validOperation = EX(state, expression);
+			} else if(expression.isAX()) { // AX
+				validOperation = AX(state, expression);
+			} else if(expression.isAU()) { // AU
+				validOperation = AU(state, expression);
+			} else if(expression.isEU()) { // EU 
+				validOperation = EU(state, expression);
+			} else if(expression.isAF()) { // AF
+				validOperation = AF(state, expression);
+			} else if(expression.isEF()) { // EF 
+				validOperation = EF(state, expression);
+			} else if(expression.isEG()) { // EG 
+				validOperation = EG(state, expression);
+			} else if(expression.isAG()) { // AG 
+				validOperation = AG(state, expression);
+			}
+		} else {
+			try {
+				throw new Exception();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return validOperation;
+		}
+	
+	public static ArrayList<State> getConnectingStates(State state) {
+		ArrayList<State> states = new ArrayList<State>();
+		// adicionar state atual
+		states.add(state);
+		// adicionar filhos e suas conexões
+		State.addVisitedState(state);
+		ArrayList<State> children = state.getChildren();
+		for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
+			State state2 = (State) iterator.next();
+			addConnectedState(states, state2);
+		}
+		State.clearVisitedStates();
+		return states;
+	}
+
+	private static void addConnectedState(ArrayList<State> states, State state) {
+
+		if(!State.isStateVisited(state)) {
+			states.add(state);
+			State.addVisitedState(state);
+			ArrayList<State> children = state.getChildren();
+			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
+				State state2 = (State) iterator.next();
+				addConnectedState(states, state2);
+			}
+		}		
+	}
 }
