@@ -975,6 +975,12 @@ public class Algorithms {
 		}
 	}
 
+	/**
+	 * Método para executar a expressão para um determinado estado
+	 * @param state o estado que o usuário que verificar se a expressão é verdadeira
+	 * @param expression a árvore de expressão completa
+	 * @return
+	 */
 	public static boolean executeOperation(State state, Expression expression) {
 		
 		boolean validOperation = false;
