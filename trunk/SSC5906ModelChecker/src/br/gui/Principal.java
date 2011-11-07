@@ -977,12 +977,13 @@ public class Principal extends javax.swing.JFrame {
     	if (evt.getClickCount() == 2){
     		if (jtExpressions.getSelectedRowCount() == 1){
     		   if (jtStatesExp.getSelectedRowCount() == 1){ 
-           		Expression exp = ((TableModelExpressions)jtExpressions.getModel()).getValores(jtExpressions.getSelectedRow());
+           		//Expression exp = ((TableModelExpressions)jtExpressions.getModel()).getValores(jtExpressions.getSelectedRow());
         		StateAnswer staw = ((TableModelStateAnswer)jtStatesExp.getModel()).getValores(jtStatesExp.getSelectedRow());
         		State st = MEF.getInstance().getState(staw.getName());
-        		boolean isValid = analyzeExpressions(exp);
+        		Expression exp = MEF.getInstance().getExpressions().get(MEF.getInstance().getExpressions().size() -1);
+        		boolean isValid = Algorithms.executeOperation(st, exp);
         		if (isValid){
-        			staw.setValid("Yes");
+        			staw.setValid("True");
         			initMEFCP(false);
         		}
         		else{

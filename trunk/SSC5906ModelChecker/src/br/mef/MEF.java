@@ -84,6 +84,7 @@ public class MEF {
 			for(int j=0; j<properties.size(); j++){
 				Property property = (Property) properties.get(j);
 				linhaState = linhaState + property.getName() + ", ";
+				state.addLabelsString(property.getName());
 			}
 			
 			linhaState = linhaState.substring(0, linhaState.length() -2) + "}\"]";    		
