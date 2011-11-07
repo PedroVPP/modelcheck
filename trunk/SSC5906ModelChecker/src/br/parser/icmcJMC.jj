@@ -16,6 +16,7 @@ public class ssc5906JMC{
 static private final String Version = ("ssc5906JMC - icmcJMC - Java Model Checker \"Version 0.1\"  \n A Java implementation"); 
 //static private MEF mef;
 static private String ctlExpression = "";
+static private final String[] tiposCTL ={  "AX","EX", "AF", "EF", "AG", "EG"};
 
   public static void main(String args []) throws ParseException  {
 	System.out.println(Version);
@@ -114,16 +115,20 @@ static private String ctlExpression = "";
 
 static public void printExpressions(Expression e)
 {
-  	  if (!e.getType().equals("CS")) //Operações AX AF EX EG EF ...  	  {
-  	    System.out.println(e.getName());  	  }	  
+
+/*	  	  if ((e.getType() != null)&&(!tiposCTL.toString().contains(e.getType()))) //Operações AX AF EX EG EF ...
+	  	  {
+	  	    System.out.println(e.getName());
+	  	  }*/	    
+ 
+	  
 	  if (e.getExp1() != null)	  {		printExpressions(e.getExp1());
 	  }
-	    
 	  if (e.getExp2() != null)
 	  {
 		printExpressions(e.getExp2());
 	  }
-		  
+		System.out.println(e.getName());
 }
 
 static public String im(String s)
@@ -319,19 +324,21 @@ Expression ctlGrammar():
     exp = logicalRelations()
   <Rparentheses>
     |      //definicao de relacoes logicas parentisadas em CTL
-  exp1 = ctlSpecifications() exp2 = ctlGrammar()   |
-  exp1 = unionDec() exp2 = union()
+  exp = ctlSpecifications() exp1 = ctlGrammar()   |
+  //exp1 = unionDec() exp2 = union()
+  exp = unionAux()
   
 )
   {
-    if (exp != null)    {		return exp;
+    if (exp1 != null)    {		exp.setExp1(exp1); 
     }
-    else     {
+    return exp;
+    /*else     {
 	    exp = new Expression(exp1.getName() + exp2.getName());
 	    exp.setExp1(exp1);
 	    exp.setExp2(exp2);
 	    MEF.getInstance().getExpressions().add(exp);    
-	    return exp;          }
+	    return exp;          }*/
   }  
 }
 
@@ -399,6 +406,7 @@ Expression dualRelations():
 	  }
 }
 
+ 
 Expression ctlSpecifications():
 {
     Token t = new Token(); }{ ( t = <AX> //em todos os próximos estados as propriedade e valida
@@ -410,20 +418,30 @@ Expression ctlSpecifications():
   )
   {
     Expression exp = new Expression(t.toString());
-    exp.setType("CS");
+    exp.setType(t.toString());
 	return exp;  					  					
   }	        }
 
-Expression unionDec():
+Expression unionAux() :
+{
+  String tipo = "";
+  Expression exp;}
+{
+ tipo = unionDec()
+ exp = union()
+ {
+   exp.setType(tipo + "U");	
+   MEF.getInstance().getExpressions().add(exp);
+   return exp; }}
+
+String unionDec():
 {
     Token t = new Token(); }{
   (
     t = < E > | t = < A >
    )
   {
-    Expression exp = new Expression(t.toString());
-    exp.setType(t.toString());
-	return exp;  					  					
+	return t.toString();  					  					
   }
 	  }
 
@@ -444,10 +462,7 @@ Expression union():
 
   	    exp = new Expression("[ " + exp1.getName() + " U " + exp2.getName() + " ]");
   	    exp.setExp1(exp1);
-  	    exp.setExp2(exp2);
-  	    exp.setType("U");
-		MEF.getInstance().getExpressions().add(exp);             
-		
+  	    exp.setExp2(exp2);            
 		return exp;  					  					
     }
 }
