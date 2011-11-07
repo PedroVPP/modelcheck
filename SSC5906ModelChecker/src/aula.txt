@@ -1,0 +1,33 @@
+MODULE main
+
+VAR
+	state:{s0,s1,s2,s3};
+ASSIGN
+	init(state) := s0;
+	next(state) := case
+		state = s0: {s1, s2};
+		state = s1: s0;
+		state = s2: s3;
+		state = s3: s3;
+	esac;
+
+DEFINE
+	p:= state = s0;
+	q:= state != s2;
+	r:= state != s0;
+SPEC
+	EX EG(state != s0);
+SPEC
+	EX !(state = s0);
+SPEC
+	!EG(state != s2);
+
+SPEC
+	AG( (state = s3) -> AG(p | q)
+SPEC
+	AG( (state = s2) -> AG(p | q)
+SPEC
+	AG( (state = s1) -> EF( AG (q)))
+
+-- m,s1 |= AG(q || r); pode trocar o estado inicial para s1
+-- m,s1 |= é  representado por AG((state = s1) -> (expressao))
