@@ -96,13 +96,14 @@ static private String ctlExpression = "";
 			}
 			
 			//dps das analises, criacao da MEF
-			MEF.getInstance().createMEF();
-			System.out.println("#################Analise das Expressões CTL#################");
-			Expression e = (Expression) MEF.getInstance().getExpressions().get(MEF.getInstance().getExpressions().size() -1);
+			//MEF.getInstance().createMEF();
+			
+			//System.out.println("#################Analise das Expressões CTL#################");
+			//Expression e = (Expression) MEF.getInstance().getExpressions().get(MEF.getInstance().getExpressions().size() -1);
 			//considerar apenas o último elemento de expressions da MEF,
 			//os anteriores foram utilizados apenas para auxilar a construção
 			// e não serão mais utilizados (poderia inclusive ser apagados depois...  			
-			printExpressions(e);
+			//printExpressions(e);
 			}
         } 
     catch (java.io.FileNotFoundException e)
@@ -112,6 +113,7 @@ static private String ctlExpression = "";
         }	}
 	  } // end main()
 
+/*
 static public void printExpressions(Expression e)
 {
   	  if (!e.getType().equals("CS")) //Operações AX AF EX EG EF ...  	  {
@@ -125,7 +127,7 @@ static public void printExpressions(Expression e)
 	  }
 		  
 }
-
+*/
 static public String im(String s)
 {
 int k;
@@ -315,13 +317,16 @@ Expression ctlGrammar():
   Expression exp2 = null; }{
   //<VERIFYING> // por eqto, a definicao de propriedades é apenas um texto verifying. Aqui será nosso trabalho
   // toDo, definir essa gramática seguindo normas de CTL    (     
-	( t = <IDENTIFIER>
+	( t = <IDENTIFIER> | //identificador
+	  t = <TRUE > | // definicao de tautologia
+	  t = <FALSE> // definicao de contradicao
 	  {
 	    exp = new Expression(t.toString());
 	    exp.setType("Id");
 	  }
 	)   				
-    |				// definicao de propriedade atomica
+   | 
+   // definicao de propriedade atomica
   <Lparentheses>
     exp = logicalRelations()
   <Rparentheses>
@@ -342,12 +347,11 @@ Expression ctlGrammar():
 
 Expression logicalRelations():
 {
-  Expression exp;}{
-	(	  exp = negation() |
+  Expression exp;}{	(	  exp = negation() |
 	  exp = dualRelations()
     )
 	{
-	 // Expression e = new Expression(exp);
+	  //Expression e = new Expression(exp);
 	  //expressions.add(e);  	  
 	  return exp;	}
 	  	 }
@@ -463,7 +467,7 @@ Expression union():
 }
 
 
-
+/*
 Expression logicalDefinitions():
 {
   Token t = new Token();
@@ -476,7 +480,7 @@ Expression logicalDefinitions():
 	   return exp;
 	 }      
 }
-
+*/
 
 
 
