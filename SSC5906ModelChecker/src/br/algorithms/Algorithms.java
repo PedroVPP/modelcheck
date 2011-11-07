@@ -57,6 +57,7 @@ public class Algorithms {
 			state.addLabelsString(expression.getName());
 		}
 		info.setResult(validExpression);
+		AlgorithmsInformation.addInformation(info);
 		return validExpression;
 	}
 
@@ -95,7 +96,12 @@ public class Algorithms {
 	 *         caso contrario retorna 'false'
 	 */
 	public static boolean AND(State state, Expression expression) {
-		
+		Information info = new Information();
+		info.setAlgorithmName(ExpressionType.AND.toString());
+		info.setStateName(state.getName());
+		info.addStates(state);
+		info.setExp1(expression.getExp1().getName());
+		info.setExp2(expression.getExp2().getName());
 		if(state.getLabelsString().contains(expression.getName())) {
 			return true;
 		}
@@ -121,6 +127,8 @@ public class Algorithms {
 			state.addLabelsString(expression.getName());
 		}
 		
+		info.setResult(validExpression);
+		AlgorithmsInformation.addInformation(info);
 		return validExpression;
 	}
 
@@ -159,6 +167,14 @@ public class Algorithms {
 	 *         caso contrario retorna false
 	 */
 	public static boolean NOT(State state, Expression expression) {
+		
+		Information info = new Information();
+		info.setAlgorithmName(ExpressionType.NOT.toString());
+		info.setStateName(state.getName());
+		info.addStates(state);
+		info.setExp1(expression.getExp1().getName());
+		info.setExp2(expression.getExp2().getName());
+		
 		if(state.getLabelsString().contains(expression.getName())) {
 			return true;
 		}
@@ -177,6 +193,9 @@ public class Algorithms {
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
+		
+		info.setResult(validExpression);
+		AlgorithmsInformation.addInformation(info);
 		return validExpression;
 	}
 
@@ -219,6 +238,13 @@ public class Algorithms {
 	 * @return retorna true se a expressao e valida e false caso contrario
 	 */
 	public static boolean IMP(State state, Expression expression) {
+	
+		Information info = new Information();
+		info.setAlgorithmName(ExpressionType.IMP.toString());
+		info.setStateName(state.getName());
+		info.addStates(state);
+		info.setExp1(expression.getExp1().getName());
+		info.setExp2(expression.getExp2().getName());
 		
 		if(state.getLabelsString().contains(expression.getName())) {
 			return true;
@@ -249,6 +275,8 @@ public class Algorithms {
 		if(validExpression) {
 			state.addLabelsString(expression.getName());
 		}
+		info.setResult(validExpression);
+		AlgorithmsInformation.addInformation(info);
 		return validExpression;
 	}
 	
@@ -259,6 +287,13 @@ public class Algorithms {
 	 * @return
 	 */
 	public static boolean BIC(State state, Expression expression) {
+		
+		Information info = new Information();
+		info.setAlgorithmName(ExpressionType.BIC.toString());
+		info.setStateName(state.getName());
+		info.addStates(state);
+		info.setExp1(expression.getExp1().getName());
+		info.setExp2(expression.getExp2().getName());
 		
 		if(state.getLabelsString().contains(expression.getName())) {
 			return true;
@@ -293,6 +328,9 @@ public class Algorithms {
 		if(validExpression) {
 			state.addLabelsString(expression.getName());
 		}
+		
+		info.setResult(validExpression);
+		AlgorithmsInformation.addInformation(info);
 		return validExpression;
 	}
 	
@@ -310,12 +348,17 @@ public class Algorithms {
 	public static ArrayList<State> IMP(ArrayList<State> states,
 			Expression expression) {
 		ArrayList<State> validStates = new ArrayList<State>();
-
+		
+		
+		
+		
 		for (Iterator<State> iterator = states.iterator(); iterator.hasNext();) {
 			State state = (State) iterator.next();
 			if (IMP(state, expression)) {
+				
 				validStates.add(state);
 			}
+			
 		}
 		return validStates;
 	}
@@ -426,7 +469,7 @@ public class Algorithms {
 	 * from s0 on which f holds at every state.
 	 * 
 	 * Esse método executa o algoritmo EG. O EG consiste do seguinte: - Dada
-	 * uma expressao, verificar se ela e' valida para TODOS os estados de pelo
+	 * uma expressao, verificar se ela � valida para TODOS os estados de pelo
 	 * menos UM caminho na minha MEF a partir de um estado inicial
 	 * 
 	 * O EG para fucionar utiliza dois métodos: - static boolean EG(State
