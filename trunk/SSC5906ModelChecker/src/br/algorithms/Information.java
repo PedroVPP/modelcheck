@@ -2,14 +2,15 @@ package br.algorithms;
 
 import java.util.ArrayList;
 
-import br.mef.Expression;
 import br.mef.State;
 
 public class Information {
 	private String stateName = "";
 	private String algorithmName = "";
-	private boolean result;
-	private ArrayList<State> states;
+	private boolean result = false;
+	private ArrayList<State> states = new ArrayList<State>();
+	private ArrayList<State> validStates = new ArrayList<State>();
+	private ArrayList<State> invalidStates = new ArrayList<State>();
 	private String exp1, exp2;
 
 	public Information(String stateName, String algorithmName, boolean result) {
@@ -68,6 +69,22 @@ public class Information {
 
 	public void setExp2(String exp2) {
 		this.exp2 = exp2;
+	}
+
+	public ArrayList<State> getValidStates() {
+		return validStates;
+	}
+
+	public void addValidStates(State validState) {
+		this.validStates.add(validState);
+	}
+
+	public ArrayList<State> getInvalidStates() {
+		return invalidStates;
+	}
+
+	public void addInvalidStates(State invalidState) {
+		this.invalidStates.add(invalidState);
 	}
 
 }
