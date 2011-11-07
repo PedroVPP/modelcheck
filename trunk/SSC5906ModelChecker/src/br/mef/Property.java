@@ -16,6 +16,15 @@ public class Property {
 		this.name = name;
 	}
 	
-	
+    @Override
+    public boolean equals(Object prop){
+        try{
+        	return (this.getName().equals(((Property) prop).getName()));
+        }
+        catch(java.lang.RuntimeException e){
+            return false;
+        }
+
+    }	
 
 }
