@@ -6,6 +6,9 @@ import java.util.UUID;
 
 import javax.swing.JOptionPane;
 
+import br.algorithms.CounterExample;
+import br.algorithms.Information;
+
 public class MEF {
 	
 	private static MEF instance;
@@ -13,6 +16,7 @@ public class MEF {
 	private ArrayList<Property> properties = new ArrayList<Property>();
 	private ArrayList<State> states = new ArrayList<State>();
 	private ArrayList<Expression> expressions = new ArrayList<Expression>();
+	private ArrayList<CounterExample> counterExample = new ArrayList<CounterExample>();
 	private State firsState;
 	private String imagem = "";
 	
@@ -195,4 +199,11 @@ public class MEF {
 		return this.imagem;
 	}
 
+	public ArrayList<CounterExample> getCounterExample() {
+		return this.counterExample;
+	}
+
+	public void addCounterExample(CounterExample counterExample) {
+		this.counterExample.add(counterExample);
+	}	
 }
