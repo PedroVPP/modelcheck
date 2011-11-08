@@ -107,7 +107,7 @@ public class Principal extends javax.swing.JFrame {
         btNewDefine = new javax.swing.JButton();
         btDelDefine = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
-        btOK = new javax.swing.JButton();
+        //btOK = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         pnlStates4 = new javax.swing.JPanel();
         txtExpressions = new javax.swing.JTextField();
@@ -116,7 +116,7 @@ public class Principal extends javax.swing.JFrame {
         jScrollPane5 = new javax.swing.JScrollPane();
         jtExpressions = new javax.swing.JTable();
         jPanel8 = new javax.swing.JPanel();
-        btOK2 = new javax.swing.JButton();
+        btOK = new javax.swing.JButton();
         pnlStatesExp = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         jtStatesExp = new javax.swing.JTable();
@@ -140,9 +140,7 @@ public class Principal extends javax.swing.JFrame {
         jScrollPaneLog.setViewportView(jTextAreaLogMEF);
         
         System.out.println("##########  --- Java Model Checker - ICMC ssc5906  ---  ##########");
-      //#################### Trecho incluído - Frota ########################
-        
-        
+      //#################### Trecho incluído - Frota - Final ########################
         
         
         
@@ -588,7 +586,7 @@ public class Principal extends javax.swing.JFrame {
                 .addGap(822, 822, 822))
         );
 */
-        
+      /*  
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -639,8 +637,48 @@ public class Principal extends javax.swing.JFrame {
                 .addGap(822, 822, 822))
         );
         
+        */
         
-        
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPaneLog, javax.swing.GroupLayout.DEFAULT_SIZE, 644, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addComponent(jScrollPaneLog, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(pnlStates3, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(41, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnlStates3, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(920, 920, 920))
+        );
         
         
         jTabbedPane1.addTab("Start", jPanel1);
@@ -712,10 +750,10 @@ public class Principal extends javax.swing.JFrame {
         });
         jScrollPane5.setViewportView(jtExpressions);
 
-        btOK2.setText("OK");
-        btOK2.addActionListener(new java.awt.event.ActionListener() {
+        btOK.setText("OK");
+        btOK.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btOK2ActionPerformed(evt);
+            	btOKActionPerformed(evt);
             }
         });
 
@@ -725,14 +763,14 @@ public class Principal extends javax.swing.JFrame {
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                 .addContainerGap(580, Short.MAX_VALUE)
-                .addComponent(btOK2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btOK, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btOK2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(btOK, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pnlStatesExp.setBorder(javax.swing.BorderFactory.createTitledBorder("States"));
@@ -1223,10 +1261,7 @@ public class Principal extends javax.swing.JFrame {
 		this.pack();    	
     }
     
-    private void btOK2ActionPerformed(java.awt.event.ActionEvent evt) {
-    	btOKActionPerformed(evt);
-    }
-
+    
     
     public void setStates(ArrayList<State> states){
         try {
@@ -1357,7 +1392,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton btDelDefine;
     private javax.swing.JButton btNewDefine;
     private javax.swing.JButton btOK;
-    private javax.swing.JButton btOK2;
+    //private javax.swing.JButton btOK2;
     private static javax.swing.JButton btnAddProperties;
     private static javax.swing.JButton btnAddStates;
     private static javax.swing.JButton btnAddExpression;

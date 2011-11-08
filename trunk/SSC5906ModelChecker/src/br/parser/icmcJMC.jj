@@ -9,7 +9,8 @@
 
 
 import br.mef.*;
-import java.util.*; 
+import java.util.*;
+import javax.swing.*;
 
 public class ssc5906JMC{
 
@@ -334,8 +335,16 @@ Expression ctlGrammar():
 	)
 	(
 	  {
+	    System.out.println("Verificação da Validade da Propriedade  "+t.toString());
+		if (MEF.getInstance().getProperty(t.toString()).equals(null))
+		{
+		javax.swing.JOptionPane.showMessageDialog(null, "A propriedade "+t.toString()+" nao foi declarada", "MEF - Expression Error ", JOptionPane.INFORMATION_MESSAGE);
+
+		//  System.out.println();
+		  		}
+	    
 	    exp = new Expression(t.toString());
-	    exp.setType(null);
+	    exp.setType(null);	    
 	    ctlExpression = ctlExpression + t.toString();
 	  }	  	)   				
    | 
@@ -562,7 +571,7 @@ void propertiesDec(): // simples declaracao de propriedades
   	<Lparentheses>
   			(
   			 (t =  <IDENTIFIER>)
-  			 {
+  			 { 			   
 				property = new Property(t.toString()); //
 				MEF.getInstance().addProperty(property); // adiciona estado na estrutura MEF
   				System.out.println("Propriedade "+t.toString()+" lido com sucesso e incluido na instacia da MEF"); 
