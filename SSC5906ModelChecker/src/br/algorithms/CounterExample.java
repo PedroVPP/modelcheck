@@ -40,5 +40,9 @@ public class CounterExample {
 	public HashMap<State, State> getTransicoes(){
 		return this.states;
 	}
+	
+	public void addTransicao(State state, State state2){
+		this.states.put(state, state2);
+	}
 
 }
