@@ -16,7 +16,7 @@ public class ssc5906JMC{
 static private final String Version = ("ssc5906JMC - icmcJMC - Java Model Checker \"Version 0.1\"  \n A Java implementation"); 
 //static private MEF mef;
 static private String ctlExpression = "";
-
+private ArrayList<Expression> expressions = new ArrayList<Expression>();
   public static void main(String args []) throws ParseException  {
 	System.out.println(Version);
 	String filename = " "; // file name to analyse
@@ -299,8 +299,16 @@ void icmcJavaModelCheckerUnit():
 	(modelDec()
 
 	ctlGrammar() //primeira expressao CTL obrigatoria
-
-	(<COMMA> ctlGrammar())*)  // pode ser que nao tenhamos definicoes de propriedades
+	{	   Expression expMEF = expressions.get(expressions.size() -1);
+	   expMEF.setName(ctlExpression);
+	   MEF.getInstance().getExpressions().add(expMEF);
+	   ctlExpression = "";  	}
+	(<COMMA> ctlGrammar()	{
+	   expMEF = expressions.get(expressions.size() -1);
+	   expMEF.setName(ctlExpression);
+	   MEF.getInstance().getExpressions().add(expMEF);
+	   ctlExpression = "";  	}
+	)*)  // pode ser que nao tenhamos definicoes de propriedades
 		}
 
 void modelDec():
@@ -328,12 +336,14 @@ Expression ctlGrammar():
 	  {
 	    exp = new Expression(t.toString());
 	    exp.setType(null);
+	    ctlExpression = ctlExpression + t.toString();
 	  }	  	)   				
    | 
    // definicao de propriedade atomica
-  <Lparentheses>
-    exp = logicalRelations()
-  <Rparentheses>
+      <Lparentheses>
+      exp = logicalRelations()
+    
+  <Rparentheses> 
     |      //definicao de relacoes logicas parentisadas em CTL
   exp = ctlSpecifications() exp1 = ctlGrammar()   |
   //exp1 = unionDec() exp2 = union()
@@ -344,7 +354,7 @@ Expression ctlGrammar():
     if (exp1 != null)    {		exp.setExp1(exp1);
 		
     }
-    MEF.getInstance().getExpressions().add(exp);
+    this.expressions.add(exp);
     return exp;
   }  
 }
@@ -357,8 +367,6 @@ Expression logicalRelations():
 	  exp = dualRelations()
     )
 	{
-	  //Expression e = new Expression(exp);
-	  //expressions.add(e);  	  
 	  return exp;	}
 	  	 }
 
@@ -374,13 +382,14 @@ Expression negation():
   (    t = <NOT>
 	)  
 
-    {            exp1 = ctlGrammar();
-      exp = new Expression(t.toString() + exp1.getName());
+    {
+      ctlExpression = ctlExpression + " ( ~ ";           exp1 = ctlGrammar();
+      exp = new Expression(t.toString() + " "+exp1.getName());
       exp.setExp1(exp1);
       exp.setType(ExpressionType.NOT);
-	  //Expression e = new Expression(ctlExpression);
-	  //expressions.add(e);      
-      return exp;    }    
+      ctlExpression = ctlExpression + " ) ";
+      return exp;
+          }    
 }
 
 
@@ -392,6 +401,8 @@ Expression dualRelations():
   Expression exp2;
   ExpressionType ep = null;
 }{
+{  
+  ctlExpression = ctlExpression + " ( ";}
   	exp1 = ctlGrammar()
   	(
   	   	   t = <AND>     	   	 | //conjunction
@@ -400,9 +411,13 @@ Expression dualRelations():
   	 t = <IMPLICATION>
 	 | //material implication - if  .. then
   	 t =  <BICONDICIONAL> //Bicondicional - if and only if
-  	)  	exp2 = ctlGrammar()
+  	)
+  	{
+  	  ctlExpression = ctlExpression + " " + t.toString()+ " ";  	}  	exp2 = ctlGrammar()
 
-  	{exp = new Expression(exp1.getName() + t.toString() + exp2.getName());
+  	{
+		ctlExpression = ctlExpression + " ) ";
+  	  exp = new Expression("( "+exp1.getName() +" " + t.toString()+ " " + exp2.getName() + " )");
   	     exp.setExp1(exp1);
   	     exp.setExp2(exp2);
   	  if (t.toString().equals("^"))
@@ -413,8 +428,6 @@ Expression dualRelations():
   	  	ep = ExpressionType.BIC;
   	       
   	     exp.setType(ep);
-  	    //Expression e = new Expression(exppartial);
-		//expressions.add(e);              
         return exp; 		  					  					
 	  }
 }
@@ -430,7 +443,8 @@ Expression ctlSpecifications():
   | t = <EG> //para um caminho, a partir de um estado, a prop. vale
   )
   {
-    Expression exp = new Expression(t.toString());
+    ctlExpression = ctlExpression + t.toString()+ " ";
+    Expression exp = new Expression(t.toString()+ " ");
     if (t.toString().toUpperCase().equals("AX"))
     	ep = ExpressionType.AX;
     else if (t.toString().toUpperCase().equals("EX"))
@@ -471,6 +485,7 @@ String unionDec():
     t = < E > | t = < A >
    )
   {
+    ctlExpression = ctlExpression + t.toString()+ " ";
 	return t.toString();  					  					
   }
 	  }
@@ -481,16 +496,22 @@ Expression union():
   Expression exp;
   Expression exp1;
   Expression exp2;}{
-    (     t = <LBRACKET> 
+    (     t = <LBRACKET>
+     {
+       ctlExpression = ctlExpression  + " [ ";     }
      exp1 = ctlGrammar() 
-     t = <U>     
+     t = <U>
+     {
+       ctlExpression = ctlExpression +  " U ";     }
      exp2 = ctlGrammar()
     t = <RBRACKET>
+    {
+      ctlExpression = ctlExpression + " ] ";    }
   )
     {
 
 
-  	    exp = new Expression("[ " + exp1.getName() + " U " + exp2.getName() + " ]");
+  	    exp = new Expression(" [ " + exp1.getName() + " U " + exp2.getName() + " ] ");
   	    exp.setExp1(exp1);
   	    exp.setExp2(exp2);            
 		return exp;  					  					
