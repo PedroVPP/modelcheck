@@ -22,6 +22,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -167,6 +168,7 @@ public class Principal extends javax.swing.JFrame {
         jScrollPane4.setViewportView(jtDefine);
 
         pnlStates3.add(jScrollPane4);
+
 
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -903,6 +905,7 @@ public class Principal extends javax.swing.JFrame {
 	 	    this.setProperties(MEF.getInstance().getProperties());
 	 	    this.setDefines(new ArrayList(0));
 	 	    this.setExpressions(MEF.getInstance().getExpressions());
+	 	    this.setStatesAnswer(new ArrayList(0));
 	    
            	for(int i=0; i<states.size(); i++){
             	State st = (State) states.get(i);
@@ -913,9 +916,10 @@ public class Principal extends javax.swing.JFrame {
 
 				StateAnswer staw = new StateAnswer(st.getName());
 				statesAnswer.add(staw);
-				for(int j=0; j<props.size(); j++){
+				for(int j=0; j<props.size(); j++){					
 					Property prop = (Property) props.get(j);
-					def.addProperty(prop);
+					if (!prop.getName().equals("TRUE"))
+						def.addProperty(prop);
 				}
 				
 				ArrayList<State> childrens = st.getChildren();
@@ -980,7 +984,7 @@ public class Principal extends javax.swing.JFrame {
            		//Expression exp = ((TableModelExpressions)jtExpressions.getModel()).getValores(jtExpressions.getSelectedRow());
         		StateAnswer staw = ((TableModelStateAnswer)jtStatesExp.getModel()).getValores(jtStatesExp.getSelectedRow());
         		State st = MEF.getInstance().getState(staw.getName());
-        		Expression exp = MEF.getInstance().getExpressions().get(MEF.getInstance().getExpressions().size() -1);
+        		Expression exp = MEF.getInstance().getExpressions().get(jtExpressions.getSelectedRow());
         		boolean isValid = Algorithms.executeOperation(st, exp);
         		if (isValid){
         			staw.setValid("True");
@@ -1062,7 +1066,8 @@ public class Principal extends javax.swing.JFrame {
 		defMEF = defMEF + ")\n properties (";
 		for (int i = 0; i < properties.size(); ++i) {
     		Property prop = (Property) properties.get(i);
-    		defMEF = defMEF + prop.getName()+ " ";   		
+    		if (!prop.getName().equals("TRUE"))
+    			defMEF = defMEF + prop.getName()+ " ";   		
     	}		
 		defMEF = defMEF + ")\n def[";
 		for (int i = 0; i < defines.size(); ++i) {
@@ -1084,6 +1089,9 @@ public class Principal extends javax.swing.JFrame {
     	}		
 		defMEF = defMEF + "] \n";
 		for (int i = 0; i < expressions.size(); ++i) {
+			if (i != 0 ){
+				defMEF = defMEF + " , ";
+			}
     		Expression exp = (Expression) expressions.get(i);
     		defMEF = defMEF + exp.getName()+ "\n";   		
     	}		
@@ -1113,11 +1121,12 @@ public class Principal extends javax.swing.JFrame {
 
     private void setImgMEF(){
     	MEF.getInstance().createMEF(); 
-		ImageIcon img = new ImageIcon("mef.jpg");
+		ImageIcon img = new ImageIcon(MEF.getInstance().getImagem());
 		JLabel label = new JLabel(img);
 		label.setBounds(0, 0, img.getIconWidth() + 10, img.getIconHeight() + 10);
-		this.setJlbImagem(label);
-		pnlMEF.add(this.jlbImagem);
+		//this.setJlbImagem(label);
+		pnlMEF.removeAll();
+		pnlMEF.add(new JScrollPane(label));		
 		this.jlbImagem.setHorizontalAlignment(SwingConstants.CENTER);
 		//Expression e = (Expression) MEF.getInstance().getExpressions().get(MEF.getInstance().getExpressions().size() -1);
 		//considerar somente o último elemento do  vetor
@@ -1289,6 +1298,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jspMEF;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTabbedPane jTabbedPane1;
