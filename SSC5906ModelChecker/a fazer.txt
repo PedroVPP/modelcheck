@@ -1,23 +1,18 @@
 tratamento de exceção - Vania
 Gerar Log na interface -  Rafael
 validação da interface gráfica - Vania
-colocar scroll no panel para tratar imagens - Rafael
+  --na interface, só deixar definir se tiver ao menos um estado e uma propridade selecionada
+  --criar flag para saber se houve mudanças na expressão ou na MEF e só deixar validar as expressões se não tiver alterações pendentes - VAnia
+  --só deixar clicar em ok (da mef) se tiver definição, estado, e ao menos 1 expressão
 tratar: definir um estado que não consta na lista de estados (expression) - Rafael
-ao recuperar o arquivo, tratar para pegar a expressão direito  -  Vania 
 inserir o dot.exe e puxar esse caminho - Vania
-Limpar o painel da MEF (graphviz) - Vania
+
 Deixar interface mais intuitiva - Vania
 Gerar log de cada algoritmo - Pedro/André/Mauricio
 Criar mais casos de teste e Testar, testar e testar. Se encontrar erro avisar - André/Mauricio
 Pensar em como fazer a contra prova - Pedro/André/Mauricio/Vania/Rafael
 Procurar MEFs que estão funcionando - André/Mauricio
-Na interface, não mostrar as propriedades TRUE - Vania
-Possibilidade de ter mais de uma expressão (tratar arraylist da mef) - Vania ou Rafael
 
-
-
-
- 
 
 --Flor
  Mostrar o tempo de execução dos algoritmos
@@ -25,3 +20,10 @@ Possibilidade de ter mais de uma expressão (tratar arraylist da mef) - Vania ou 
 ---Utopia
  Protótipo para funcionar com 1 trilhão de estados
  Otimizar os algoritmos
+ 
+ OK
+colocar scroll no panel para tratar imagens - Vania
+Limpar o painel da MEF (graphviz) - Vania
+Possibilidade de ter mais de uma expressão (tratar arraylist da mef) - Vania
+ao recuperar o arquivo, tratar para pegar a expressão direito  -  Vania
+Na interface, não mostrar as propriedades TRUE - Vania 
