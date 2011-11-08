@@ -4,13 +4,10 @@ states (s0 s1)
 properties (p q)
 
 def[
-s0(s1 : p)    
-s1(s0 : q p)   ]
+s0 (s1 : p)    
+s1 (s0 : q p) ]
 
-
-
-AX(rafa V A[ AX errere U A[ AX errere U AX errere ] ]) 
-
-
- 
+A [b U c]
+   
 jmc
+
