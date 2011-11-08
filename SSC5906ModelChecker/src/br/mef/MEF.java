@@ -2,6 +2,7 @@ package br.mef;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import javax.swing.JOptionPane;
 
@@ -13,6 +14,7 @@ public class MEF {
 	private ArrayList<State> states = new ArrayList<State>();
 	private ArrayList<Expression> expressions = new ArrayList<Expression>();
 	private State firsState;
+	private String imagem = "";
 	
 	private Escrita novoDotArq;
 	private Graphviz novoDot;
@@ -83,8 +85,10 @@ public class MEF {
 			ArrayList<Property> properties = state.getValidProperties();
 			for(int j=0; j<properties.size(); j++){
 				Property property = (Property) properties.get(j);
-				linhaState = linhaState + property.getName() + ", ";
-				state.addLabelsString(property.getName());
+				if (!property.getName().equals("TRUE")){
+					linhaState = linhaState + property.getName() + ", ";
+					state.addLabelsString(property.getName());					
+				}
 			}
 			
 			linhaState = linhaState.substring(0, linhaState.length() -2) + "}\"]";    		
@@ -108,9 +112,11 @@ public class MEF {
 				State state = (State) states.get(i);
 				String linhaState = state.getName() + "[ label= \""+state.getName()+"\\n{";
 				ArrayList<Property> properties = state.getValidProperties();
-				for(int j=0; j<properties.size(); j++){
+				for(int j=0; j<properties.size(); j++){					
 					Property property = (Property) properties.get(j);
-					linhaState = linhaState + property.getName() + ", ";
+					if (!property.getName().equals("TRUE")){
+						linhaState = linhaState + property.getName() + ", ";	
+					}					
 				}
 				linhaState = linhaState.substring(0, linhaState.length() -2) + "}\"]";
 				novoDot.addln(linhaState);
@@ -122,8 +128,8 @@ public class MEF {
 			}
 			novoDot.addln(novoDot.end_graph());
 			System.out.println(novoDot.getDotSource());
-			
-			this.out = new File("mef.jpg");		
+			this.imagem = UUID.randomUUID().toString()+ ".jpg";
+			this.out = new File(this.imagem);		
 			novoDot.writeGraphToFile(novoDot.getGraph(novoDot.getDotSource()), out);
 		}
 		catch(Exception e){
@@ -185,5 +191,8 @@ public class MEF {
 		return this.expressions;
 	}
 
+	public String getImagem(){
+		return this.imagem;
+	}
 
 }
