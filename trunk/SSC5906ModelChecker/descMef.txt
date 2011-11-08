@@ -7,7 +7,7 @@ def[
 s0 (s1 : p)    
 s1 (s0 : q p) ]
 
-A [b U c]
+A [p U q]
    
 jmc
 

@@ -11,47 +11,73 @@ public interface ssc5906JMCConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int BEGIN = 12;
+  int E = 12;
   /** RegularExpression Id. */
-  int END = 13;
+  int A = 13;
   /** RegularExpression Id. */
-  int ssc5906JavaMC = 14;
+  int U = 14;
   /** RegularExpression Id. */
-  int STATES = 15;
+  int AX = 15;
   /** RegularExpression Id. */
-  int PROPERTIES = 16;
+  int EX = 16;
   /** RegularExpression Id. */
-  int DEFINE = 17;
+  int AF = 17;
   /** RegularExpression Id. */
-  int VERIFYING = 18;
+  int EF = 18;
   /** RegularExpression Id. */
-  int COMMA = 19;
+  int AG = 19;
   /** RegularExpression Id. */
-  int LBRACKET = 20;
+  int EG = 20;
   /** RegularExpression Id. */
-  int RBRACKET = 21;
+  int JMC = 21;
   /** RegularExpression Id. */
-  int SEMICOLON = 22;
+  int STATES = 22;
   /** RegularExpression Id. */
-  int COLON = 23;
+  int PROPERTIES = 23;
   /** RegularExpression Id. */
-  int EQ = 24;
+  int DEFINE = 24;
   /** RegularExpression Id. */
-  int Lparentheses = 25;
+  int TRUE = 25;
   /** RegularExpression Id. */
-  int Rparentheses = 26;
+  int FALSE = 26;
   /** RegularExpression Id. */
-  int RECEIVE = 27;
+  int COMMA = 27;
   /** RegularExpression Id. */
-  int IDENTIFIER = 28;
+  int LBRACKET = 28;
   /** RegularExpression Id. */
-  int LETTER = 29;
+  int RBRACKET = 29;
   /** RegularExpression Id. */
-  int DIGIT = 30;
+  int SEMICOLON = 30;
   /** RegularExpression Id. */
-  int INVALID_LEXICAL = 31;
+  int COLON = 31;
   /** RegularExpression Id. */
-  int INVALID_CONST = 32;
+  int EQ = 32;
+  /** RegularExpression Id. */
+  int Lparentheses = 33;
+  /** RegularExpression Id. */
+  int Rparentheses = 34;
+  /** RegularExpression Id. */
+  int RECEIVE = 35;
+  /** RegularExpression Id. */
+  int NOT = 36;
+  /** RegularExpression Id. */
+  int AND = 37;
+  /** RegularExpression Id. */
+  int OR = 38;
+  /** RegularExpression Id. */
+  int IMPLICATION = 39;
+  /** RegularExpression Id. */
+  int BICONDICIONAL = 40;
+  /** RegularExpression Id. */
+  int IDENTIFIER = 41;
+  /** RegularExpression Id. */
+  int LETTER = 42;
+  /** RegularExpression Id. */
+  int DIGIT = 43;
+  /** RegularExpression Id. */
+  int INVALID_LEXICAL = 44;
+  /** RegularExpression Id. */
+  int INVALID_CONST = 45;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -74,13 +100,21 @@ public interface ssc5906JMCConstants {
     "<token of kind 9>",
     "<token of kind 10>",
     "<token of kind 11>",
-    "\"begin\"",
-    "\"end\"",
-    "\"ssc5906JavaMC\"",
+    "\"E\"",
+    "\"A\"",
+    "\"U\"",
+    "\"AX\"",
+    "\"EX\"",
+    "\"AF\"",
+    "\"EF\"",
+    "\"AG\"",
+    "\"EG\"",
+    "\"JMC\"",
     "\"states\"",
     "\"properties\"",
-    "\"define\"",
-    "\"verifying\"",
+    "\"def\"",
+    "\"true\"",
+    "\"false\"",
     "\",\"",
     "\"[\"",
     "\"]\"",
@@ -90,6 +124,11 @@ public interface ssc5906JMCConstants {
     "\"(\"",
     "\")\"",
     "\":=\"",
+    "\"~\"",
+    "\"^\"",
+    "\"v\"",
+    "\"->\"",
+    "\"<->\"",
     "<IDENTIFIER>",
     "<LETTER>",
     "<DIGIT>",
