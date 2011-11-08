@@ -2,6 +2,7 @@ package br.mef;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.UUID;
 
 import javax.swing.JOptionPane;
@@ -205,5 +206,44 @@ public class MEF {
 
 	public void addCounterExample(CounterExample counterExample) {
 		this.counterExample.add(counterExample);
-	}	
+	}
+	
+	public ArrayList<CounterExample> findCounterExamplesByState(State state) {
+		ArrayList<CounterExample> counterExamples = new ArrayList<CounterExample>();
+		
+		for (Iterator<CounterExample> iterator = this.counterExample.iterator(); iterator.hasNext();) {
+			CounterExample counterExample = (CounterExample) iterator.next();
+			if(counterExample.getState().getName().equals(state.getName())) {
+				counterExamples.add(counterExample);
+			}
+		}
+		
+		return counterExamples;
+	}
+	
+	public ArrayList<CounterExample> findCounterExamplesByExpression(Expression expression) {
+		ArrayList<CounterExample> counterExamples = new ArrayList<CounterExample>();
+		
+		for (Iterator<CounterExample> iterator = this.counterExample.iterator(); iterator.hasNext();) {
+			CounterExample counterExample = (CounterExample) iterator.next();
+			if(counterExample.getExp().getName().equals(expression.getName())) {
+				counterExamples.add(counterExample);
+			}
+		}
+		
+		return counterExamples;
+	}
+	
+	public ArrayList<CounterExample> findCounterExample(State state, Expression expression) {
+		ArrayList<CounterExample> counterExamples = new ArrayList<CounterExample>();
+		
+		for (Iterator<CounterExample> iterator = this.counterExample.iterator(); iterator.hasNext();) {
+			CounterExample counterExample = (CounterExample) iterator.next();
+			if(counterExample.getState().getName().equals(state.getName()) && 
+					counterExample.getExp().getName().equals(expression.getName())) {
+				counterExamples.add(counterExample);
+			}
+		}
+		return counterExamples;
+	}
 }
