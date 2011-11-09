@@ -11,8 +11,9 @@ import br.util.GraphvizFileMaker;
 
 public class Algorithms {
 
-	public static GraphvizFileMaker graphvizFileMaker; 
+	public static GraphvizFileMaker graphvizFileMaker;
 	private static CounterExample counterExample = null;
+
 	/**
 	 * @author Pedro Pinheiro
 	 * @param state
@@ -24,17 +25,19 @@ public class Algorithms {
 	 * @return retorna true se a expressao e' verdadeira para aquele estado, e
 	 *         caso contrario retorna 'false'
 	 */
-	private static CounterExample newCounterExample(State state, Expression expression, boolean isValid, State stateTransicao){
+	private static CounterExample newCounterExample(State state,
+			Expression expression, boolean isValid, State stateTransicao) {
 		CounterExample ce = new CounterExample(state, expression);
-		if (isValid){
-			ce.addStateValido(state);	
+		if (isValid) {
+			ce.addStateValido(state);
 		}
-		if (stateTransicao != null){
-			ce.addTransicao(state, stateTransicao);	
+		if (stateTransicao != null) {
+			ce.addTransicao(state, stateTransicao);
 		}
 		return ce;
-		//MEF.getInstance().addCounterExample(ce);		
+		// MEF.getInstance().addCounterExample(ce);
 	}
+
 	public static boolean OR(State state, Expression expression) {
 		if(state.getLabelsString().contains(expression.getName())) {
 			//newCounterExample(state, expression, true, null);
@@ -81,6 +84,7 @@ public class Algorithms {
 
 	/**
 	 * Metodo que executa o OR para todos os estados do parametro states
+	 * 
 	 * @author Pedro Pinheiro
 	 * @param states
 	 *            Consiste do array de estados da MEF inteira.
@@ -114,50 +118,57 @@ public class Algorithms {
 	 *         caso contrario retorna 'false'
 	 */
 	public static boolean AND(State state, Expression expression) {
-		
-		if(state.getLabelsString().contains(expression.getName())) {
-			//newCounterExample(state, expression, true, null);
+
+		if (state.getLabelsString().contains(expression.getName())) {
+			// newCounterExample(state, expression, true, null);
 			return true;
 		}
-		
-		if(!expression.getExp1().isProperty()) {
+
+		if (!expression.getExp1().isProperty()) {
 			executeProperOperation(state, expression, expression.getExp1());
 		}
-		if(!expression.getExp2().isProperty()) {
+		if (!expression.getExp2().isProperty()) {
 			executeProperOperation(state, expression, expression.getExp2());
 		}
-		
+
 		boolean validExpression = false;
 		Expression expression1 = expression.getExp1(); // = p
-		//newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null);
+		// newCounterExample(state, expression1,
+		// state.getLabelsString().contains(expression1.getName()), null);
 		Expression expression2 = expression.getExp2(); // = q
-		//newCounterExample(state, expression2, state.getLabelsString().contains(expression2.getName()), null);		
+		// newCounterExample(state, expression2,
+		// state.getLabelsString().contains(expression2.getName()), null);
 		if (state.getLabelsString().contains(expression1.getName())
 				&& state.getLabelsString().contains(expression2.getName())) {
 			validExpression = true;
 		} else {
 			validExpression = false;
-			/*if (state.getLabelsString().contains(expression1.getName())){
-				MEF.getInstance().addCounterExample(newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null));	
-			}
-			if (state.getLabelsString().contains(expression2.getName())){
-				MEF.getInstance().addCounterExample(newCounterExample(state, expression2, state.getLabelsString().contains(expression2.getName()), null));	
-			}*/			
+			/*
+			 * if (state.getLabelsString().contains(expression1.getName())){
+			 * MEF.getInstance().addCounterExample(newCounterExample(state,
+			 * expression1,
+			 * state.getLabelsString().contains(expression1.getName()), null));
+			 * } if (state.getLabelsString().contains(expression2.getName())){
+			 * MEF.getInstance().addCounterExample(newCounterExample(state,
+			 * expression2,
+			 * state.getLabelsString().contains(expression2.getName()), null));
+			 * }
+			 */
 
 		}
-		//newCounterExample(state, expression, validExpression, null);
+		// newCounterExample(state, expression, validExpression, null);
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
+		} else {
+
 		}
-		else{
-			MEF.getInstance().addCounterExample(newCounterExample(state, expression, false, null));			
-		}
-		
+
 		return validExpression;
 	}
 
 	/**
 	 * Metodo que executa o AND para todos os estados do parametro states
+	 * 
 	 * @author Pedro Pinheiro e Andre Luiz
 	 * @param states
 	 *            Consiste do array de estados da MEF inteira.
@@ -191,37 +202,41 @@ public class Algorithms {
 	 *         caso contrario retorna false
 	 */
 	public static boolean NOT(State state, Expression expression) {
-		if(state.getLabelsString().contains(expression.getName())) {
-			//newCounterExample(state, expression, true, null);
+		if (state.getLabelsString().contains(expression.getName())) {
+			// newCounterExample(state, expression, true, null);
 			return true;
 		}
-		
-		if(!expression.getExp1().isProperty()) {
+
+		if (!expression.getExp1().isProperty()) {
 			executeProperOperation(state, expression, expression.getExp1());
 		}
-		
+
 		boolean validExpression = false;
 		Expression expression1 = expression.getExp1(); // = p
-		//newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null);
-		// sempre a expression 1 não pode ser nula, se não ocasionara o nullpointerexception 
+		// newCounterExample(state, expression1,
+		// state.getLabelsString().contains(expression1.getName()), null);
+		// sempre a expression 1 não pode ser nula, se não ocasionara o
+		// nullpointerexception
 		if (!state.getLabelsString().contains(expression1.getName())) {
 			validExpression = true;
 		}
-/*		else{
-			MEF.getInstance().addCounterExample(newCounterExample(state, expression1, false, null));			
-		}*/
-		//newCounterExample(state, expression, validExpression, null);
+		/*
+		 * else{ MEF.getInstance().addCounterExample(newCounterExample(state,
+		 * expression1, false, null)); }
+		 */
+		// newCounterExample(state, expression, validExpression, null);
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
-		}
-		else{
-			MEF.getInstance().addCounterExample(newCounterExample(state, expression, false, null));
+		} else {
+			MEF.getInstance().addCounterExample(
+					newCounterExample(state, expression, false, null));
 		}
 		return validExpression;
 	}
 
 	/**
 	 * Metodo que executa o NOT para todos os estados do parametro states
+	 * 
 	 * @author Pedro Pinheiro e Andre Luiz
 	 * @param states
 	 *            Consiste do array de estados da MEF inteira.
@@ -244,12 +259,13 @@ public class Algorithms {
 	}
 
 	/**
-	 * OLD - Ate a r52 este método era assim: Esse metodo implementa o algoritmo de 'implica', ex: p -> q ele converte
-	 * o p -> q para seu equivalente ~p v q, ou seja, (NOT p) OR q e assim usa
-	 * os algoritmos OR e NOT para verificar a validade da expressao.
+	 * OLD - Ate a r52 este método era assim: Esse metodo implementa o
+	 * algoritmo de 'implica', ex: p -> q ele converte o p -> q para seu
+	 * equivalente ~p v q, ou seja, (NOT p) OR q e assim usa os algoritmos OR e
+	 * NOT para verificar a validade da expressao.
 	 * 
-	 * NEW: A partir da r53 ele foi melhorado para simplesmente utilizar os conceitos
-	 * da tabela verdade do implica.
+	 * NEW: A partir da r53 ele foi melhorado para simplesmente utilizar os
+	 * conceitos da tabela verdade do implica.
 	 * 
 	 * @author Pedro Pinheiro
 	 * @param state
@@ -259,105 +275,111 @@ public class Algorithms {
 	 * @return retorna true se a expressao e valida e false caso contrario
 	 */
 	public static boolean IMP(State state, Expression expression) {
-		
-		if(state.getLabelsString().contains(expression.getName())) {
-			//newCounterExample(state, expression, true, null);
+
+		if (state.getLabelsString().contains(expression.getName())) {
+			// newCounterExample(state, expression, true, null);
 			return true;
 		}
-		
-		if(!expression.getExp1().isProperty()) {
+
+		if (!expression.getExp1().isProperty()) {
 			executeProperOperation(state, expression, expression.getExp1());
 		}
-		if(!expression.getExp2().isProperty()) {
+		if (!expression.getExp2().isProperty()) {
 			executeProperOperation(state, expression, expression.getExp2());
 		}
-		
+
 		boolean validExpression = true;
 		Expression expression1 = expression.getExp1(); // = p
 		Expression expression2 = expression.getExp2(); // = q
-		//newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null);
-		//newCounterExample(state, expression2, state.getLabelsString().contains(expression2.getName()), null);
-//		tabela verdade
-//		p   q  p->q
-//		V 	V 	V
-//		V 	F 	F
-//		F 	V 	V
-//		F 	F 	V
-		
-		if(state.getLabelsString().contains(expression1.getName()) && 
-				!state.getLabelsString().contains(expression2.getName())) {
+		// newCounterExample(state, expression1,
+		// state.getLabelsString().contains(expression1.getName()), null);
+		// newCounterExample(state, expression2,
+		// state.getLabelsString().contains(expression2.getName()), null);
+		// tabela verdade
+		// p q p->q
+		// V V V
+		// V F F
+		// F V V
+		// F F V
+
+		if (state.getLabelsString().contains(expression1.getName())
+				&& !state.getLabelsString().contains(expression2.getName())) {
 			validExpression = false;
-			/*if (state.getLabelsString().contains(expression1.getName())){
-				MEF.getInstance().addCounterExample(newCounterExample(state, expression1, false, null));	
-			}
-			else if (!state.getLabelsString().contains(expression2.getName())) {
-				MEF.getInstance().addCounterExample(newCounterExample(state, expression2, false, null));
-			}*/
+			/*
+			 * if (state.getLabelsString().contains(expression1.getName())){
+			 * MEF.getInstance().addCounterExample(newCounterExample(state,
+			 * expression1, false, null)); } else if
+			 * (!state.getLabelsString().contains(expression2.getName())) {
+			 * MEF.getInstance().addCounterExample(newCounterExample(state,
+			 * expression2, false, null)); }
+			 */
 		}
-		//newCounterExample(state, expression, validExpression, null);
-		if(validExpression) {
+		// newCounterExample(state, expression, validExpression, null);
+		if (validExpression) {
 			state.addLabelsString(expression.getName());
-		}
-		else{
-			MEF.getInstance().addCounterExample(newCounterExample(state, expression, false, null));			
+		} else {
+			MEF.getInstance().addCounterExample(
+					newCounterExample(state, expression, false, null));
 		}
 		return validExpression;
 	}
-	
+
 	/**
 	 * Algoritmo do bicondicional
+	 * 
 	 * @param state
 	 * @param expression
 	 * @return
 	 */
 	public static boolean BIC(State state, Expression expression) {
-		
-		if(state.getLabelsString().contains(expression.getName())) {
-			//newCounterExample(state, expression, true, null);
+
+		if (state.getLabelsString().contains(expression.getName())) {
+			// newCounterExample(state, expression, true, null);
 			return true;
 		}
-		
-		if(!expression.getExp1().isProperty()) {
+
+		if (!expression.getExp1().isProperty()) {
 			executeProperOperation(state, expression, expression.getExp1());
 		}
-		if(!expression.getExp2().isProperty()) {
+		if (!expression.getExp2().isProperty()) {
 			executeProperOperation(state, expression, expression.getExp2());
 		}
-		
+
 		boolean validExpression = true;
 		// p <-> q
 		Expression expression1 = expression.getExp1(); // = p
 		Expression expression2 = expression.getExp2(); // = q
-		//newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null);
-		//newCounterExample(state, expression2, state.getLabelsString().contains(expression2.getName()), null);
-//		tabela verdade
-//		p   q  p<->q
-//		V 	V 	V
-//		V 	F 	F
-//		F 	V 	F
-//		F 	F 	V
-		
-		if(state.getLabelsString().contains(expression1.getName()) && 
-				!state.getLabelsString().contains(expression2.getName())
-				||
-		   !state.getLabelsString().contains(expression1.getName()) && 
-				state.getLabelsString().contains(expression2.getName())) {
+		// newCounterExample(state, expression1,
+		// state.getLabelsString().contains(expression1.getName()), null);
+		// newCounterExample(state, expression2,
+		// state.getLabelsString().contains(expression2.getName()), null);
+		// tabela verdade
+		// p q p<->q
+		// V V V
+		// V F F
+		// F V F
+		// F F V
+
+		if (state.getLabelsString().contains(expression1.getName())
+				&& !state.getLabelsString().contains(expression2.getName())
+				|| !state.getLabelsString().contains(expression1.getName())
+				&& state.getLabelsString().contains(expression2.getName())) {
 			validExpression = false;
-			
+
 		}
-		//newCounterExample(state, expression, validExpression, null);
-		if(validExpression) {
+		// newCounterExample(state, expression, validExpression, null);
+		if (validExpression) {
 			state.addLabelsString(expression.getName());
-		}
-		else{
-			MEF.getInstance().addCounterExample(newCounterExample(state, expression, false, null));			
+		} else {
+			MEF.getInstance().addCounterExample(
+					newCounterExample(state, expression, false, null));
 		}
 		return validExpression;
 	}
-	
+
 	/**
-	 * @author Pedro Pinheiro e Andre Luiz
-	 * Metodo que executa o IMP para todos os estados do parametro states
+	 * @author Pedro Pinheiro e Andre Luiz Metodo que executa o IMP para todos
+	 *         os estados do parametro states
 	 * @param states
 	 *            Consiste do array de estados da MEF inteira.
 	 * @param expression
@@ -378,7 +400,7 @@ public class Algorithms {
 		}
 		return validStates;
 	}
-	
+
 	/**
 	 * This formula is TRUE in a state s0 if formula f holds in
 	 * the future of some path from s0.
@@ -462,23 +484,24 @@ public class Algorithms {
 	 * @param label
 	 * @return
 	 */
-	private static boolean recursiveEF(State state, Expression exp, State stateAnt) {
+	private static boolean recursiveEF(State state, Expression exp,
+			State stateAnt) {
 		boolean valid = false;
-		counterExample.addTransicao(stateAnt, state);
 		String label = exp.getName();
 		if (state.getLabelsString().contains(label)) {
-			//newCounterExample(stateAnt, exp, true, state);
+			newCounterExample(stateAnt, exp, true, state);
 			valid = true;
 		} else {
 			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
-			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
+			for (Iterator<State> iterator = children.iterator(); iterator
+					.hasNext();) {
 				State state2 = (State) iterator.next();
-				if (!State.isStateVisited(state2)) { // se o estado ainda não foi visitado
-					
+				if (!State.isStateVisited(state2)) { // se o estado ainda não
+														// foi visitado
+
 					valid = recursiveEF(state2, exp, state);
 					if (valid) {
-						counterExample.addStateValido(state);
 						break;
 					}
 				}
@@ -599,7 +622,7 @@ public class Algorithms {
 		}
 		return valid;
 	}
-	
+
 	/**
 	 * This formula is TRUE in a state s0 if formula f holds at 
 	 * every state on every path from s0.
@@ -675,10 +698,10 @@ public class Algorithms {
 		}
 		return valid;
 	}
-	
+
 	/**
-	 * M�todo para avaliar a expressão CTL AX. This formula is TRUE in a state s0 if formula f is TRUE 
-	 * in every immediate successor of s0.
+	 * M�todo para avaliar a expressão CTL AX. This formula is TRUE in a
+	 * state s0 if formula f is TRUE in every immediate successor of s0.
 	 * 
 	 * @param states
 	 *            Conjunto de estados da MEF
@@ -687,54 +710,55 @@ public class Algorithms {
 	 * */
 
 	public static boolean AX(State state, Expression expression) {
-		if(state.getLabelsString().contains(expression.getName())) {
+
+		if (state.getLabelsString().contains(expression.getName())) {
+			return true;
+		}
+
+		if (!expression.getExp1().isProperty()) {
+			executeProperOperation(state, expression, expression.getExp1());
+		}
+		counterExample = new CounterExample(state, expression);
+		boolean validExpression = true;
+
+		ArrayList<State> children = state.getChildren();
+		for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
+			State state2 = (State) iterator.next();
+			counterExample.addTransicao(state, state2);
+
+			if (!state2.getLabelsString().contains(
+					expression.getExp1().getName())) {
+				validExpression = false;
+
+				break;
+			} else {
+				counterExample.addStateValido(state);
+			}
+		}
+
+		if (validExpression) {
+			state.addLabelsString(expression.getName());
+		} else {
+			MEF.getInstance().addCounterExample(counterExample);
+		}
+
+		return validExpression;
+	}
+
+	public static boolean AF(State state, Expression expression) {
+		if (state.getLabelsString().contains(expression.getName())) {
 			newCounterExample(state, expression, true, null);
 			return true;
 		}
-		
-		if(!expression.getExp1().isProperty()) {
+
+		if (!expression.getExp1().isProperty()) {
 			executeProperOperation(state, expression, expression.getExp1());
 		}
-		
-		boolean validExpression = true;
-		
-		ArrayList<State> children = state.getChildren();
-		for (Iterator<State> iterator = children.iterator(); iterator
-				.hasNext();) {
-			State state2 = (State) iterator.next();
-			
-			if (!state2.getLabelsString().contains(expression.getExp1().getName())) {
-				validExpression = false;
-				newCounterExample(state, expression.getExp1(), false, state2);
-				break;
-			}
-			else{
-				newCounterExample(state, expression.getExp1(), true, state2);
-			}
-		}
-		newCounterExample(state, expression, validExpression, null);
-		if(validExpression) {
-			state.addLabelsString(expression.getName());
-		}
-		
-		return validExpression;
-	}
-	
-	public static boolean AF(State state, Expression expression) {
-		counterExample = new CounterExample(state, expression);
-		if(state.getLabelsString().contains(expression.getName())) {
-			return true;
-		}
-		
-		if(!expression.getExp1().isProperty()) {
-			executeProperOperation(state, expression, expression.getExp1());
-		}
-		
+
 		boolean validExpression = true;
 		Expression expression1 = expression.getExp1();
 		if (state.getLabelsString().contains(expression1.getName())) { // se ele contem a expressão 1
 			State.addVisitedState(state);
-			counterExample.addStateValido(state);
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator
 					.hasNext();) {
@@ -744,179 +768,187 @@ public class Algorithms {
 					validExpression = false;
 					break;
 				}
-			
+
 			}
 		} else {
-			validExpression = false;			
+			validExpression = false;
 		}
-		
-		if(validExpression) {
+		newCounterExample(state, expression, validExpression, null);
+		if (validExpression) {
 			state.addLabelsString(expression.getName());
-		}
-		else{
-			MEF.getInstance().getCounterExample().add(counterExample);
 		}
 		State.clearVisitedStates();
 		return validExpression;
 	}
 
-	private static boolean recursiveAF(State state, Expression exp, State stateAnt) {
+	private static boolean recursiveAF(State state, Expression exp,
+			State stateAnt) {
 		boolean valid = true;
-		counterExample.addTransicao(stateAnt, state);
 		String label = exp.getName();
 		if (state.getLabelsString().contains(label)) {
 			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
-			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
+			for (Iterator<State> iterator = children.iterator(); iterator
+					.hasNext();) {
 				State state2 = (State) iterator.next();
-//				if(state2.isVisited() && !state2.getLabelsString().contains(label)) {
-//					valid = false;
-//					break;
-//				}
-				
-				if(!State.isStateVisited(state2)) {
-					
+				// if(state2.isVisited() &&
+				// !state2.getLabelsString().contains(label)) {
+				// valid = false;
+				// break;
+				// }
+
+				if (!State.isStateVisited(state2)) {
+
 					valid = recursiveAF(state2, exp, state);
 					if (!valid) {
 						break;
-					}
-					else{
-						counterExample.addStateValido(state);
 					}
 				}
 			}
 		} else {
 			valid = false;
 		}
-		//newCounterExample(stateAnt, exp, valid, state);
+		MEF.getInstance().addCounterExample(
+				newCounterExample(stateAnt, exp, valid, state));
 		return valid;
 	}
 
 	/**
-	 * Implementacao do algoritmo EX exp - This formula is TRUE in a state s0 if formula f is TRUE
-	 * in one or more immediate successors of s0.
+	 * Implementacao do algoritmo EX exp - This formula is TRUE in a state s0 if
+	 * formula f is TRUE in one or more immediate successors of s0.
 	 * 
 	 * @author Mauricio Arimoto e Pedro Pinheiro
 	 * @param st
 	 *            Conjunto de estados da MEF em que se deseja verificar se uma
-	 *      	  expressao e' valida
+	 *            expressao e' valida
 	 * @param exp
 	 *            Expressao CTL que se deseja verificar.
-	 *
+	 * 
 	 */
 	public static boolean EX(State state, Expression expression) {
-		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, null);
+
+		if (state.getLabelsString().contains(expression.getName())) {
+
 			return true;
 		}
-		
-		if(!expression.getExp1().isProperty()) {
+
+		if (!expression.getExp1().isProperty()) {
 			executeProperOperation(state, expression, expression.getExp1());
 		}
-		
+		counterExample = new CounterExample(state, expression);
 		boolean validExpression = false;
-		
+
 		ArrayList<State> children = state.getChildren();
-		for (Iterator<State> iterator = children.iterator(); iterator
-				.hasNext();) {
+		for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
 			State state2 = (State) iterator.next();
-			
-			if (state2.getLabelsString().contains(expression.getExp1().getName())) {
-				newCounterExample(state, expression.getExp1(), true, state2);
+
+			counterExample.addTransicao(state, state2);
+			if (state2.getLabelsString().contains(
+					expression.getExp1().getName())) {
+				counterExample.addStateValido(state2);
 				validExpression = true;
 				break;
 			}
-			else{
-				newCounterExample(state, expression.getExp1(), false, state2);
-			}
 		}
-		newCounterExample(state, expression, validExpression, null);
+
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
+		} else {
+			MEF.getInstance().addCounterExample(counterExample);
 		}
 		return validExpression;
 	}
 
 	/**
-	 * This formula is TRUE in a state s0 if for SOME PATH starting 
-	 * with s0, there exists an initial prefix of that path such that f2 
-	 * holds at the last state of the prefix and f1 holds at all other 
-	 * states along the prefix.
+	 * This formula is TRUE in a state s0 if for SOME PATH starting with s0,
+	 * there exists an initial prefix of that path such that f2 holds at the
+	 * last state of the prefix and f1 holds at all other states along the
+	 * prefix.
 	 * 
 	 * Implementando o algoritmo EU -- E(p U q) --> se existe um caminho tal que
 	 * existe um estado em que p e' verdade ate que q seja verdade
 	 * 
 	 * @author Mauricio Arimoto e Pedro Pinheiro
 	 * @param st
-	 *            Estado da MEF em que se deseja verificar se uma
-	 *      	  expressao e' valida
+	 *            Estado da MEF em que se deseja verificar se uma expressao e'
+	 *            valida
 	 * @param exp
 	 *            Expressao CTL que se deseja verificar.
-	 *            
+	 * 
 	 * @param state
 	 * @param expression
 	 * @return
 	 */
 	public static boolean EU(State state, Expression expression) {
-		if(state.getLabelsString().contains(expression.getName())) {
+		if (state.getLabelsString().contains(expression.getName())) {
 			newCounterExample(state, expression, true, null);
 			return true;
 		}
-		
-		if(!expression.getExp1().isProperty()) {
+
+		if (!expression.getExp1().isProperty()) {
 			executeProperOperation(state, expression, expression.getExp1());
 		}
-		if(!expression.getExp2().isProperty()) {
+		if (!expression.getExp2().isProperty()) {
 			executeProperOperation(state, expression, expression.getExp2());
 		}
-		
+
 		boolean validExpression = false;
 		// ex: Expression.name = E (p U q)
 		Expression expression1 = expression.getExp1(); // = p
 		Expression expression2 = expression.getExp2(); // = q
-		
-		if(state.getLabelsString().contains(expression2.getName())) {
-			newCounterExample(state, expression2, true, null);
+
+		if (state.getLabelsString().contains(expression2.getName())) {
+			MEF.getInstance().addCounterExample(
+					newCounterExample(state, expression2, true, null));
 			validExpression = true;
-		} else if(state.getLabelsString().contains(expression1.getName())) {
+		} else if (state.getLabelsString().contains(expression1.getName())) {
 			State.addVisitedState(state);
-			
+
 			ArrayList<State> children = state.getChildren();
-			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
+			for (Iterator<State> iterator = children.iterator(); iterator
+					.hasNext();) {
 				State state2 = (State) iterator.next();
-				
-				validExpression = recursiveEU(state2, expression1, expression2, state);
-				newCounterExample(state, expression1, validExpression, state2);
+
+				validExpression = recursiveEU(state2, expression1, expression2,
+						state);
+				MEF.getInstance().addCounterExample(
+						newCounterExample(state, expression1, validExpression,
+								state2));
 				if (validExpression) {
 					break;
 				}
 			}
 		}
-		
-		if(validExpression) {
+
+		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
 		State.clearVisitedStates();
 		return validExpression;
 	}
 
-	private static boolean recursiveEU(State state, Expression expression1, Expression expression2, State stateAnt) {
+	private static boolean recursiveEU(State state, Expression expression1,
+			Expression expression2, State stateAnt) {
 		boolean valid = false;
 		String firstExpression = expression1.getName();
 		String secondExpression = expression2.getName();
-		if(state.getLabelsString().contains(secondExpression)) {
+		if (state.getLabelsString().contains(secondExpression)) {
 			valid = true;
-			newCounterExample(stateAnt, expression2, true, state);
-		} else if(state.getLabelsString().contains(firstExpression)) {			
+			MEF.getInstance().addCounterExample(
+					newCounterExample(stateAnt, expression2, true, state));
+		} else if (state.getLabelsString().contains(firstExpression)) {
 			State.addVisitedState(state);
-			
+
 			ArrayList<State> children = state.getChildren();
-			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
+			for (Iterator<State> iterator = children.iterator(); iterator
+					.hasNext();) {
 				State state2 = (State) iterator.next();
-				if(!State.isStateVisited(state2)) {
-					
+				if (!State.isStateVisited(state2)) {
+
 					valid = recursiveEU(state2, expression1, expression2, state);
-					newCounterExample(stateAnt, expression1, valid, state);
+					MEF.getInstance().addCounterExample(
+							newCounterExample(stateAnt, expression1, valid,
+									state));
 					if (valid) {
 						break;
 					}
@@ -925,50 +957,56 @@ public class Algorithms {
 		}
 		return valid;
 	}
-	
+
 	/**
-	 * This formula is TRUE in a state s0 if for EVERY PATH starting 
-	 * with s0, there exists an initial prefix of that path such that f2 
-	 * holds at the last state of the prefix and f1 holds at all other 
-	 * states along the prefix.
+	 * This formula is TRUE in a state s0 if for EVERY PATH starting with s0,
+	 * there exists an initial prefix of that path such that f2 holds at the
+	 * last state of the prefix and f1 holds at all other states along the
+	 * prefix.
 	 * 
 	 * @author Mauricio Arimoto
 	 * @param state
 	 * @param expression
 	 * @return validExpression
 	 */
-	
+
 	public static boolean AU(State state, Expression expression) {
-		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, null);
+		if (state.getLabelsString().contains(expression.getName())) {
+			MEF.getInstance().addCounterExample(
+					newCounterExample(state, expression, true, null));
 			return true;
 		}
-		
-		if(!expression.getExp1().isProperty()) {
+
+		if (!expression.getExp1().isProperty()) {
 			executeProperOperation(state, expression, expression.getExp1());
 		}
-		if(!expression.getExp2().isProperty()) {
+		if (!expression.getExp2().isProperty()) {
 			executeProperOperation(state, expression, expression.getExp2());
 		}
-		
+
 		boolean validExpression = true;
-		
+
 		// ex: Expression.name = A (p U q)
 		Expression expression1 = expression.getExp1(); // = p
 		Expression expression2 = expression.getExp2(); // = q
-		
+
 		if (state.getLabelsString().contains(expression2.getName())) {
-			newCounterExample(state, expression2, true, null);
+			MEF.getInstance().addCounterExample(
+					newCounterExample(state, expression2, true, null));
 			validExpression = true;
 		} else if (state.getLabelsString().contains(expression1.getName())) {
-			State.addVisitedState(state);			
+			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
-		
-			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
+
+			for (Iterator<State> iterator = children.iterator(); iterator
+					.hasNext();) {
 				State state2 = (State) iterator.next();
-				
-				validExpression = recursiveAU(state2, expression1, expression2, state);
-				newCounterExample(state, expression1, validExpression, state2);
+
+				validExpression = recursiveAU(state2, expression1, expression2,
+						state);
+				MEF.getInstance().addCounterExample(
+						newCounterExample(state, expression1, validExpression,
+								state2));
 				if (!validExpression) {
 					break;
 				}
@@ -977,15 +1015,16 @@ public class Algorithms {
 			validExpression = false;
 			newCounterExample(state, expression, false, null);
 		}
-		
+
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
 		State.clearVisitedStates();
 		return validExpression;
 	}
-	
-	private static boolean recursiveAU(State state, Expression expression1, Expression expression2, State stateAnt) {
+
+	private static boolean recursiveAU(State state, Expression expression1,
+			Expression expression2, State stateAnt) {
 		boolean valid = true;
 		String firstExpression = expression1.getName();
 		String secondExpression = expression2.getName();
@@ -993,10 +1032,11 @@ public class Algorithms {
 			State.addVisitedState(state);
 		} else if (state.getLabelsString().contains(firstExpression)) {
 			State.addVisitedState(state);
-			
+
 			ArrayList<State> children = state.getChildren();
 
-			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
+			for (Iterator<State> iterator = children.iterator(); iterator
+					.hasNext();) {
 				State state2 = (State) iterator.next();
 				if (!State.isStateVisited(state2)) {
 					valid = recursiveAU(state2, expression1, expression2, state);
@@ -1004,8 +1044,9 @@ public class Algorithms {
 						break;
 					}
 				}
-				
-				if(State.isStateVisited(state2) && !state2.getLabelsString().contains(secondExpression)) {
+
+				if (State.isStateVisited(state2)
+						&& !state2.getLabelsString().contains(secondExpression)) {
 					valid = false;
 					break;
 				}
@@ -1013,20 +1054,22 @@ public class Algorithms {
 		} else {
 			valid = false;
 		}
-		newCounterExample(stateAnt, expression1, valid, null);
-		newCounterExample(stateAnt, expression2, valid, null);
-		return valid;
-				
-	}
-	
-	private static void executeProperOperation(State state, Expression expression, Expression subExpression) {
-		
-		if(expression.isLogicalOperator()) { // NOT, AND, OR, IMP e BIC
-			executeOperation(state, subExpression);
-			
-		} else if(expression.isTemporalOperator()) {
+		MEF.getInstance().addCounterExample(
+				newCounterExample(stateAnt, expression1, valid, null));
 
-			if(expression.isEX() || expression.isAX()) { // EX ou AX
+		return valid;
+
+	}
+
+	private static void executeProperOperation(State state,
+			Expression expression, Expression subExpression) {
+
+		if (expression.isLogicalOperator()) { // NOT, AND, OR, IMP e BIC
+			executeOperation(state, subExpression);
+
+		} else if (expression.isTemporalOperator()) {
+
+			if (expression.isEX() || expression.isAX()) { // EX ou AX
 				ArrayList<State> mustExecuteStates = state.getChildren();
 				for (Iterator<State> iterator = mustExecuteStates.iterator(); iterator
 						.hasNext();) {
@@ -1052,44 +1095,48 @@ public class Algorithms {
 
 	/**
 	 * Método para executar a expressão para um determinado estado
-	 * @param state o estado que o usuário que verificar se a expressão é verdadeira
-	 * @param expression a árvore de expressão completa
+	 * 
+	 * @param state
+	 *            o estado que o usuário que verificar se a expressão é
+	 *            verdadeira
+	 * @param expression
+	 *            a árvore de expressão completa
 	 * @return
 	 */
 	public static boolean executeOperation(State state, Expression expression) {
-		
+
 		boolean validOperation = false;
-		
-		if(expression.isLogicalOperator()) {
-			if(expression.isNOT()) { // NOT
+
+		if (expression.isLogicalOperator()) {
+			if (expression.isNOT()) { // NOT
 				validOperation = NOT(state, expression);
-			} else if(expression.isAND()) { // AND 
+			} else if (expression.isAND()) { // AND
 				validOperation = AND(state, expression);
-			} else if(expression.isOR()) { // OR 
+			} else if (expression.isOR()) { // OR
 				validOperation = OR(state, expression);
-			} else if(expression.isIMP()){ // IMP
+			} else if (expression.isIMP()) { // IMP
 				validOperation = IMP(state, expression);
 			} else { // BIC
 				validOperation = BIC(state, expression);
 			}
-			
-		} else if(expression.isTemporalOperator()) {
 
-			if(expression.isEX()) { // EX
+		} else if (expression.isTemporalOperator()) {
+
+			if (expression.isEX()) { // EX
 				validOperation = EX(state, expression);
-			} else if(expression.isAX()) { // AX
+			} else if (expression.isAX()) { // AX
 				validOperation = AX(state, expression);
-			} else if(expression.isAU()) { // AU
+			} else if (expression.isAU()) { // AU
 				validOperation = AU(state, expression);
-			} else if(expression.isEU()) { // EU 
+			} else if (expression.isEU()) { // EU
 				validOperation = EU(state, expression);
-			} else if(expression.isAF()) { // AF
+			} else if (expression.isAF()) { // AF
 				validOperation = AF(state, expression);
-			} else if(expression.isEF()) { // EF 
+			} else if (expression.isEF()) { // EF
 				validOperation = EF(state, expression);
-			} else if(expression.isEG()) { // EG 
+			} else if (expression.isEG()) { // EG
 				validOperation = EG(state, expression);
-			} else if(expression.isAG()) { // AG 
+			} else if (expression.isAG()) { // AG
 				validOperation = AG(state, expression);
 			}
 		} else {
@@ -1101,8 +1148,8 @@ public class Algorithms {
 		}
 		newCounterExample(state, expression, validOperation, null);
 		return validOperation;
-		}
-	
+	}
+
 	public static ArrayList<State> getConnectingStates(State state) {
 		ArrayList<State> states = new ArrayList<State>();
 		// adicionar state atual
@@ -1120,14 +1167,15 @@ public class Algorithms {
 
 	private static void addConnectedState(ArrayList<State> states, State state) {
 
-		if(!State.isStateVisited(state)) {
+		if (!State.isStateVisited(state)) {
 			states.add(state);
 			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
-			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
+			for (Iterator<State> iterator = children.iterator(); iterator
+					.hasNext();) {
 				State state2 = (State) iterator.next();
 				addConnectedState(states, state2);
 			}
-		}		
+		}
 	}
 }
