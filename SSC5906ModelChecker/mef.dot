@@ -2,6 +2,10 @@ digraph mef {
 s1[ label= "s1\n{r}"]
 s1->s1
 s1->s2
-s2[ label= "s2\n{s}"]
-s2->s1
+s1->s3
+s2[ label= "s2\n{r, s}"]
+s2->s2
+s2->s3
+s3[ label= "s3\n{s, t}"]
+s3->s1
 node [shape = doublecircle]; s1;}

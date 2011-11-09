@@ -1,5 +1,5 @@
 jmc 
- states (s1 s2 )
- properties (r s )
- def[s1 (s1 s2  : r ) s2 (s1  : s ) ] 
+ states (s1 s2 s3 )
+ properties (r s t )
+ def[s1 (s1 s2 s3  : r ) s2 (s2  : r s ) s2 (s2 s3  : r s ) s3 (s1  : s t ) ] 
  jmc
