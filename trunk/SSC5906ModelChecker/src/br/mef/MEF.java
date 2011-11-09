@@ -205,7 +205,9 @@ public class MEF {
 	}
 
 	public void addCounterExample(CounterExample counterExample) {
-		this.counterExample.add(counterExample);
+		if(!this.counterExample.contains(counterExample)){
+			this.counterExample.add(counterExample);	
+		}		
 	}
 	
 	public ArrayList<CounterExample> findCounterExamplesByState(State state) {
