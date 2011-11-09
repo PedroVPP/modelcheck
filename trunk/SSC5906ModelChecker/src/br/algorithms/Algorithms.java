@@ -405,9 +405,9 @@ public class Algorithms {
 	 * @throws MalformedExpression
 	 */
 	public static boolean EF(State state, Expression expression) {
-		
+		counterExample = new CounterExample(state, expression);
 		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, null);
+			//newCounterExample(state, expression, true, null);
 			return true;
 		}
 		
@@ -418,8 +418,9 @@ public class Algorithms {
 		boolean validExpression = false;
 
 		Expression expression1 = expression.getExp1(); // = p
-		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null);
+		//newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null);
 		if (state.getLabelsString().contains(expression1.getName())) {
+			counterExample.addStateValido(state);
 			validExpression = true;
 		} else {
 			State.addVisitedState(state);
@@ -429,15 +430,18 @@ public class Algorithms {
 				State state2 = (State) iterator.next();
 				// se o recursiveEF encontrar (true ou false) um estado que seja valido em 
 				// algum caminho a partir de algum dos filhos
-				if (recursiveEF(state2, expression, state)) {
+				if (recursiveEF(state2, expression1, state)) {
 					validExpression = true;
 					break;
 				}
 			}
 		}
-		newCounterExample(state, expression, validExpression, null);
+		//newCounterExample(state, expression1, validExpression, null);
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
+		}
+		else {
+			MEF.getInstance().addCounterExample(counterExample);
 		}
 		State.clearVisitedStates();
 		return validExpression;
@@ -462,9 +466,10 @@ public class Algorithms {
 	 */
 	private static boolean recursiveEF(State state, Expression exp, State stateAnt) {
 		boolean valid = false;
+		counterExample.addTransicao(stateAnt, state);
 		String label = exp.getName();
 		if (state.getLabelsString().contains(label)) {
-			newCounterExample(stateAnt, exp, true, state);
+			//newCounterExample(stateAnt, exp, true, state);
 			valid = true;
 		} else {
 			State.addVisitedState(state);
@@ -475,6 +480,7 @@ public class Algorithms {
 					
 					valid = recursiveEF(state2, exp, state);
 					if (valid) {
+						counterExample.addStateValido(state);
 						break;
 					}
 				}
@@ -713,8 +719,8 @@ public class Algorithms {
 	}
 	
 	public static boolean AF(State state, Expression expression) {
+		counterExample = new CounterExample(state, expression);
 		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, null);
 			return true;
 		}
 		
@@ -724,9 +730,9 @@ public class Algorithms {
 		
 		boolean validExpression = true;
 		Expression expression1 = expression.getExp1();
-		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null);
 		if (state.getLabelsString().contains(expression1.getName())) { // se ele contem a expressão 1
 			State.addVisitedState(state);
+			counterExample.addStateValido(state);
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator
 					.hasNext();) {
@@ -736,14 +742,17 @@ public class Algorithms {
 					validExpression = false;
 					break;
 				}
-				
+			
 			}
 		} else {
-			validExpression = false;
+			validExpression = false;			
 		}
-		newCounterExample(state, expression, validExpression, null);
+		
 		if(validExpression) {
 			state.addLabelsString(expression.getName());
+		}
+		else{
+			MEF.getInstance().getCounterExample().add(counterExample);
 		}
 		State.clearVisitedStates();
 		return validExpression;
@@ -751,6 +760,7 @@ public class Algorithms {
 
 	private static boolean recursiveAF(State state, Expression exp, State stateAnt) {
 		boolean valid = true;
+		counterExample.addTransicao(stateAnt, state);
 		String label = exp.getName();
 		if (state.getLabelsString().contains(label)) {
 			State.addVisitedState(state);
@@ -768,12 +778,15 @@ public class Algorithms {
 					if (!valid) {
 						break;
 					}
+					else{
+						counterExample.addStateValido(state);
+					}
 				}
 			}
 		} else {
 			valid = false;
 		}
-		newCounterExample(stateAnt, exp, valid, state);
+		//newCounterExample(stateAnt, exp, valid, state);
 		return valid;
 	}
 
