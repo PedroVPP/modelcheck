@@ -478,32 +478,30 @@ public class Algorithms {
 	 * @param label
 	 * @return
 	 */
-	private static boolean recursiveEF(State state, Expression exp,
-			State stateAnt) {
-		boolean valid = false;
-		String label = exp.getName();
-		if (state.getLabelsString().contains(label)) {
-			newCounterExample(stateAnt, exp, true, state);
-			valid = true;
-		} else {
-			State.addVisitedState(state);
-			ArrayList<State> children = state.getChildren();
-			for (Iterator<State> iterator = children.iterator(); iterator
-					.hasNext();) {
-				State state2 = (State) iterator.next();
-				if (!State.isStateVisited(state2)) { // se o estado ainda n√£o
-														// foi visitado
-
-					valid = recursiveEF(state2, exp, state);
-					if (valid) {
-						break;
-					}
-				}
-			}
-		}
-		return valid;
-	}
-
+    private static boolean recursiveEF(State state, Expression exp, State stateAnt) {
+        boolean valid = false;
+        counterExample.addTransicao(stateAnt, state);
+        String label = exp.getName();
+        if (state.getLabelsString().contains(label)) {
+                //newCounterExample(stateAnt, exp, true, state);
+                valid = true;
+        } else {
+                State.addVisitedState(state);
+                ArrayList<State> children = state.getChildren();
+                for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
+                        State state2 = (State) iterator.next();
+                        if (!State.isStateVisited(state2)) { // se o estado ainda n„o foi visitado
+                                
+                                valid = recursiveEF(state2, exp, state);
+                                if (valid) {
+                                        counterExample.addStateValido(state);
+                                        break;
+                                }
+                        }
+                }
+        }
+        return valid;
+}
 	/**
 	 * This formula is TRUE in a state s0 if there exists some path
 	 * from s0 on which f holds at every state.
@@ -775,38 +773,37 @@ public class Algorithms {
 		return validExpression;
 	}
 
-	private static boolean recursiveAF(State state, Expression exp,
-			State stateAnt) {
-		boolean valid = true;
-		String label = exp.getName();
-		if (state.getLabelsString().contains(label)) {
-			State.addVisitedState(state);
-			ArrayList<State> children = state.getChildren();
-			for (Iterator<State> iterator = children.iterator(); iterator
-					.hasNext();) {
-				State state2 = (State) iterator.next();
-				// if(state2.isVisited() &&
-				// !state2.getLabelsString().contains(label)) {
-				// valid = false;
-				// break;
-				// }
-
-				if (!State.isStateVisited(state2)) {
-
-					valid = recursiveAF(state2, exp, state);
-					if (!valid) {
-						break;
-					}
-				}
-			}
-		} else {
-			valid = false;
-		}
-		MEF.getInstance().addCounterExample(
-				newCounterExample(stateAnt, exp, valid, state));
-		return valid;
-	}
-
+    private static boolean recursiveAF(State state, Expression exp, State stateAnt) {
+        boolean valid = true;
+        counterExample.addTransicao(stateAnt, state);
+        String label = exp.getName();
+        if (state.getLabelsString().contains(label)) {
+                State.addVisitedState(state);
+                ArrayList<State> children = state.getChildren();
+                for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
+                        State state2 = (State) iterator.next();
+//                      if(state2.isVisited() && !state2.getLabelsString().contains(label)) {
+//                              valid = false;
+//                              break;
+//                      }
+                        
+                        if(!State.isStateVisited(state2)) {
+                                
+                                valid = recursiveAF(state2, exp, state);
+                                if (!valid) {
+                                        break;
+                                }
+                                else{
+                                        counterExample.addStateValido(state);
+                                }
+                        }
+                }
+        } else {
+                valid = false;
+        }
+        //newCounterExample(stateAnt, exp, valid, state);
+        return valid;
+}
 	/**
 	 * Implementacao do algoritmo EX exp - This formula is TRUE in a state s0 if
 	 * formula f is TRUE in one or more immediate successors of s0.
