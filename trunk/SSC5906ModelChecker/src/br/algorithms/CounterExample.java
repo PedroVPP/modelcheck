@@ -2,6 +2,7 @@ package br.algorithms;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import br.mef.Expression;
 import br.mef.State;
@@ -34,7 +35,14 @@ public class CounterExample {
 	}
 
 	public void addStateValido(State state) {
-		if(this.validos.contains(state)) {
+		boolean contains = false;
+		for (Iterator<State> iterator = this.validos.iterator(); iterator.hasNext();) {
+			State state2 = (State) iterator.next();
+			if(state.getName().equals(state2.getName())) {
+				contains = true;
+			}
+		}
+		if(!contains) {
 			this.validos.add(state);
 		}
 	}	
