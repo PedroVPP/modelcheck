@@ -956,7 +956,7 @@ public static boolean AG(State state, Expression expression) {
 		
 		counterExample = new CounterExample(state, expression);
 		
-		boolean validExpression = true;
+		Boolean validExpression = null;
 		
 		// ex: Expression.name = A (p U q)
 		Expression expression1 = expression.getExp1(); // = p
@@ -974,15 +974,15 @@ public static boolean AG(State state, Expression expression) {
 				
 				validExpression = recursiveAU(state2, expression1, expression2, state);
 				//newCounterExample(state, expression1, validExpression, state2);
-				if (!validExpression) {
-					break;
-				}
 			}
 		} else {
 			validExpression = false;
+			
+		}
+		if(validExpression == null) {
+			validExpression = false;
 			MEF.getInstance().getCounterExample().add(counterExample);
 		}
-		
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -990,14 +990,15 @@ public static boolean AG(State state, Expression expression) {
 		return validExpression;
 	}
 	
-	private static boolean recursiveAU(State state, Expression expression1, Expression expression2, State stateAnt) {
+	private static Boolean recursiveAU(State state, Expression expression1, Expression expression2, State stateAnt) {
 		counterExample.addTransicao(stateAnt, state);
-		boolean valid = true;
+		Boolean valid = null;
 		String firstExpression = expression1.getName();
 		String secondExpression = expression2.getName();
 		if (state.getLabelsString().contains(secondExpression)) {
 			State.addVisitedState(state);
 			counterExample.addStateValido(state);
+			valid = true;
 			
 		} else if (state.getLabelsString().contains(firstExpression)) {
 			State.addVisitedState(state);
@@ -1009,14 +1010,11 @@ public static boolean AG(State state, Expression expression) {
 				State state2 = (State) iterator.next();
 				if (!State.isStateVisited(state2)) {
 					valid = recursiveAU(state2, expression1, expression2, state);
-					if (!valid) {
+					if(valid != null) {
+						if (!valid) {
 						break;
+						}
 					}
-				}
-				
-				if(State.isStateVisited(state2) && !state2.getLabelsString().contains(secondExpression)) {
-					valid = false;
-					break;
 				}
 			}
 		} else {
