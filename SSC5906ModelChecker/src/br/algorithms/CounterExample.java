@@ -45,4 +45,15 @@ public class CounterExample {
 		this.states.put(state, state2);
 	}
 
+    @Override
+    public boolean equals(Object st){
+        try{
+        	return (this.exp.getName().equals(((CounterExample) st).exp.getName()) && 
+        			this.state.getName().equals(((CounterExample) st).state.getName()));
+        }
+        catch(java.lang.RuntimeException e){
+            return false;
+        }
+
+    }	
 }
