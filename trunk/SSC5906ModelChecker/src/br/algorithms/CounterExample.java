@@ -34,7 +34,9 @@ public class CounterExample {
 	}
 
 	public void addStateValido(State state) {
-		this.validos.add(state);
+		if(this.validos.contains(state)) {
+			this.validos.add(state);
+		}
 	}	
 	
 	public HashMap<State, State> getTransicoes(){
