@@ -1,8 +1,8 @@
 package br.mef;
 
 public enum ExpressionType {
-	NOT, AND, OR, IMP, // Logical operators 
-	EX, AX, AU, EU, AF, EF, EG, AG, BIC; // Temporal operators
+	NOT, AND, OR, IMP, BIC,// Logical operators 
+	EX, AX, AU, EU, AF, EF, EG, AG; // Temporal operators
 	
 	public static boolean isLogicalOperator(ExpressionType type) {
 		if (type == NOT || type == AND ||
