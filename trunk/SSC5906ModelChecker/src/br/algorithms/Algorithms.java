@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import br.mef.Expression;
+import br.mef.MEF;
 import br.mef.Property;
 import br.mef.State;
 import br.util.GraphvizFileMaker;
@@ -23,9 +24,18 @@ public class Algorithms {
 	 * @return retorna true se a expressao e' verdadeira para aquele estado, e
 	 *         caso contrario retorna 'false'
 	 */
+	private static void newCounterExample(State state, Expression expression, boolean isValid, State stateTransicao){
+		CounterExample ce = new CounterExample(state, expression);
+		if (isValid){
+			ce.addStateValido(state);	
+		}		
+		ce.addTransicao(state, state);
+		MEF.getInstance().addCounterExample(ce);		
+	}
 	public static boolean OR(State state, Expression expression) {
 		
 		if(state.getLabelsString().contains(expression.getName())) {
+			newCounterExample(state, expression, true, state);
 			return true;
 		}
 		
@@ -47,7 +57,9 @@ public class Algorithms {
 		 */
 		boolean validExpression = false;
 		Expression expression1 = expression.getExp1(); // = p
+		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), state);
 		Expression expression2 = expression.getExp2(); // = q
+		newCounterExample(state, expression2, state.getLabelsString().contains(expression2.getName()), state);
 		if (state.getLabelsString().contains(expression1.getName())
 				|| state.getLabelsString().contains(expression2.getName())) {
 			// adiciona o label pois a expressao e verdadeira
@@ -55,11 +67,11 @@ public class Algorithms {
 		} else {
 			validExpression = false;
 		}
-		
+		newCounterExample(state, expression, validExpression, state);
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
-		
+	
 		return validExpression;
 	}
 
@@ -100,6 +112,7 @@ public class Algorithms {
 	public static boolean AND(State state, Expression expression) {
 		
 		if(state.getLabelsString().contains(expression.getName())) {
+			newCounterExample(state, expression, true, state);
 			return true;
 		}
 		
@@ -112,14 +125,16 @@ public class Algorithms {
 		
 		boolean validExpression = false;
 		Expression expression1 = expression.getExp1(); // = p
+		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), state);
 		Expression expression2 = expression.getExp2(); // = q
+		newCounterExample(state, expression2, state.getLabelsString().contains(expression2.getName()), state);		
 		if (state.getLabelsString().contains(expression1.getName())
 				&& state.getLabelsString().contains(expression2.getName())) {
 			validExpression = true;
 		} else {
 			validExpression = false;
 		}
-		
+		newCounterExample(state, expression, validExpression, state);
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -163,6 +178,7 @@ public class Algorithms {
 	 */
 	public static boolean NOT(State state, Expression expression) {
 		if(state.getLabelsString().contains(expression.getName())) {
+			newCounterExample(state, expression, true, state);
 			return true;
 		}
 		
@@ -172,11 +188,12 @@ public class Algorithms {
 		
 		boolean validExpression = false;
 		Expression expression1 = expression.getExp1(); // = p
+		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), state);
 		// sempre a expression 1 não pode ser nula, se não ocasionara o nullpointerexception 
 		if (!state.getLabelsString().contains(expression1.getName())) {
 			validExpression = true;
 		}
-
+		newCounterExample(state, expression, validExpression, state);
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -224,6 +241,7 @@ public class Algorithms {
 	public static boolean IMP(State state, Expression expression) {
 		
 		if(state.getLabelsString().contains(expression.getName())) {
+			newCounterExample(state, expression, true, state);
 			return true;
 		}
 		
@@ -237,7 +255,8 @@ public class Algorithms {
 		boolean validExpression = true;
 		Expression expression1 = expression.getExp1(); // = p
 		Expression expression2 = expression.getExp2(); // = q
-
+		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), state);
+		newCounterExample(state, expression2, state.getLabelsString().contains(expression2.getName()), state);
 //		tabela verdade
 //		p   q  p->q
 //		V 	V 	V
@@ -249,6 +268,7 @@ public class Algorithms {
 				!state.getLabelsString().contains(expression2.getName())) {
 			validExpression = false;
 		}
+		newCounterExample(state, expression, validExpression, state);
 		if(validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -264,6 +284,7 @@ public class Algorithms {
 	public static boolean BIC(State state, Expression expression) {
 		
 		if(state.getLabelsString().contains(expression.getName())) {
+			newCounterExample(state, expression, true, state);
 			return true;
 		}
 		
@@ -278,7 +299,8 @@ public class Algorithms {
 		// p <-> q
 		Expression expression1 = expression.getExp1(); // = p
 		Expression expression2 = expression.getExp2(); // = q
-
+		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), state);
+		newCounterExample(state, expression2, state.getLabelsString().contains(expression2.getName()), state);
 //		tabela verdade
 //		p   q  p<->q
 //		V 	V 	V
@@ -293,6 +315,7 @@ public class Algorithms {
 				state.getLabelsString().contains(expression2.getName())) {
 			validExpression = false;
 		}
+		newCounterExample(state, expression, validExpression, state);
 		if(validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -350,6 +373,7 @@ public class Algorithms {
 	public static boolean EF(State state, Expression expression) {
 		
 		if(state.getLabelsString().contains(expression.getName())) {
+			newCounterExample(state, expression, true, state);
 			return true;
 		}
 		
@@ -360,7 +384,7 @@ public class Algorithms {
 		boolean validExpression = false;
 
 		Expression expression1 = expression.getExp1(); // = p
-
+		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), state);
 		if (state.getLabelsString().contains(expression1.getName())) {
 			validExpression = true;
 		} else {
@@ -371,13 +395,13 @@ public class Algorithms {
 				State state2 = (State) iterator.next();
 				// se o recursiveEF encontrar (true ou false) um estado que seja valido em 
 				// algum caminho a partir de algum dos filhos
-				if (recursiveEF(state2, expression1.getName())) {
+				if (recursiveEF(state2, expression, state)) {
 					validExpression = true;
 					break;
 				}
 			}
 		}
-
+		newCounterExample(state, expression, validExpression, state);
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -402,10 +426,11 @@ public class Algorithms {
 	 * @param label
 	 * @return
 	 */
-	private static boolean recursiveEF(State state, String label) {
+	private static boolean recursiveEF(State state, Expression exp, State stateAnt) {
 		boolean valid = false;
-
+		String label = exp.getName();
 		if (state.getLabelsString().contains(label)) {
+			newCounterExample(stateAnt, exp, true, state);
 			valid = true;
 		} else {
 			State.addVisitedState(state);
@@ -414,7 +439,7 @@ public class Algorithms {
 				State state2 = (State) iterator.next();
 				if (!State.isStateVisited(state2)) { // se o estado ainda não foi visitado
 					
-					valid = recursiveEF(state2, label);
+					valid = recursiveEF(state2, exp, state);
 					if (valid) {
 						break;
 					}
@@ -448,6 +473,7 @@ public class Algorithms {
 	 */
 	public static boolean EG(State state, Expression expression) {
 		if(state.getLabelsString().contains(expression.getName())) {
+			newCounterExample(state, expression, true, state);
 			return true;
 		}
 		
@@ -457,6 +483,7 @@ public class Algorithms {
 		
 		boolean validExpression = false;
 		Expression expression1 = expression.getExp1(); // = p
+		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), state);
 		if (state.getLabelsString().contains(expression1.getName())) {
 			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
@@ -464,7 +491,7 @@ public class Algorithms {
 					.hasNext();) {
 				State state2 = (State) iterator.next();
 				// se ele achar um caminho (ciclo) em que a expressao seja valida
-				if (recursiveEG(state2, expression1.getName())) {
+				if (recursiveEG(state2, expression, state)) {
 					// entao marcar a expressao como valida
 					validExpression = true;
 					break; // pode quebrar porque ele ja achou um caminho
@@ -472,6 +499,7 @@ public class Algorithms {
 			}
 		}
 		
+		newCounterExample(state, expression, validExpression, state);
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -507,9 +535,9 @@ public class Algorithms {
 	 * @param label
 	 * @return
 	 */
-	private static boolean recursiveEG(State state, String label) {
+	private static boolean recursiveEG(State state, Expression exp, State stateAnt) {
 		boolean valid = false;
-
+		String label = exp.getName();
 		if (state.getLabelsString().contains(label)) {
 			State.addVisitedState(state);
 			
@@ -522,14 +550,14 @@ public class Algorithms {
 					valid = true;
 					break;
 				} else { // se ele não foi visitado
-					valid = recursiveEG(state2, label);
+					valid = recursiveEG(state2, exp, state);
 				}
 			}
 
 		} else {
 			valid = false;
 		}
-
+		newCounterExample(stateAnt, exp, valid, state);
 		return valid;
 	}
 	
@@ -548,6 +576,7 @@ public class Algorithms {
 	 */
 	public static boolean AG(State state, Expression expression) {
 		if(state.getLabelsString().contains(expression.getName())) {
+			newCounterExample(state, expression, true, state);
 			return true;
 		}
 		
@@ -557,21 +586,23 @@ public class Algorithms {
 		
 		boolean validExpression = true;
 		Expression expression1 = expression.getExp1(); // = p
+		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), state);
 		if (state.getLabelsString().contains(expression1.getName())) {
 			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator
 					.hasNext();) {
 				State state2 = (State) iterator.next();
-				validExpression = recursiveAG(state2, expression1.getName());
+				validExpression = recursiveAG(state2, expression1, state);
 				if(!validExpression) { // se o método achar um estado em algum caminho que seja falso então invalida a expressao
 					break;
 				}
 			}
 		} else {
+			newCounterExample(state, expression, false, state);
 			return false;
 		}
-		
+		newCounterExample(state, expression, validExpression, state);
 		if(validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -579,8 +610,9 @@ public class Algorithms {
 		return validExpression;
 	}
 
-	private static boolean recursiveAG(State state, String label) {
+	private static boolean recursiveAG(State state, Expression exp, State stateAnt) {
 		boolean valid = true;
+		String label = exp.getName();
 		if (state.getLabelsString().contains(label)) {
 			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
@@ -588,15 +620,17 @@ public class Algorithms {
 				State state2 = (State) iterator.next();
 				if(!State.isStateVisited(state2)) {
 					
-					valid = recursiveAG(state2, label);
+					valid = recursiveAG(state2, exp, state);
 					if (!valid) {
 						break;
 					}
 				}
 			}
 		} else {
+			newCounterExample(stateAnt, exp, false, state);
 			return false;
 		}
+		newCounterExample(stateAnt, exp, valid, state);
 		return valid;
 	}
 	
@@ -612,6 +646,7 @@ public class Algorithms {
 
 	public static boolean AX(State state, Expression expression) {
 		if(state.getLabelsString().contains(expression.getName())) {
+			newCounterExample(state, expression, true, state);
 			return true;
 		}
 		
@@ -628,10 +663,14 @@ public class Algorithms {
 			
 			if (!state2.getLabelsString().contains(expression.getExp1().getName())) {
 				validExpression = false;
+				newCounterExample(state, expression.getExp1(), false, state2);
 				break;
 			}
+			else{
+				newCounterExample(state, expression.getExp1(), true, state2);
+			}
 		}
-		
+		newCounterExample(state, expression, validExpression, state);
 		if(validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -641,6 +680,7 @@ public class Algorithms {
 	
 	public static boolean AF(State state, Expression expression) {
 		if(state.getLabelsString().contains(expression.getName())) {
+			newCounterExample(state, expression, true, state);
 			return true;
 		}
 		
@@ -650,7 +690,7 @@ public class Algorithms {
 		
 		boolean validExpression = true;
 		Expression expression1 = expression.getExp1();
-
+		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), state);
 		if (state.getLabelsString().contains(expression1.getName())) { // se ele contem a expressão 1
 			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
@@ -658,7 +698,7 @@ public class Algorithms {
 					.hasNext();) {
 				State state2 = (State) iterator.next();
 				// se ele achar um caminho onde a expressão não é válida
-				if (!recursiveAF(state2, expression1.getName())) {
+				if (!recursiveAF(state2, expression1, state)) {
 					validExpression = false;
 					break;
 				}
@@ -667,7 +707,7 @@ public class Algorithms {
 		} else {
 			validExpression = false;
 		}
-
+		newCounterExample(state, expression, validExpression, state);
 		if(validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -675,8 +715,9 @@ public class Algorithms {
 		return validExpression;
 	}
 
-	private static boolean recursiveAF(State state, String label) {
+	private static boolean recursiveAF(State state, Expression exp, State stateAnt) {
 		boolean valid = true;
+		String label = exp.getName();
 		if (state.getLabelsString().contains(label)) {
 			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
@@ -689,7 +730,7 @@ public class Algorithms {
 				
 				if(!State.isStateVisited(state2)) {
 					
-					valid = recursiveAF(state2, label);
+					valid = recursiveAF(state2, exp, state);
 					if (!valid) {
 						break;
 					}
@@ -698,6 +739,7 @@ public class Algorithms {
 		} else {
 			valid = false;
 		}
+		newCounterExample(stateAnt, exp, valid, state);
 		return valid;
 	}
 
@@ -715,6 +757,7 @@ public class Algorithms {
 	 */
 	public static boolean EX(State state, Expression expression) {
 		if(state.getLabelsString().contains(expression.getName())) {
+			newCounterExample(state, expression, true, state);
 			return true;
 		}
 		
@@ -730,11 +773,15 @@ public class Algorithms {
 			State state2 = (State) iterator.next();
 			
 			if (state2.getLabelsString().contains(expression.getExp1().getName())) {
+				newCounterExample(state, expression.getExp1(), true, state2);
 				validExpression = true;
 				break;
 			}
+			else{
+				newCounterExample(state, expression.getExp1(), false, state2);
+			}
 		}
-		
+		newCounterExample(state, expression, validExpression, state);
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -763,6 +810,7 @@ public class Algorithms {
 	 */
 	public static boolean EU(State state, Expression expression) {
 		if(state.getLabelsString().contains(expression.getName())) {
+			newCounterExample(state, expression, true, state);
 			return true;
 		}
 		
@@ -777,6 +825,8 @@ public class Algorithms {
 		// ex: Expression.name = E (p U q)
 		Expression expression1 = expression.getExp1(); // = p
 		Expression expression2 = expression.getExp2(); // = q
+		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), state);
+		newCounterExample(state, expression2, state.getLabelsString().contains(expression2.getName()), state);
 		
 		if(state.getLabelsString().contains(expression2.getName())) {
 			validExpression = true;
@@ -787,13 +837,13 @@ public class Algorithms {
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
 				State state2 = (State) iterator.next();
 				
-				validExpression = recursiveEU(state2, expression1.getName(), expression2.getName());
+				validExpression = recursiveEU(state2, expression1, expression2, state);
 				if (validExpression) {
 					break;
 				}
 			}
 		}
-		
+		newCounterExample(state, expression, validExpression, state);
 		if(validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -801,12 +851,14 @@ public class Algorithms {
 		return validExpression;
 	}
 
-	private static boolean recursiveEU(State state, String firstExpression, String secondExpression) {
+	private static boolean recursiveEU(State state, Expression expression1, Expression expression2, State stateAnt) {
 		boolean valid = false;
-		
+		String firstExpression = expression1.getName();
+		String secondExpression = expression2.getName();
 		if(state.getLabelsString().contains(secondExpression)) {
 			valid = true;
-		} else if(state.getLabelsString().contains(firstExpression)) {
+			newCounterExample(stateAnt, expression2, true, state);
+		} else if(state.getLabelsString().contains(firstExpression)) {			
 			State.addVisitedState(state);
 			
 			ArrayList<State> children = state.getChildren();
@@ -814,7 +866,8 @@ public class Algorithms {
 				State state2 = (State) iterator.next();
 				if(!State.isStateVisited(state2)) {
 					
-					valid = recursiveEU(state2, firstExpression, secondExpression);
+					valid = recursiveEU(state2, expression1, expression2, state);
+					newCounterExample(stateAnt, expression1, valid, state);
 					if (valid) {
 						break;
 					}
@@ -838,6 +891,7 @@ public class Algorithms {
 	
 	public static boolean AU(State state, Expression expression) {
 		if(state.getLabelsString().contains(expression.getName())) {
+			newCounterExample(state, expression, true, state);
 			return true;
 		}
 		
@@ -855,23 +909,24 @@ public class Algorithms {
 		Expression expression2 = expression.getExp2(); // = q
 		
 		if (state.getLabelsString().contains(expression2.getName())) {
+			newCounterExample(state, expression2, true, state);
 			validExpression = true;
 		} else if (state.getLabelsString().contains(expression1.getName())) {
-			State.addVisitedState(state);
-			
+			State.addVisitedState(state);			
 			ArrayList<State> children = state.getChildren();
 		
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
 				State state2 = (State) iterator.next();
 				
-				validExpression = recursiveAU(state2, expression1.getName(), expression2.getName());
-				
+				validExpression = recursiveAU(state2, expression1, expression2, state);
+				newCounterExample(state, expression1, validExpression, state2);
 				if (!validExpression) {
 					break;
 				}
 			}
 		} else {
 			validExpression = false;
+			newCounterExample(state, expression, false, state);
 		}
 		
 		if (validExpression) {
@@ -881,8 +936,10 @@ public class Algorithms {
 		return validExpression;
 	}
 	
-	private static boolean recursiveAU(State state, String firstExpression, String secondExpression) {
+	private static boolean recursiveAU(State state, Expression expression1, Expression expression2, State stateAnt) {
 		boolean valid = true;
+		String firstExpression = expression1.getName();
+		String secondExpression = expression2.getName();
 		if (state.getLabelsString().contains(secondExpression)) {
 			State.addVisitedState(state);
 		} else if (state.getLabelsString().contains(firstExpression)) {
@@ -893,7 +950,7 @@ public class Algorithms {
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
 				State state2 = (State) iterator.next();
 				if (!State.isStateVisited(state2)) {
-					valid = recursiveAU(state2, firstExpression, secondExpression);
+					valid = recursiveAU(state2, expression1, expression2, state);
 					if (!valid) {
 						break;
 					}
@@ -907,6 +964,8 @@ public class Algorithms {
 		} else {
 			valid = false;
 		}
+		newCounterExample(stateAnt, expression1, valid, state);
+		newCounterExample(stateAnt, expression2, valid, state);
 		return valid;
 				
 	}
@@ -991,6 +1050,7 @@ public class Algorithms {
 				e.printStackTrace();
 			}
 		}
+		newCounterExample(state, expression, validOperation, state);
 		return validOperation;
 		}
 	
