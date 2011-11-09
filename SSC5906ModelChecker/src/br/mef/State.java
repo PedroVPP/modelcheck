@@ -1,6 +1,7 @@
 package br.mef;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class State {
 
@@ -113,7 +114,9 @@ public class State {
 	}
 
 	public static void addVisitedState(State state) {
-		State.visitedStates.add(state);
+		if(!State.visitedStates.contains(state)) {
+			State.visitedStates.add(state);
+		}
 	}
 	
 	public static void clearVisitedStates() {
