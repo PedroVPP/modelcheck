@@ -36,7 +36,6 @@ public class Algorithms {
 		//MEF.getInstance().addCounterExample(ce);		
 	}
 	public static boolean OR(State state, Expression expression) {
-		
 		if(state.getLabelsString().contains(expression.getName())) {
 			//newCounterExample(state, expression, true, null);
 			return true;
@@ -414,7 +413,6 @@ public class Algorithms {
 		if(!expression.getExp1().isProperty()) {
 			executeProperOperation(state, expression, expression.getExp1());
 		}
-		
 		boolean validExpression = false;
 
 		Expression expression1 = expression.getExp1(); // = p
@@ -512,26 +510,26 @@ public class Algorithms {
 	 * @return
 	 */
 	public static boolean EG(State state, Expression expression) {
+
 		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, null);
 			return true;
 		}
 		
 		if(!expression.getExp1().isProperty()) {
 			executeProperOperation(state, expression, expression.getExp1());
 		}
-		
+		counterExample = new CounterExample(state, expression);
 		boolean validExpression = false;
 		Expression expression1 = expression.getExp1(); // = p
-		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null);
 		if (state.getLabelsString().contains(expression1.getName())) {
+			counterExample.addStateValido(state);
 			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator
 					.hasNext();) {
 				State state2 = (State) iterator.next();
 				// se ele achar um caminho (ciclo) em que a expressao seja valida
-				if (recursiveEG(state2, expression, state)) {
+				if (recursiveEG(state2, expression1, state)) {
 					// entao marcar a expressao como valida
 					validExpression = true;
 					break; // pode quebrar porque ele ja achou um caminho
@@ -539,9 +537,10 @@ public class Algorithms {
 			}
 		}
 		
-		newCounterExample(state, expression, validExpression, null);
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
+		} else {
+			MEF.getInstance().addCounterExample(counterExample);
 		}
 		State.clearVisitedStates();
 		return validExpression;
@@ -576,11 +575,12 @@ public class Algorithms {
 	 * @return
 	 */
 	private static boolean recursiveEG(State state, Expression exp, State stateAnt) {
+		counterExample.addTransicao(stateAnt, state);
 		boolean valid = false;
 		String label = exp.getName();
 		if (state.getLabelsString().contains(label)) {
+			counterExample.addStateValido(state);
 			State.addVisitedState(state);
-			
 
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
@@ -597,7 +597,6 @@ public class Algorithms {
 		} else {
 			valid = false;
 		}
-		newCounterExample(stateAnt, exp, valid, state);
 		return valid;
 	}
 	
@@ -615,8 +614,8 @@ public class Algorithms {
 	 *         caso contrario retorna 'false'
 	 */
 	public static boolean AG(State state, Expression expression) {
+		
 		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, null);
 			return true;
 		}
 		
@@ -624,10 +623,12 @@ public class Algorithms {
 			executeProperOperation(state, expression, expression.getExp1());
 		}
 		
+		counterExample = new CounterExample(state, expression);
+		
 		boolean validExpression = true;
 		Expression expression1 = expression.getExp1(); // = p
-		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null);
 		if (state.getLabelsString().contains(expression1.getName())) {
+			counterExample.addStateValido(state);
 			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator
@@ -639,21 +640,24 @@ public class Algorithms {
 				}
 			}
 		} else {
-			newCounterExample(state, expression, false, null);
-			return false;
+			validExpression = false;
 		}
-		newCounterExample(state, expression, validExpression, null);
 		if(validExpression) {
 			state.addLabelsString(expression.getName());
+		} else {
+			MEF.getInstance().addCounterExample(counterExample);
 		}
 		State.clearVisitedStates();
 		return validExpression;
 	}
 
 	private static boolean recursiveAG(State state, Expression exp, State stateAnt) {
+		
+		counterExample.addTransicao(stateAnt, state);
 		boolean valid = true;
 		String label = exp.getName();
 		if (state.getLabelsString().contains(label)) {
+			counterExample.addStateValido(state);
 			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
@@ -667,10 +671,8 @@ public class Algorithms {
 				}
 			}
 		} else {
-			newCounterExample(stateAnt, exp, false, state);
 			return false;
 		}
-		newCounterExample(stateAnt, exp, valid, state);
 		return valid;
 	}
 	
