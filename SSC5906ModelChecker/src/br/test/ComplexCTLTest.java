@@ -59,7 +59,7 @@ public class ComplexCTLTest extends Assert{
 	}
 
 	@Test
-	public void test() {
+	public void test1() {
 		
 //		(1) M, s0 |= EX(¬p);
 		Expression NOT = new Expression("NOT p");
@@ -70,8 +70,9 @@ public class ComplexCTLTest extends Assert{
 		expression.setType(ExpressionType.EX);
 //		(1) YES;
 		assertTrue(Algorithms.executeOperation(this.states.get(0), expression));
-		
-		
+	}
+	@Test
+	public void test2() {	
 //		(2) M, s0 |= EX (EG(r));
 		Expression EG = new Expression("EG r");
 		EG.setExp1(new Expression("r"));
@@ -81,7 +82,10 @@ public class ComplexCTLTest extends Assert{
 		expression.setType(ExpressionType.EX);
 //		(2) YES;
 		assertTrue(Algorithms.executeOperation(this.states.get(0), expression));
-		
+	}
+	
+	@Test
+	public void test3() {
 //		(3) M, s1 |= AG (q ∨ r);
 		Expression OR = new Expression("q OR r");
 		OR.setExp1(new Expression("q"));
@@ -92,7 +96,10 @@ public class ComplexCTLTest extends Assert{
 		expression.setType(ExpressionType.AG);
 //		(3) YES ;
 		assertTrue(Algorithms.executeOperation(this.states.get(1), expression));
-		
+	}
+	
+	@Test
+	public void test4() {
 //		(4) M, s2 |= A [r U q];
 		expression = new Expression("A [r U q]");
 		expression.setExp1(new Expression("r"));
@@ -100,7 +107,10 @@ public class ComplexCTLTest extends Assert{
 		expression.setType(ExpressionType.AU);
 //		(4) YES;
 		assertTrue(Algorithms.executeOperation(this.states.get(2), expression));
-		
+	}
+	
+	@Test
+	public void test5() {
 //		(5) M, s1 |= A [q U AG(r)];
 		Expression AG = new Expression("AG r");
 		AG.setExp1(new Expression("r"));
@@ -110,10 +120,16 @@ public class ComplexCTLTest extends Assert{
 		expression.setExp2(AG);
 		expression.setType(ExpressionType.AU);
 //		(5) NO (because AG(r) is never true if you keep looping between s0 and s1);
+		assertFalse(Algorithms.executeOperation(this.states.get(0), expression));
 		assertFalse(Algorithms.executeOperation(this.states.get(1), expression));
-		
+		assertTrue(Algorithms.executeOperation(this.states.get(2), expression));
+		assertTrue(Algorithms.executeOperation(this.states.get(3), expression));
+	}
+	
+	@Test
+	public void test6() {
 //		(6) M, s1 |= E[q U EG(r)];
-		EG = new Expression("EG r");
+		Expression EG = new Expression("EG r");
 		EG.setExp1(new Expression("r"));
 		EG.setType(ExpressionType.EG);
 		
@@ -123,9 +139,12 @@ public class ComplexCTLTest extends Assert{
 		expression.setType(ExpressionType.EU);
 //		(6) YES;
 		assertTrue(Algorithms.executeOperation(this.states.get(1), expression));
-		
+	}
+	
+	@Test
+	public void test7() {
 //		(7) M, s0 |= ¬EG(q);
-		EG = new Expression("EG q");
+		Expression EG = new Expression("EG q");
 		EG.setExp1(new Expression("q"));
 		EG.setType(ExpressionType.EG);
 		
@@ -134,10 +153,12 @@ public class ComplexCTLTest extends Assert{
 		expression.setType(ExpressionType.NOT);
 //		(7) YES;
 		assertFalse(Algorithms.executeOperation(this.states.get(0), expression));
-//		assertTrue(Algorithms.executeOperation(this.states.get(0), expression));
-		
+	}
+	
+	@Test
+	public void test8() {
 //		(8) M, s1 |= EF (AG(q)).
-		AG = new Expression("AG q");
+		Expression AG = new Expression("AG q");
 		AG.setExp1(new Expression("q"));
 		AG.setType(ExpressionType.AG);
 		
@@ -146,8 +167,10 @@ public class ComplexCTLTest extends Assert{
 		expression.setType(ExpressionType.EF);
 //		(8) YES.
 		assertTrue(Algorithms.executeOperation(this.states.get(1), expression));
-		
-		
+	}
+	
+	@Test
+	public void test9() {
 //		(9) created by Pedro
 //		EF [(EG r) OR (EG q)] = TRUE
 		Expression EG1 = new Expression("EG r");
@@ -158,7 +181,7 @@ public class ComplexCTLTest extends Assert{
 		EG2.setType(ExpressionType.EG);
 		EG2.setExp1(new Expression("q"));
 		
-		OR = new Expression("(EG r) OR (EG q)");
+		Expression OR = new Expression("(EG r) OR (EG q)");
 		OR.setExp1(EG1);
 		OR.setExp2(EG2);
 		OR.setType(ExpressionType.OR);
@@ -168,6 +191,77 @@ public class ComplexCTLTest extends Assert{
 		expression.setType(ExpressionType.EF);
 		
 		assertTrue(Algorithms.executeOperation(this.states.get(0), expression));
+		printLabelsInformation();
+	}
+	
+	@Test
+	public void test10() {
+//		(10) created by Pedro
+//		A [EG q U AG r]
+		Expression EG = new Expression("EG q");
+		EG.setType(ExpressionType.EG);
+		EG.setExp1(new Expression("q"));
+		
+		Expression AG = new Expression("AG r");
+		AG.setType(ExpressionType.AG);
+		AG.setExp1(new Expression("r"));
+		
+		expression = new Expression("A [EG q U AG r]");
+		expression.setExp1(EG);
+		expression.setExp2(AG);
+		expression.setType(ExpressionType.AU);
+		boolean result = Algorithms.executeOperation(this.states.get(0), expression);
+		printLabelsInformation();
+		assertTrue(result);
+		
+	}
+	
+	@Test
+	public void test11() {
+//		(11) created by Pedro
+//		E [EG q U AG r]
+		Expression EG = new Expression("EG q");
+		EG.setType(ExpressionType.EG);
+		EG.setExp1(new Expression("q"));
+		
+		Expression AG = new Expression("AG r");
+		AG.setType(ExpressionType.AG);
+		AG.setExp1(new Expression("r"));
+		
+		expression = new Expression("E [EG q U AG r]");
+		expression.setExp1(EG);
+		expression.setExp2(AG);
+		expression.setType(ExpressionType.EU);
+		boolean result = Algorithms.executeOperation(this.states.get(0), expression);
+		printLabelsInformation();
+		assertTrue(result);
 	}
 
+	public void printLabelsInformation() {
+		// Ainda não contém Assert
+//		ArrayList<State> validStates = Algorithms.OR(states, expression);
+
+		// imprime todos os estados com seus respectivos labels e propriedades
+		// A partir daqui é só System.out.print
+		System.out.println("Expression: " + expression.getName());
+
+		for (Iterator<State> iterator = states.iterator(); iterator.hasNext();) {
+			State state = (State) iterator.next();
+			System.out.println("\nState: " + "\"" + state.getName() + "\"");
+			ArrayList<String> labels = state.getLabelsString();
+			System.out.println("Labels: ");
+			for (Iterator<String> iterator2 = labels.iterator(); iterator2
+					.hasNext();) {
+				String string = (String) iterator2.next();
+				System.out.print("\"" + string + "\"" + " ");
+			}
+		}
+
+		// System.out.println("\nValid States:");
+		// for (Iterator<State> iterator = validStates.iterator();
+		// iterator.hasNext();) {
+		// State state = (State) iterator.next();
+		// System.out.print(state.getName() + " ");
+		// }
+	}
 }

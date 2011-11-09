@@ -14,8 +14,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import br.algorithms.Algorithms;
+import br.algorithms.CounterExample;
+import br.algorithms.Transicao;
 import br.mef.Expression;
 import br.mef.ExpressionType;
+import br.mef.MEF;
 import br.mef.Property;
 import br.mef.State;
 
@@ -68,30 +71,32 @@ public class PedroTestCases extends Assert {
 		expression.setExp2(new Expression("q"));
 		expression.setType(ExpressionType.OR);
 		
-		assertTrue(Algorithms.OR(this.states.get(0), expression));
-		assertTrue(Algorithms.OR(this.states.get(1), expression));
-		assertFalse(Algorithms.OR(this.states.get(2), expression));
-		assertTrue(Algorithms.OR(this.states.get(3), expression));
+		assertTrue(Algorithms.executeOperation(this.states.get(0), expression));
+		assertTrue(Algorithms.executeOperation(this.states.get(1), expression));
+		assertFalse(Algorithms.executeOperation(this.states.get(2), expression));
+		assertTrue(Algorithms.executeOperation(this.states.get(3), expression));
 		
 		expression = new Expression("q OR r");
 		expression.setExp1(new Expression("q"));
 		expression.setExp2(new Expression("r"));
 		expression.setType(ExpressionType.OR);
 		
-		assertTrue(Algorithms.OR(this.states.get(0), expression));
-		assertTrue(Algorithms.OR(this.states.get(1), expression));
-		assertTrue(Algorithms.OR(this.states.get(2), expression));
-		assertTrue(Algorithms.OR(this.states.get(3), expression));
+		assertTrue(Algorithms.executeOperation(this.states.get(0), expression));
+		assertTrue(Algorithms.executeOperation(this.states.get(1), expression));
+		assertTrue(Algorithms.executeOperation(this.states.get(2), expression));
+		assertTrue(Algorithms.executeOperation(this.states.get(3), expression));
 		
 		expression = new Expression("p OR r");
 		expression.setExp1(new Expression("p"));
 		expression.setExp2(new Expression("r"));
 		expression.setType(ExpressionType.OR);
 		
-		assertTrue(Algorithms.OR(this.states.get(0), expression));
-		assertTrue(Algorithms.OR(this.states.get(1), expression));
-		assertTrue(Algorithms.OR(this.states.get(2), expression));
-		assertTrue(Algorithms.OR(this.states.get(3), expression));
+		assertTrue(Algorithms.executeOperation(this.states.get(0), expression));
+		assertTrue(Algorithms.executeOperation(this.states.get(1), expression));
+		assertTrue(Algorithms.executeOperation(this.states.get(2), expression));
+		assertTrue(Algorithms.executeOperation(this.states.get(3), expression));
+		printLabelsInformation();
+
 
 	}
 	
@@ -362,12 +367,34 @@ public class PedroTestCases extends Assert {
 		assertFalse(Algorithms.AG(this.states.get(1), expression));
 		assertFalse(Algorithms.AG(this.states.get(2), expression));
 		assertFalse(Algorithms.AG(this.states.get(3), expression));
-
+//
 		expression = new Expression("AG q");
 		expression.setExp1(new Expression("q"));
 		expression.setType(ExpressionType.AG);
 		assertFalse(Algorithms.AG(this.states.get(0), expression));
 		assertFalse(Algorithms.AG(this.states.get(1), expression));
+		
+		ArrayList<CounterExample> cps = MEF.getInstance().getCounterExample();
+		for (Iterator iterator = cps.iterator(); iterator.hasNext();) {
+			CounterExample counterExample = (CounterExample) iterator.next();
+			System.out.println("Estado: " + counterExample.getState());
+			System.out.println("Expressão: " + counterExample.getExp());
+			System.out.println("Validos: ");
+			ArrayList<State> validos = counterExample.getValidos();
+			for (Iterator iterator2 = validos.iterator(); iterator2.hasNext();) {
+				State state = (State) iterator2.next();
+				System.out.println(state.getName());
+			}
+			System.out.println("Transições: ");
+			ArrayList<Transicao> conexoes = counterExample.getTransicoes();
+			for (Iterator iterator2 = conexoes.iterator(); iterator2.hasNext();) {
+				Transicao transicao = (Transicao) iterator2.next();
+				System.out.println(transicao.toString());
+			}
+			
+		}
+		
+		
 		assertFalse(Algorithms.AG(this.states.get(2), expression));
 		assertTrue(Algorithms.AG(this.states.get(3), expression));
 
@@ -545,7 +572,7 @@ public class PedroTestCases extends Assert {
 		assertTrue(Algorithms.AU(this.states.get(1), expression));
 		assertTrue(Algorithms.AU(this.states.get(2), expression));
 		assertTrue(Algorithms.AU(this.states.get(3), expression));
-		
+//		
 		expression = new Expression("A (r U q)");
 		expression.setExp1(new Expression("r"));
 		expression.setExp2(new Expression("q"));
@@ -554,7 +581,7 @@ public class PedroTestCases extends Assert {
 		assertTrue(Algorithms.AU(this.states.get(1), expression));
 		assertTrue(Algorithms.AU(this.states.get(2), expression));
 		assertTrue(Algorithms.AU(this.states.get(3), expression));
-		
+//		
 		expression = new Expression("A (p U r)");
 		expression.setExp1(new Expression("p"));
 		expression.setExp2(new Expression("r"));
