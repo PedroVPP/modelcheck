@@ -123,6 +123,10 @@ public class State {
 	public static boolean isStateVisited(State state) {
 		return State.visitedStates.contains(state);
 	}
+
+	public String toString() {
+		return name;
+	}
 	
     @Override
     public boolean equals(Object st){
