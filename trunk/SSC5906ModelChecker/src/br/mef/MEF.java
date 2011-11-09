@@ -20,11 +20,14 @@ public class MEF {
 	private ArrayList<CounterExample> counterExample = new ArrayList<CounterExample>();
 	private State firsState;
 	private String imagem = "";
+	private String imagemCE = "";
 	
 	private Escrita novoDotArq;
 	private Graphviz novoDot;
 	private File out;	
-	
+
+	private Graphviz novoDotCE;
+	private File outCE;	
    public static MEF getInstance() {
 	      if (instance == null)
 	         instance = new MEF();
@@ -200,6 +203,10 @@ public class MEF {
 		return this.imagem;
 	}
 
+	public String getImagemCE(){
+		return this.imagemCE;
+	}
+	
 	public ArrayList<CounterExample> getCounterExample() {
 		return this.counterExample;
 	}
@@ -247,5 +254,47 @@ public class MEF {
 			}
 		}
 		return counterExamples;
+	}
+	
+	public void geraMEFCounterExample(CounterExample counterExample){
+		try{
+			this.novoDotCE = new Graphviz();
+			novoDotCE.addln(novoDotCE.start_graph());
+			for(int i=0; i<states.size(); i++){
+				State state = (State) states.get(i);
+				String linhaState = "";
+				if (!counterExample.getState().equals(state)){
+					linhaState = state.getName() + "[style=filled, color=green";
+				}
+				else{
+					linhaState = state.getName() + "[style=filled, color=red";
+				}					
+				linhaState = linhaState+", label= \""+state.getName()+"\\n{";
+				ArrayList<Property> properties = state.getValidProperties();
+				for(int j=0; j<properties.size(); j++){					
+					Property property = (Property) properties.get(j);
+					if (!property.getName().equals("TRUE")){
+						linhaState = linhaState + property.getName() + ", ";	
+					}					
+				}
+				linhaState = linhaState.substring(0, linhaState.length() -2) + "}\"]";
+				novoDotCE.addln(linhaState);
+				ArrayList<State> filhos = state.getChildren();
+				for (int j = 0; j < filhos.size(); ++j) {
+		    		State filho = (State) filhos.get(j);
+		    		novoDotCE.addln(state.getName()+"->"+filho.getName());    		
+		    	}    						
+			}
+			novoDotCE.addln(novoDotCE.end_graph());
+			System.out.println(novoDotCE.getDotSource());
+			this.imagemCE = UUID.randomUUID().toString()+ ".jpg";
+			this.outCE = new File(this.imagemCE);		
+			novoDotCE.writeGraphToFile(novoDotCE.getGraph(novoDotCE.getDotSource()), outCE);
+		}
+		catch(Exception e){
+			JOptionPane.showMessageDialog(null,"Erro ao gerar o MEF Counter Example!");
+		    System.exit(0);
+		}		
+		
 	}
 }
