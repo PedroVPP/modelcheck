@@ -687,36 +687,38 @@ public static boolean AG(State state, Expression expression) {
 	 * */
 
 	public static boolean AX(State state, Expression expression) {
-		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, null);
+
+		if (state.getLabelsString().contains(expression.getName())) {
 			return true;
 		}
-		
-		if(!expression.getExp1().isProperty()) {
+
+		if (!expression.getExp1().isProperty()) {
 			executeProperOperation(state, expression, expression.getExp1());
 		}
-		
+		counterExample = new CounterExample(state, expression);
 		boolean validExpression = true;
-		
+
 		ArrayList<State> children = state.getChildren();
-		for (Iterator<State> iterator = children.iterator(); iterator
-				.hasNext();) {
+		for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
 			State state2 = (State) iterator.next();
-			
-			if (!state2.getLabelsString().contains(expression.getExp1().getName())) {
+			counterExample.addTransicao(state, state2);
+
+			if (!state2.getLabelsString().contains(
+					expression.getExp1().getName())) {
 				validExpression = false;
-				newCounterExample(state, expression.getExp1(), false, state2);
+
 				break;
-			}
-			else{
-				newCounterExample(state, expression.getExp1(), true, state2);
+			} else {
+				counterExample.addStateValido(state);
 			}
 		}
-		newCounterExample(state, expression, validExpression, null);
-		if(validExpression) {
+
+		if (validExpression) {
 			state.addLabelsString(expression.getName());
+		} else {
+			MEF.getInstance().addCounterExample(counterExample);
 		}
-		
+
 		return validExpression;
 	}
 	
@@ -803,34 +805,35 @@ public static boolean AG(State state, Expression expression) {
 	 *
 	 */
 	public static boolean EX(State state, Expression expression) {
-		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, null);
+
+		if (state.getLabelsString().contains(expression.getName())) {
+
 			return true;
 		}
-		
-		if(!expression.getExp1().isProperty()) {
+
+		if (!expression.getExp1().isProperty()) {
 			executeProperOperation(state, expression, expression.getExp1());
 		}
-		
+		counterExample = new CounterExample(state, expression);
 		boolean validExpression = false;
-		
+
 		ArrayList<State> children = state.getChildren();
-		for (Iterator<State> iterator = children.iterator(); iterator
-				.hasNext();) {
+		for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
 			State state2 = (State) iterator.next();
-			
-			if (state2.getLabelsString().contains(expression.getExp1().getName())) {
-				newCounterExample(state, expression.getExp1(), true, state2);
+
+			counterExample.addTransicao(state, state2);
+			if (state2.getLabelsString().contains(
+					expression.getExp1().getName())) {
+				counterExample.addStateValido(state2);
 				validExpression = true;
 				break;
 			}
-			else{
-				newCounterExample(state, expression.getExp1(), false, state2);
-			}
 		}
-		newCounterExample(state, expression, validExpression, null);
+
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
+		} else {
+			MEF.getInstance().addCounterExample(counterExample);
 		}
 		return validExpression;
 	}
