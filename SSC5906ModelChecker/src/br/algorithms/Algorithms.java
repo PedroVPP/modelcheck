@@ -117,54 +117,48 @@ public class Algorithms {
 	 * @return retorna true se a expressao e' verdadeira para aquele estado, e
 	 *         caso contrario retorna 'false'
 	 */
-	public static boolean AND(State state, Expression expression) {
+    public static boolean AND(State state, Expression expression) {
+        
+        if(state.getLabelsString().contains(expression.getName())) {
+                //newCounterExample(state, expression, true, null);
+                return true;
+        }
+        
+        if(!expression.getExp1().isProperty()) {
+                executeProperOperation(state, expression, expression.getExp1());
+        }
+        if(!expression.getExp2().isProperty()) {
+                executeProperOperation(state, expression, expression.getExp2());
+        }
+        
+        boolean validExpression = false;
+        Expression expression1 = expression.getExp1(); // = p
+        //newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null);
+        Expression expression2 = expression.getExp2(); // = q
+        //newCounterExample(state, expression2, state.getLabelsString().contains(expression2.getName()), null);         
+        if (state.getLabelsString().contains(expression1.getName())
+                        && state.getLabelsString().contains(expression2.getName())) {
+                validExpression = true;
+        } else {
+                validExpression = false;
+                /*if (state.getLabelsString().contains(expression1.getName())){
+                        MEF.getInstance().addCounterExample(newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null));      
+                }
+                if (state.getLabelsString().contains(expression2.getName())){
+                        MEF.getInstance().addCounterExample(newCounterExample(state, expression2, state.getLabelsString().contains(expression2.getName()), null));      
+                }*/                     
 
-		if (state.getLabelsString().contains(expression.getName())) {
-			// newCounterExample(state, expression, true, null);
-			return true;
-		}
-
-		if (!expression.getExp1().isProperty()) {
-			executeProperOperation(state, expression, expression.getExp1());
-		}
-		if (!expression.getExp2().isProperty()) {
-			executeProperOperation(state, expression, expression.getExp2());
-		}
-
-		boolean validExpression = false;
-		Expression expression1 = expression.getExp1(); // = p
-		// newCounterExample(state, expression1,
-		// state.getLabelsString().contains(expression1.getName()), null);
-		Expression expression2 = expression.getExp2(); // = q
-		// newCounterExample(state, expression2,
-		// state.getLabelsString().contains(expression2.getName()), null);
-		if (state.getLabelsString().contains(expression1.getName())
-				&& state.getLabelsString().contains(expression2.getName())) {
-			validExpression = true;
-		} else {
-			validExpression = false;
-			/*
-			 * if (state.getLabelsString().contains(expression1.getName())){
-			 * MEF.getInstance().addCounterExample(newCounterExample(state,
-			 * expression1,
-			 * state.getLabelsString().contains(expression1.getName()), null));
-			 * } if (state.getLabelsString().contains(expression2.getName())){
-			 * MEF.getInstance().addCounterExample(newCounterExample(state,
-			 * expression2,
-			 * state.getLabelsString().contains(expression2.getName()), null));
-			 * }
-			 */
-
-		}
-		// newCounterExample(state, expression, validExpression, null);
-		if (validExpression) {
-			state.addLabelsString(expression.getName());
-		} else {
-
-		}
-
-		return validExpression;
-	}
+        }
+        //newCounterExample(state, expression, validExpression, null);
+        if (validExpression) {
+                state.addLabelsString(expression.getName());
+        }
+        else{
+                MEF.getInstance().addCounterExample(newCounterExample(state, expression, false, null));                 
+        }
+        
+        return validExpression;
+    }
 
 	/**
 	 * Metodo que executa o AND para todos os estados do parametro states
