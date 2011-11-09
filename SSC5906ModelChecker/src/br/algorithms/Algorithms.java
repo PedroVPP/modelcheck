@@ -28,14 +28,17 @@ public class Algorithms {
 		CounterExample ce = new CounterExample(state, expression);
 		if (isValid){
 			ce.addStateValido(state);	
-		}		
-		ce.addTransicao(state, state);
+		}
+		if (stateTransicao != null){
+			ce.addTransicao(state, stateTransicao);	
+		}
+		
 		MEF.getInstance().addCounterExample(ce);		
 	}
 	public static boolean OR(State state, Expression expression) {
 		
 		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, state);
+			newCounterExample(state, expression, true, null);
 			return true;
 		}
 		
@@ -67,7 +70,7 @@ public class Algorithms {
 		} else {
 			validExpression = false;
 		}
-		newCounterExample(state, expression, validExpression, state);
+		newCounterExample(state, expression, validExpression, null);
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -112,7 +115,7 @@ public class Algorithms {
 	public static boolean AND(State state, Expression expression) {
 		
 		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, state);
+			newCounterExample(state, expression, true, null);
 			return true;
 		}
 		
@@ -125,16 +128,16 @@ public class Algorithms {
 		
 		boolean validExpression = false;
 		Expression expression1 = expression.getExp1(); // = p
-		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), state);
+		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null);
 		Expression expression2 = expression.getExp2(); // = q
-		newCounterExample(state, expression2, state.getLabelsString().contains(expression2.getName()), state);		
+		newCounterExample(state, expression2, state.getLabelsString().contains(expression2.getName()), null);		
 		if (state.getLabelsString().contains(expression1.getName())
 				&& state.getLabelsString().contains(expression2.getName())) {
 			validExpression = true;
 		} else {
 			validExpression = false;
 		}
-		newCounterExample(state, expression, validExpression, state);
+		newCounterExample(state, expression, validExpression, null);
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -178,7 +181,7 @@ public class Algorithms {
 	 */
 	public static boolean NOT(State state, Expression expression) {
 		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, state);
+			newCounterExample(state, expression, true, null);
 			return true;
 		}
 		
@@ -188,12 +191,12 @@ public class Algorithms {
 		
 		boolean validExpression = false;
 		Expression expression1 = expression.getExp1(); // = p
-		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), state);
+		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null);
 		// sempre a expression 1 não pode ser nula, se não ocasionara o nullpointerexception 
 		if (!state.getLabelsString().contains(expression1.getName())) {
 			validExpression = true;
 		}
-		newCounterExample(state, expression, validExpression, state);
+		newCounterExample(state, expression, validExpression, null);
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -241,7 +244,7 @@ public class Algorithms {
 	public static boolean IMP(State state, Expression expression) {
 		
 		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, state);
+			newCounterExample(state, expression, true, null);
 			return true;
 		}
 		
@@ -255,8 +258,8 @@ public class Algorithms {
 		boolean validExpression = true;
 		Expression expression1 = expression.getExp1(); // = p
 		Expression expression2 = expression.getExp2(); // = q
-		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), state);
-		newCounterExample(state, expression2, state.getLabelsString().contains(expression2.getName()), state);
+		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null);
+		newCounterExample(state, expression2, state.getLabelsString().contains(expression2.getName()), null);
 //		tabela verdade
 //		p   q  p->q
 //		V 	V 	V
@@ -268,7 +271,7 @@ public class Algorithms {
 				!state.getLabelsString().contains(expression2.getName())) {
 			validExpression = false;
 		}
-		newCounterExample(state, expression, validExpression, state);
+		newCounterExample(state, expression, validExpression, null);
 		if(validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -284,7 +287,7 @@ public class Algorithms {
 	public static boolean BIC(State state, Expression expression) {
 		
 		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, state);
+			newCounterExample(state, expression, true, null);
 			return true;
 		}
 		
@@ -299,8 +302,8 @@ public class Algorithms {
 		// p <-> q
 		Expression expression1 = expression.getExp1(); // = p
 		Expression expression2 = expression.getExp2(); // = q
-		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), state);
-		newCounterExample(state, expression2, state.getLabelsString().contains(expression2.getName()), state);
+		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null);
+		newCounterExample(state, expression2, state.getLabelsString().contains(expression2.getName()), null);
 //		tabela verdade
 //		p   q  p<->q
 //		V 	V 	V
@@ -315,7 +318,7 @@ public class Algorithms {
 				state.getLabelsString().contains(expression2.getName())) {
 			validExpression = false;
 		}
-		newCounterExample(state, expression, validExpression, state);
+		newCounterExample(state, expression, validExpression, null);
 		if(validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -373,7 +376,7 @@ public class Algorithms {
 	public static boolean EF(State state, Expression expression) {
 		
 		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, state);
+			newCounterExample(state, expression, true, null);
 			return true;
 		}
 		
@@ -384,7 +387,7 @@ public class Algorithms {
 		boolean validExpression = false;
 
 		Expression expression1 = expression.getExp1(); // = p
-		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), state);
+		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null);
 		if (state.getLabelsString().contains(expression1.getName())) {
 			validExpression = true;
 		} else {
@@ -401,7 +404,7 @@ public class Algorithms {
 				}
 			}
 		}
-		newCounterExample(state, expression, validExpression, state);
+		newCounterExample(state, expression, validExpression, null);
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -473,7 +476,7 @@ public class Algorithms {
 	 */
 	public static boolean EG(State state, Expression expression) {
 		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, state);
+			newCounterExample(state, expression, true, null);
 			return true;
 		}
 		
@@ -483,7 +486,7 @@ public class Algorithms {
 		
 		boolean validExpression = false;
 		Expression expression1 = expression.getExp1(); // = p
-		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), state);
+		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null);
 		if (state.getLabelsString().contains(expression1.getName())) {
 			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
@@ -499,7 +502,7 @@ public class Algorithms {
 			}
 		}
 		
-		newCounterExample(state, expression, validExpression, state);
+		newCounterExample(state, expression, validExpression, null);
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -576,7 +579,7 @@ public class Algorithms {
 	 */
 	public static boolean AG(State state, Expression expression) {
 		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, state);
+			newCounterExample(state, expression, true, null);
 			return true;
 		}
 		
@@ -586,7 +589,7 @@ public class Algorithms {
 		
 		boolean validExpression = true;
 		Expression expression1 = expression.getExp1(); // = p
-		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), state);
+		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null);
 		if (state.getLabelsString().contains(expression1.getName())) {
 			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
@@ -599,10 +602,10 @@ public class Algorithms {
 				}
 			}
 		} else {
-			newCounterExample(state, expression, false, state);
+			newCounterExample(state, expression, false, null);
 			return false;
 		}
-		newCounterExample(state, expression, validExpression, state);
+		newCounterExample(state, expression, validExpression, null);
 		if(validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -646,7 +649,7 @@ public class Algorithms {
 
 	public static boolean AX(State state, Expression expression) {
 		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, state);
+			newCounterExample(state, expression, true, null);
 			return true;
 		}
 		
@@ -670,7 +673,7 @@ public class Algorithms {
 				newCounterExample(state, expression.getExp1(), true, state2);
 			}
 		}
-		newCounterExample(state, expression, validExpression, state);
+		newCounterExample(state, expression, validExpression, null);
 		if(validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -680,7 +683,7 @@ public class Algorithms {
 	
 	public static boolean AF(State state, Expression expression) {
 		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, state);
+			newCounterExample(state, expression, true, null);
 			return true;
 		}
 		
@@ -690,7 +693,7 @@ public class Algorithms {
 		
 		boolean validExpression = true;
 		Expression expression1 = expression.getExp1();
-		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), state);
+		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null);
 		if (state.getLabelsString().contains(expression1.getName())) { // se ele contem a expressão 1
 			State.addVisitedState(state);
 			ArrayList<State> children = state.getChildren();
@@ -707,7 +710,7 @@ public class Algorithms {
 		} else {
 			validExpression = false;
 		}
-		newCounterExample(state, expression, validExpression, state);
+		newCounterExample(state, expression, validExpression, null);
 		if(validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -757,7 +760,7 @@ public class Algorithms {
 	 */
 	public static boolean EX(State state, Expression expression) {
 		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, state);
+			newCounterExample(state, expression, true, null);
 			return true;
 		}
 		
@@ -781,7 +784,7 @@ public class Algorithms {
 				newCounterExample(state, expression.getExp1(), false, state2);
 			}
 		}
-		newCounterExample(state, expression, validExpression, state);
+		newCounterExample(state, expression, validExpression, null);
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -810,7 +813,7 @@ public class Algorithms {
 	 */
 	public static boolean EU(State state, Expression expression) {
 		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, state);
+			newCounterExample(state, expression, true, null);
 			return true;
 		}
 		
@@ -825,8 +828,8 @@ public class Algorithms {
 		// ex: Expression.name = E (p U q)
 		Expression expression1 = expression.getExp1(); // = p
 		Expression expression2 = expression.getExp2(); // = q
-		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), state);
-		newCounterExample(state, expression2, state.getLabelsString().contains(expression2.getName()), state);
+		newCounterExample(state, expression1, state.getLabelsString().contains(expression1.getName()), null);
+		newCounterExample(state, expression2, state.getLabelsString().contains(expression2.getName()), null);
 		
 		if(state.getLabelsString().contains(expression2.getName())) {
 			validExpression = true;
@@ -843,7 +846,7 @@ public class Algorithms {
 				}
 			}
 		}
-		newCounterExample(state, expression, validExpression, state);
+		newCounterExample(state, expression, validExpression, null);
 		if(validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -891,7 +894,7 @@ public class Algorithms {
 	
 	public static boolean AU(State state, Expression expression) {
 		if(state.getLabelsString().contains(expression.getName())) {
-			newCounterExample(state, expression, true, state);
+			newCounterExample(state, expression, true, null);
 			return true;
 		}
 		
@@ -909,7 +912,7 @@ public class Algorithms {
 		Expression expression2 = expression.getExp2(); // = q
 		
 		if (state.getLabelsString().contains(expression2.getName())) {
-			newCounterExample(state, expression2, true, state);
+			newCounterExample(state, expression2, true, null);
 			validExpression = true;
 		} else if (state.getLabelsString().contains(expression1.getName())) {
 			State.addVisitedState(state);			
@@ -926,7 +929,7 @@ public class Algorithms {
 			}
 		} else {
 			validExpression = false;
-			newCounterExample(state, expression, false, state);
+			newCounterExample(state, expression, false, null);
 		}
 		
 		if (validExpression) {
@@ -964,8 +967,8 @@ public class Algorithms {
 		} else {
 			valid = false;
 		}
-		newCounterExample(stateAnt, expression1, valid, state);
-		newCounterExample(stateAnt, expression2, valid, state);
+		newCounterExample(stateAnt, expression1, valid, null);
+		newCounterExample(stateAnt, expression2, valid, null);
 		return valid;
 				
 	}
@@ -1050,7 +1053,7 @@ public class Algorithms {
 				e.printStackTrace();
 			}
 		}
-		newCounterExample(state, expression, validOperation, state);
+		newCounterExample(state, expression, validOperation, null);
 		return validOperation;
 		}
 	
