@@ -5,6 +5,7 @@ import br.mef.State;
 public class Transicao {
 	private State origem;
 	private State destino;
+	
 	public State getOrigem() {
 		return origem;
 	}
@@ -17,7 +18,7 @@ public class Transicao {
 	public void setDestino(State destino) {
 		this.destino = destino;
 	}
-	
-	
-
+	public String toString() {
+		return origem + " -> " + destino;
+	}
 }
