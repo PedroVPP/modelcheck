@@ -33,6 +33,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import br.algorithms.Algorithms;
+import br.algorithms.CounterExample;
 import br.gui.util.TableModelDefine;
 import br.gui.util.TableModelExpressions;
 import br.gui.util.TableModelProperties;
@@ -124,10 +125,16 @@ public class Principal extends javax.swing.JFrame {
         jScrollPane6 = new javax.swing.JScrollPane();
         jtStatesExp = new javax.swing.JTable();
         pnlMEF = new javax.swing.JPanel();
+        pnlComboMEF = new javax.swing.JPanel();
         jlbImagem = new javax.swing.JLabel();
         pnlMEFCP = new javax.swing.JPanel();
         jlbImagemCP = new javax.swing.JLabel();
-        
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jcbExpressions = new javax.swing.JComboBox();
+        jlbImagem = new javax.swing.JLabel();
+        jcbStates = new javax.swing.JComboBox();
+        jbVisualizar = new javax.swing.JButton();
         
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         this.setTitle("Java Model Checker - 2011 - SSC 5906 - Version 0.9 -ICMC/USP ");
@@ -833,10 +840,53 @@ public class Principal extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("MEF", pnlMEF);
 
-        pnlMEFCP.setBackground(new java.awt.Color(255, 255, 255));
-        pnlMEFCP.setLayout(new java.awt.GridLayout());
+        //pnlMEFCP.setBackground(new java.awt.Color(255, 255, 255));
+        //pnlMEFCP.setLayout(new java.awt.GridLayout());
         pnlMEFCP.add(jlbImagemCP);
         pnlMEFCP.setVisible(false);
+        
+        jbVisualizar.setText("Visualize");
+        jbVisualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbVisualizarActionPerformed(evt);
+            }
+        });        
+
+        javax.swing.GroupLayout pnlComboMEFLayout = new javax.swing.GroupLayout(pnlComboMEF);
+        pnlComboMEF.setLayout(pnlComboMEFLayout);
+        pnlComboMEFLayout.setHorizontalGroup(
+            pnlComboMEFLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlComboMEFLayout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
+                .addComponent(jcbStates, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jcbExpressions, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jbVisualizar)
+                .addContainerGap(68, Short.MAX_VALUE))
+        );
+        pnlComboMEFLayout.setVerticalGroup(
+            pnlComboMEFLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlComboMEFLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlComboMEFLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jcbStates, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(jcbExpressions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jbVisualizar))
+                .addContainerGap(14, Short.MAX_VALUE))
+        );
+
+        jLabel1.setText("States");
+
+        jLabel2.setText("Expressions");        
+        
+      
 
         //jTabbedPane1.addTab("Contra Prova", pnlMEFCP);
         
@@ -880,6 +930,27 @@ public class Principal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void criaPanelCP(JScrollPane img){
+        pnlMEFCP.setBackground(new java.awt.Color(255, 255, 255));
+        javax.swing.GroupLayout pnlMEFCPLayout = new javax.swing.GroupLayout(pnlMEFCP);
+        pnlMEFCP.setLayout(pnlMEFCPLayout);
+        pnlMEFCPLayout.setHorizontalGroup(
+            pnlMEFCPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlMEFCPLayout.createSequentialGroup()
+                .addGroup(pnlMEFCPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(img, javax.swing.GroupLayout.PREFERRED_SIZE, 695, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlComboMEF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlMEFCPLayout.setVerticalGroup(
+            pnlMEFCPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlMEFCPLayout.createSequentialGroup()
+                .addComponent(pnlComboMEF, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(338, 338, 338)
+                .addComponent(img, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+    	
+    }
     private void pnlStatesFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pnlStatesFocusLost
 }//GEN-LAST:event_pnlStatesFocusLost
 
@@ -1121,6 +1192,8 @@ public class Principal extends javax.swing.JFrame {
         		else{
         			staw.setValid("False");
         			initMEFCP(true);
+        			showCounterExample(st, exp);
+        			
         		}
         		((TableModelStateAnswer)jtStatesExp.getModel()).fireTableDataChanged();
     			   
@@ -1136,7 +1209,27 @@ public class Principal extends javax.swing.JFrame {
     	}
     } 
 
-    private void initStatesAnswer(){
+    private void showCounterExample(State st, Expression exp) {
+    	jcbStates.removeAllItems();
+    	jcbStates.addItem(st);
+    	jcbExpressions.removeAllItems();
+    	jcbExpressions.addItem(exp);
+    	jcbExpressions.addItem(exp.getExp1());
+    	jcbExpressions.addItem(exp.getExp2());
+    	MEF.getInstance().geraMEFCounterExample(MEF.getInstance().findCounterExample(st, exp).get(0));
+
+		ImageIcon img = new ImageIcon(MEF.getInstance().getImagemCE());
+		JLabel label = new JLabel(img);
+		label.setBounds(0, 0, img.getIconWidth() + 10, img.getIconHeight() + 10);
+		pnlMEFCP.removeAll();
+		pnlMEFCP.add(pnlComboMEF);
+		pnlMEFCP.add(new JScrollPane(label));
+		//criaPanelCP(new JScrollPane(label));
+		this.pack();    	
+	}
+
+
+	private void initStatesAnswer(){
     	for(int i=0; i<statesAnswer.size(); i++){
         	StateAnswer st = (StateAnswer) statesAnswer.get(i);
         	st.setValid("");
@@ -1377,6 +1470,10 @@ public class Principal extends javax.swing.JFrame {
     	}
     	
     }*/
+
+    private void jbVisualizarActionPerformed(java.awt.event.ActionEvent evt) {
+    	showCounterExample((State)jcbStates.getSelectedItem(), (Expression) jcbExpressions.getSelectedItem());
+    }
     
     public void inicializa(){
  	   this.setStates(new ArrayList(0));
@@ -1450,6 +1547,12 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JTextField txtExpressions;
     private javax.swing.JTextField txtProperties;
     private javax.swing.JTextField txtState;
+    private javax.swing.JPanel pnlComboMEF;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JComboBox jcbStates;
+    private javax.swing.JComboBox jcbExpressions;
+    private javax.swing.JButton jbVisualizar;    
     // End of variables declaration//GEN-END:variables
 
     
