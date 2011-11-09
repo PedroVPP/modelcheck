@@ -10,7 +10,7 @@ import br.mef.State;
 public class CounterExample {
 	private State state;
 	private Expression exp;
-	private HashMap<State, State> states = new HashMap<State, State>();
+	private ArrayList<Transicao> states = new ArrayList<Transicao>();
 	private ArrayList<State> validos = new ArrayList<State>();
 	
 	public CounterExample(State state, Expression expression) {
@@ -45,14 +45,17 @@ public class CounterExample {
 		if(!contains) {
 			this.validos.add(state);
 		}
-	}	
+	}		
 	
-	public HashMap<State, State> getTransicoes(){
+	public ArrayList<Transicao> getTransicoes(){
 		return this.states;
 	}
 	
 	public void addTransicao(State state, State state2){
-		this.states.put(state, state2);
+		Transicao transicao = new Transicao();
+		transicao.setOrigem(state);
+		transicao.setDestino(state2);
+		this.states.add(transicao);
 	}
 
     @Override
