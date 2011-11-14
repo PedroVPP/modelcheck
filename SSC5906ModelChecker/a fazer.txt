@@ -5,22 +5,28 @@ validação da interface gráfica - Vania
   --só deixar clicar em ok (da mef) se tiver definição, estado, e ao menos 1 expressão
   --fazer com que, quando alguem estiver especificando estados da mef, ao clicar em new, zerar as selecoes feita anteriormente
   --colocar um Sytem.out.println  quando estados ou propriedades forem inseridos na MEF - Somente para florear o LOG
-
-inserir o dot.exe e puxar esse caminho - Vania
-
-Deixar interface mais intuitiva - Vania
-Gerar log de cada algoritmo - somente com print - Pedro/André/Mauricio
+ Depois que adicionar um novo Define, tirar a seleção das tabelas de estados e propriedades
+ Colocar Label explicando como faz para adicionar um Define
+ Tirar o botão ok da aba Expressions e sempre que adicionar uma nova propriedade chamar a ação do OK (que foi retirado)
+Acertar tamanho da tela
+Criar árvore de expressão na Graphviz
+Na aba Expressions, colocar um label explicando que tem que dar duplo clique nos estados para validar
+Colocar no servidor CCSL
+inserir o dot.exe e puxar esse caminho 
+Deixar interface mais intuitiva 
 Criar mais casos de teste e Testar, testar e testar. Se encontrar erro avisar - André/Mauricio
-Pensar em como fazer a contra prova - Pedro/André/Mauricio/Vania/Rafael
-Procurar MEFs que estão funcionando - André/Mauricio
-
+Verificar se está limpando os valoers dos States da aba Expressão quando altera ou insere uma nova expressão
 
 --Flor
  Mostrar o tempo de execução dos algoritmos
+ Colocar botão de ajuda, mostrando passo a passo como faz para criar um define
 
 ---Utopia
+ Criar interface web 	
  Protótipo para funcionar com 1 trilhão de estados
  Otimizar os algoritmos
+ Escrever artigo SBMF e FEES
+
  
  OK
 Gerar Log na interface -  Rafael
@@ -29,4 +35,7 @@ colocar scroll no panel para tratar imagens - Vania
 Limpar o painel da MEF (graphviz) - Vania
 Possibilidade de ter mais de uma expressão (tratar arraylist da mef) - Vania
 ao recuperar o arquivo, tratar para pegar a expressão direito  -  Vania
-Na interface, não mostrar as propriedades TRUE - Vania 
+Na interface, não mostrar as propriedades TRUE - Vania
+Pensar em como fazer a contra prova - 
+Gerar log de cada algoritmo - somente com print - 
+Procurar MEFs que estão funcionando - Rafael 
