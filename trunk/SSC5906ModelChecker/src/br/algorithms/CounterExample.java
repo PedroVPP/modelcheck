@@ -12,10 +12,13 @@ public class CounterExample {
 	private Expression exp;
 	private ArrayList<Transicao> states = new ArrayList<Transicao>();
 	private ArrayList<State> validos = new ArrayList<State>();
+	private ArrayList <State> statesMEF = new ArrayList<State>();
 	
+
 	public CounterExample(State state, Expression expression) {
 		this.state = state;
 		this.exp = expression;
+		this.addStateMEF(state);
 	}
 	public State getState() {
 		return state;
@@ -33,7 +36,13 @@ public class CounterExample {
 	public ArrayList<State> getValidos() {
 		return this.validos;
 	}
-
+	
+	private void addStateMEF(State state){
+		if (!statesMEF.contains(state)){
+			statesMEF.add(state);
+		}
+	}
+	
 	public void addStateValido(State state) {
 		boolean contains = false;
 		for (Iterator<State> iterator = this.validos.iterator(); iterator.hasNext();) {
@@ -56,6 +65,12 @@ public class CounterExample {
 		transicao.setOrigem(state);
 		transicao.setDestino(state2);
 		this.states.add(transicao);
+		addStateMEF(state);
+		addStateMEF(state2);
+	}
+	
+	public ArrayList<State> getStatesMEF(){
+		return this.statesMEF;
 	}
 
     @Override
