@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 
 import br.algorithms.CounterExample;
 import br.algorithms.Information;
+import br.algorithms.Transicao;
 
 public class MEF {
 	
@@ -38,6 +39,7 @@ public class MEF {
 	   this.states.clear();
 	   this.properties.clear();
 	   this.expressions.clear();
+	   this.counterExample.clear();
 	   this.firsState = null;
    }
    
@@ -89,9 +91,11 @@ public class MEF {
 		novoDotArq.novaLinha();		
     	for (int i = 0; i < states.size(); ++i) {
     		State state = (State) states.get(i);
-			String linhaState = state.getName() + "[ label= \""+state.getName()+"\\n{";
+			String linhaState = state.getName() + "[ label= \""+state.getName()+"\\n {";
 			ArrayList<Property> properties = state.getValidProperties();
+			boolean temProperty = false;
 			for(int j=0; j<properties.size(); j++){
+				temProperty = true;
 				Property property = (Property) properties.get(j);
 				if (!property.getName().equals("TRUE")){
 					linhaState = linhaState + property.getName() + ", ";
@@ -99,7 +103,9 @@ public class MEF {
 				}
 			}
 			
-			linhaState = linhaState.substring(0, linhaState.length() -2) + "}\"]";    		
+			linhaState = linhaState.substring(0, linhaState.length() -2);
+			if (temProperty)
+				linhaState = linhaState + "}\"]";
     		novoDotArq.escreverLinha(linhaState);
     		novoDotArq.novaLinha();
     	    ArrayList<State> filhos = state.getChildren();
@@ -242,6 +248,8 @@ public class MEF {
 		
 		return counterExamples;
 	}
+
+
 	
 	public ArrayList<CounterExample> findCounterExample(State state, Expression expression) {
 		ArrayList<CounterExample> counterExamples = new ArrayList<CounterExample>();
@@ -260,31 +268,36 @@ public class MEF {
 		try{
 			this.novoDotCE = new Graphviz();
 			novoDotCE.addln(novoDotCE.start_graph());
-			for(int i=0; i<states.size(); i++){
-				State state = (State) states.get(i);
+			ArrayList <State> statesCE =counterExample.getStatesMEF(); 
+			for(int i=0; i<statesCE.size(); i++){
+				State state = (State) statesCE.get(i);
 				String linhaState = "";
-				if (!counterExample.getState().equals(state)){
+				if (counterExample.getValidos().contains(state)){
 					linhaState = state.getName() + "[style=filled, color=green";
 				}
-				else{
+				else {
 					linhaState = state.getName() + "[style=filled, color=red";
 				}					
-				linhaState = linhaState+", label= \""+state.getName()+"\\n{";
+				linhaState = linhaState+", label= \""+state.getName()+"\\n {";
 				ArrayList<Property> properties = state.getValidProperties();
-				for(int j=0; j<properties.size(); j++){					
+				boolean temProperty = false;
+				for(int j=0; j<properties.size(); j++){
+					temProperty = true;
 					Property property = (Property) properties.get(j);
 					if (!property.getName().equals("TRUE")){
 						linhaState = linhaState + property.getName() + ", ";	
 					}					
 				}
-				linhaState = linhaState.substring(0, linhaState.length() -2) + "}\"]";
-				novoDotCE.addln(linhaState);
-				ArrayList<State> filhos = state.getChildren();
-				for (int j = 0; j < filhos.size(); ++j) {
-		    		State filho = (State) filhos.get(j);
-		    		novoDotCE.addln(state.getName()+"->"+filho.getName());    		
-		    	}    						
+				linhaState = linhaState.substring(0, linhaState.length() -2);
+				if (temProperty)
+					linhaState = linhaState + "}\"]";				
+
+				novoDotCE.addln(linhaState);					
 			}
+			ArrayList<Transicao> transicoes = counterExample.getTransicoes();
+			for (int j = 0; j < transicoes.size(); ++j) {
+	    		novoDotCE.addln(transicoes.get(j).toString());    		
+	    	}    			
 			novoDotCE.addln(novoDotCE.end_graph());
 			System.out.println(novoDotCE.getDotSource());
 			this.imagemCE = UUID.randomUUID().toString()+ ".jpg";
