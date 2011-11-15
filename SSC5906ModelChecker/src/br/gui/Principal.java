@@ -14,6 +14,8 @@ package br.gui;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -66,6 +68,9 @@ public class Principal extends javax.swing.JFrame {
     private ArrayList<Expression> expressions = null;
     private StateAnswer stateAnswer = null;
     private ArrayList<StateAnswer> statesAnswer = null;
+    
+    private State stateBack = null;
+    private Expression expBack = null;
     /** Creates new form Principal */
     public Principal() {
         initComponents();
@@ -135,6 +140,7 @@ public class Principal extends javax.swing.JFrame {
         jlbImagem = new javax.swing.JLabel();
         jcbStates = new javax.swing.JComboBox();
         jbVisualizar = new javax.swing.JButton();
+        jbChange = new javax.swing.JButton();        
         
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         this.setTitle("Java Model Checker - 2011 - SSC 5906 - Version 0.9 -ICMC/USP ");
@@ -851,7 +857,13 @@ public class Principal extends javax.swing.JFrame {
                 jbVisualizarActionPerformed(evt);
             }
         });        
-
+        jbChange.setText("Back");
+        jbChange.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbChangeActionPerformed(evt);
+            }
+        });        
+        
         javax.swing.GroupLayout pnlComboMEFLayout = new javax.swing.GroupLayout(pnlComboMEF);
         pnlComboMEF.setLayout(pnlComboMEFLayout);
         pnlComboMEFLayout.setHorizontalGroup(
@@ -867,6 +879,7 @@ public class Principal extends javax.swing.JFrame {
                 .addComponent(jcbExpressions, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jbVisualizar)
+                .addComponent(jbChange)
                 .addContainerGap(68, Short.MAX_VALUE))
         );
         pnlComboMEFLayout.setVerticalGroup(
@@ -878,10 +891,19 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(jLabel2)
                     .addComponent(jcbExpressions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jbVisualizar))
+                    .addComponent(jbVisualizar)
+                    .addComponent(jbChange))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
+        jcbStates.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jcbStatesItemStateChanged(evt);
+            }
+        });  
+
+        
+        
         jLabel1.setText("States");
 
         jLabel2.setText("Expressions");        
@@ -1192,6 +1214,8 @@ public class Principal extends javax.swing.JFrame {
         		else{
         			staw.setValid("False");
         			initMEFCP(true);
+        			stateBack = st;
+        			expBack = exp;
         			showCounterExample(st, exp);
         			
         		}
@@ -1210,13 +1234,27 @@ public class Principal extends javax.swing.JFrame {
     } 
 
     private void showCounterExample(State st, Expression exp) {
+    	CounterExample ce = MEF.getInstance().findCounterExample(st, exp).get(0);
     	jcbStates.removeAllItems();
     	jcbStates.addItem(st);
+    	ArrayList<State> statesCE = ce.getStatesMEF();
+    	for (int i=0;i<statesCE.size(); i++){
+    		State stateAtu = statesCE.get(i);
+    		if (!stateAtu.equals(st)){
+    			jcbStates.addItem(stateAtu);	
+    		}    			
+    	}
     	jcbExpressions.removeAllItems();
     	jcbExpressions.addItem(exp);
-    	jcbExpressions.addItem(exp.getExp1());
-    	jcbExpressions.addItem(exp.getExp2());
-    	MEF.getInstance().geraMEFCounterExample(MEF.getInstance().findCounterExample(st, exp).get(0));
+    	ArrayList <CounterExample> arrayCE = MEF.getInstance().findCounterExamplesByState(st);
+    	for (int i=0; i<arrayCE.size(); i++){
+    		Expression expAtu = arrayCE.get(i).getExp();
+    		if (!exp.equals(expAtu)){
+    			jcbExpressions.addItem(expAtu);	
+    		}    		
+    	}    	
+    	
+    	MEF.getInstance().geraMEFCounterExample(ce);
 
 		ImageIcon img = new ImageIcon(MEF.getInstance().getImagemCE());
 		JLabel label = new JLabel(img);
@@ -1225,7 +1263,7 @@ public class Principal extends javax.swing.JFrame {
 		pnlMEFCP.add(pnlComboMEF);
 		pnlMEFCP.add(new JScrollPane(label));
 		//criaPanelCP(new JScrollPane(label));
-		this.pack();    	
+		this.repaint();    	
 	}
 
 
@@ -1240,7 +1278,7 @@ public class Principal extends javax.swing.JFrame {
     private void initMEFCP(boolean habilita){
     	if (habilita){
 			pnlMEFCP.setVisible(true);
-			jTabbedPane1.addTab("Contra Prova", pnlMEFCP);    		
+			jTabbedPane1.addTab("CounterExample", pnlMEFCP);    		
     	}
     	else{
 			pnlMEFCP.setVisible(false);
@@ -1474,6 +1512,10 @@ public class Principal extends javax.swing.JFrame {
     private void jbVisualizarActionPerformed(java.awt.event.ActionEvent evt) {
     	showCounterExample((State)jcbStates.getSelectedItem(), (Expression) jcbExpressions.getSelectedItem());
     }
+
+    private void jbChangeActionPerformed(java.awt.event.ActionEvent evt) {
+    	showCounterExample(stateBack, expBack);
+    }
     
     public void inicializa(){
  	   this.setStates(new ArrayList(0));
@@ -1483,7 +1525,17 @@ public class Principal extends javax.swing.JFrame {
   	   this.setStatesAnswer(new ArrayList(0));
  	   
     }
-    
+
+	private void jcbStatesItemStateChanged(ItemEvent evt) {
+		if (evt.getStateChange() == ItemEvent.SELECTED) {
+	    	ArrayList <CounterExample> arrayCE = MEF.getInstance().findCounterExamplesByState((State)evt.getItem());
+	    	jcbExpressions.removeAll();
+	    	for (int i=0; i<arrayCE.size(); i++){
+	    		jcbExpressions.addItem(arrayCE.get(i).getExp());
+	    	}   			
+		} 	
+	}
+	
     public void setJlbImagem(javax.swing.JLabel label){
        	this.jlbImagem  = label;
        }         
@@ -1552,7 +1604,8 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JComboBox jcbStates;
     private javax.swing.JComboBox jcbExpressions;
-    private javax.swing.JButton jbVisualizar;    
+    private javax.swing.JButton jbVisualizar;
+    private javax.swing.JButton jbChange;   
     // End of variables declaration//GEN-END:variables
 
     
