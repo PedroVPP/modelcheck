@@ -1240,7 +1240,7 @@ public class Principal extends javax.swing.JFrame {
     	ArrayList<State> statesCE = ce.getStatesMEF();
     	for (int i=0;i<statesCE.size(); i++){
     		State stateAtu = statesCE.get(i);
-    		if (!stateAtu.equals(st)){
+    		if ((!stateAtu.equals(st)) && (!ce.getValidos().contains(state))){
     			jcbStates.addItem(stateAtu);	
     		}    			
     	}
