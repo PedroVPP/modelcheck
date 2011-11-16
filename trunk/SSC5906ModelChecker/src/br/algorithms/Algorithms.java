@@ -956,7 +956,7 @@ public static boolean AG(State state, Expression expression) {
 		
 		counterExample = new CounterExample(state, expression);
 		
-		Boolean validExpression = null;
+		boolean validExpression = true;
 		
 		// ex: Expression.name = A (p U q)
 		Expression expression1 = expression.getExp1(); // = p
@@ -974,15 +974,15 @@ public static boolean AG(State state, Expression expression) {
 				
 				validExpression = recursiveAU(state2, expression1, expression2, state);
 				//newCounterExample(state, expression1, validExpression, state2);
+				if (!validExpression) {
+					break;
+				}
 			}
 		} else {
 			validExpression = false;
-			
-		}
-		if(validExpression == null) {
-			validExpression = false;
 			MEF.getInstance().getCounterExample().add(counterExample);
 		}
+		
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
 		}
@@ -990,15 +990,14 @@ public static boolean AG(State state, Expression expression) {
 		return validExpression;
 	}
 	
-	private static Boolean recursiveAU(State state, Expression expression1, Expression expression2, State stateAnt) {
+	private static boolean recursiveAU(State state, Expression expression1, Expression expression2, State stateAnt) {
 		counterExample.addTransicao(stateAnt, state);
-		Boolean valid = null;
+		boolean valid = true;
 		String firstExpression = expression1.getName();
 		String secondExpression = expression2.getName();
 		if (state.getLabelsString().contains(secondExpression)) {
 			State.addVisitedState(state);
 			counterExample.addStateValido(state);
-			valid = true;
 			
 		} else if (state.getLabelsString().contains(firstExpression)) {
 			State.addVisitedState(state);
@@ -1008,12 +1007,16 @@ public static boolean AG(State state, Expression expression) {
 
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
 				State state2 = (State) iterator.next();
+				
+				if(State.isStateVisited(state2) && !state2.getLabelsString().contains(secondExpression)) {
+					valid = false;
+					break;
+				}
+				
 				if (!State.isStateVisited(state2)) {
 					valid = recursiveAU(state2, expression1, expression2, state);
-					if(valid != null) {
-						if (!valid) {
+					if (!valid) {
 						break;
-						}
 					}
 				}
 			}
@@ -1022,7 +1025,6 @@ public static boolean AG(State state, Expression expression) {
 		}
 		
 		return valid;
-				
 	}
 	
 	private static void executeProperOperation(State state, Expression expression, Expression subExpression) {
