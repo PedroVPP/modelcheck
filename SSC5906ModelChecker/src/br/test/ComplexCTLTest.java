@@ -210,10 +210,12 @@ public class ComplexCTLTest extends Assert{
 		expression.setExp1(EG);
 		expression.setExp2(AG);
 		expression.setType(ExpressionType.AU);
-		boolean result = Algorithms.executeOperation(this.states.get(0), expression);
-		printLabelsInformation();
-		assertTrue(result);
+//		printLabelsInformation();
 		
+		assertFalse(Algorithms.executeOperation(this.states.get(0), expression));
+		assertFalse(Algorithms.executeOperation(this.states.get(1), expression));
+		assertTrue(Algorithms.executeOperation(this.states.get(2), expression));
+		assertTrue(Algorithms.executeOperation(this.states.get(3), expression));
 	}
 	
 	@Test
