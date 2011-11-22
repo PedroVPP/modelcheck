@@ -980,11 +980,13 @@ public static boolean AG(State state, Expression expression) {
 			}
 		} else {
 			validExpression = false;
-			MEF.getInstance().getCounterExample().add(counterExample);
 		}
 		
 		if (validExpression) {
 			state.addLabelsString(expression.getName());
+		}
+		else {
+			MEF.getInstance().addCounterExample(counterExample);
 		}
 		State.clearVisitedStates();
 		return validExpression;
