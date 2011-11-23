@@ -85,7 +85,7 @@ public class MEF {
 	}
 	
 	public void createMEF(){
-		this.novoDotArq = new Escrita("mef.dot");
+/*		this.novoDotArq = new Escrita("mef.dot");
 		novoDotArq.abrir();
 		novoDotArq.escreverLinha("digraph mef {");
 		novoDotArq.novaLinha();		
@@ -118,7 +118,7 @@ public class MEF {
     	novoDotArq.escreverLinha("node [shape = doublecircle]; "+ this.firsState.getName()+";");
 		novoDotArq.escreverLinha("}");
 		novoDotArq.fechar();
-		
+*/		
 		try{
 			this.novoDot = new Graphviz();
 			novoDot.addln(novoDot.start_graph());
@@ -129,7 +129,8 @@ public class MEF {
 				for(int j=0; j<properties.size(); j++){					
 					Property property = (Property) properties.get(j);
 					if (!property.getName().equals("TRUE")){
-						linhaState = linhaState + property.getName() + ", ";	
+						linhaState = linhaState + property.getName() + ", ";
+						state.addLabelsString(property.getName());
 					}					
 				}
 				linhaState = linhaState.substring(0, linhaState.length() -2) + "}\"]";
