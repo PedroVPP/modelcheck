@@ -54,7 +54,16 @@ public class CounterExample {
 		if(!contains) {
 			this.validos.add(state);
 		}
-	}		
+	}
+	
+	public void removeStateValido(State state) {
+		for (int i = 0; i < this.validos.size(); i++) {
+			State state2 = this.validos.get(i);
+			if(state.getName().equals(state2.getName())) {
+				this.validos.remove(state2);
+			}
+		}
+	}
 	
 	public ArrayList<Transicao> getTransicoes(){
 		return this.states;
@@ -83,5 +92,20 @@ public class CounterExample {
             return false;
         }
 
-    }	
+    }
+    
+    
+    //for testing, by pedro
+    public ArrayList<State> getInvalidos() {
+    	ArrayList<State> invalidStates = new ArrayList<State>();
+    	
+    	for (Iterator iterator = this.statesMEF.iterator(); iterator.hasNext();) {
+			State state = (State) iterator.next();
+			if(!this.validos.contains(state) && !invalidStates.contains(state)) {
+				invalidStates.add(state);
+			}
+		}
+    	
+    	return invalidStates;
+    }
 }
