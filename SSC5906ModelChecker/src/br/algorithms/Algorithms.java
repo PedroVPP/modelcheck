@@ -6,6 +6,7 @@ import java.util.Iterator;
 import br.mef.Expression;
 import br.mef.MEF;
 import br.mef.State;
+import br.test.CounterExamplesTest;
 import br.util.GraphvizFileMaker;
 
 public class Algorithms {
@@ -572,6 +573,12 @@ public static boolean AG(State state, Expression expression) {
 		
 		boolean validExpression = true;
 		Expression expression1 = expression.getExp1(); // = p
+
+		System.out.println("LABELS");
+		for (Iterator iterator = state.getLabelsString().iterator(); iterator.hasNext();) {
+			String string = (String) iterator.next();
+			System.out.println(string);
+		}
 		if (state.getLabelsString().contains(expression1.getName())) {
 			counterExample.addStateValido(state);
 			State.addVisitedState(state);
@@ -836,6 +843,7 @@ public static boolean AG(State state, Expression expression) {
 			state.addLabelsString(expression.getName());
 		}
 		else {
+			counterExample.removeStateValido(state);
 			MEF.getInstance().addCounterExample(counterExample);
 		}
 		
@@ -857,12 +865,15 @@ public static boolean AG(State state, Expression expression) {
 			ArrayList<State> children = state.getChildren();
 			for (Iterator<State> iterator = children.iterator(); iterator.hasNext();) {
 				State state2 = (State) iterator.next();
-				if(!State.isStateVisited(state2)) {
-					
+				if(!State.isStateVisited(state2)) {	
 					valid = recursiveEU(state2, expression1, expression2, state);
 					if (valid) {
 						break;
 					}
+				} else {
+					// se acontecer um loop infinito em dois estados, remove eles dos estados válidos
+					counterExample.removeStateValido(state);
+					counterExample.removeStateValido(state2);
 				}
 			}
 		}
@@ -912,7 +923,6 @@ public static boolean AG(State state, Expression expression) {
 				State state2 = (State) iterator.next();
 				
 				validExpression = recursiveAU(state2, expression1, expression2, state);
-				//newCounterExample(state, expression1, validExpression, state2);
 				if (!validExpression) {
 					break;
 				}
@@ -925,6 +935,7 @@ public static boolean AG(State state, Expression expression) {
 			state.addLabelsString(expression.getName());
 		}
 		else {
+			counterExample.removeStateValido(state);
 			MEF.getInstance().addCounterExample(counterExample);
 		}
 		State.clearVisitedStates();
@@ -951,6 +962,9 @@ public static boolean AG(State state, Expression expression) {
 				
 				if(State.isStateVisited(state2) && !state2.getLabelsString().contains(secondExpression)) {
 					valid = false;
+					// se acontecer um loop infinito em dois estados, remove eles dos estados válidos
+					counterExample.removeStateValido(state);
+					counterExample.removeStateValido(state2);
 					break;
 				}
 				
