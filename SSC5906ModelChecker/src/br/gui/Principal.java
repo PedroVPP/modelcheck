@@ -677,7 +677,7 @@ public class Principal extends javax.swing.JFrame {
 
         jtaHelp.setColumns(20);
         jtaHelp.setRows(5);
-        jtaHelp.setText("To create new define:\n1. Select the state on the left grid\n2. Select the property in the middle grid (to select more than one, hold on the control key)\n3. Select the states in the right grid. This is states are the selected state goes. To select more than one, hold the control key.\n4. Press the New Button");
+        jtaHelp.setText("Para criar uma nova transição:\n1. Selecione um estado na grade de estados à esquerda\n2. Selecione as propriedades na grade de propriedades (para selecionar mais que uma propriedade, mantenha a tecla control pressionada)\n3. Selecione os estados de transição no grid de estados a direita (para selecionar mais de um estado, mantenha a tecla control pressionada.\n4. Pressione o botão New");
         jScrollPane7.setViewportView(jtaHelp);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -775,7 +775,7 @@ public class Principal extends javax.swing.JFrame {
 
         jtaHelpExp.setColumns(20);
         jtaHelpExp.setRows(5);
-        jtaHelpExp.setText("To verify if determined state is valid, select the state below and then give a double click.");
+        jtaHelpExp.setText("Para verificar se uma dada expressão é válida em determinado estado, seleciona e expressão na grade de expressão, em seguida dê duplo clique no estado que deseja verificar na grade de estados abaixo.");
         jScrollPane8.setViewportView(jtaHelpExp);
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
