@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Expression {
 	
 	private String name;
+	private String allName;
 	private Expression exp1 = null;
 	private Expression exp2 = null;
 	//(o type = null indica que a expressão em questão e' uma propriedade e nao uma expressao)
@@ -23,8 +24,36 @@ public class Expression {
 		return name;
 	}
 
+	public String getAllName() {
+		return allName;
+	}	
+/*	public String getAllName(){
+		return getAllNameRec(this, "");		
+	}
+	
+	public String getAllNameRec(Expression e, String name)
+	{
+		if (!e.isTemporalOperator()){
+			name =  name + e.getName();
+		}
+		if (e.getExp1() != null)
+		{	
+			name = getAllNameRec(e.getExp1(), name);
+		} 
+        if (e.getExp2() != null)
+		{
+        	name = getAllNameRec(e.getExp2(), name);
+		}
+        return name;
+			  
+	}*/
+
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public void setAllName(String name) {
+		this.allName = name;
 	}
 	
 	public void removeExpression(int index){
@@ -222,7 +251,7 @@ public class Expression {
 	 * @return retorna o nome da expressao
 	 */
 	public String toString() {
-		return name;
+		return allName;
 	}
 	
     @Override

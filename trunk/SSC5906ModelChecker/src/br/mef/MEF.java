@@ -265,6 +265,18 @@ public class MEF {
 		return counterExamples;
 	}
 	
+	public ArrayList<State> findStatesCounterExample() {
+		ArrayList<State> statesCE = new ArrayList<State>();
+		
+		for (Iterator<CounterExample> iterator = this.counterExample.iterator(); iterator.hasNext();) {
+			CounterExample counterExample = (CounterExample) iterator.next();
+			if (!statesCE.contains(counterExample.getState())){
+				statesCE.add(counterExample.getState());
+			}
+		}
+		return statesCE;
+	}
+	
 	public void geraMEFCounterExample(CounterExample counterExample){
 		try{
 			this.novoDotCE = new Graphviz();

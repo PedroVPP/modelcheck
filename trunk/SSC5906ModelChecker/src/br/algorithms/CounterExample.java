@@ -15,34 +15,99 @@ public class CounterExample {
 	private ArrayList <State> statesMEF = new ArrayList<State>();
 	
 
+	/**
+	 * @author Vania Neves
+	 * Construtor CounterExample, cria inicializa o estado e a expressão analisados
+	 * @param state
+	 *            Estado analisado	             
+	 * @param expression
+	 * 			  Expressão analisada 	           
+	 * 
+	 */	
+	
 	public CounterExample(State state, Expression expression) {
 		this.state = state;
 		this.exp = expression;
 		this.addStateMEF(state);
 	}
+	
+	/**
+	 * @author Vania Neves	 
+	 *  Obtém o estado analisado
+	 *  
+	 * @return state
+	 * 
+	 */	
+
 	public State getState() {
 		return state;
 	}
+	
+	/**
+	 * @author Vania Neves	 
+	 *  Configura o estado analisado
+	 *  
+	 * @param state
+	 * 
+	 */			
 	public void setState(State state) {
 		this.state = state;
 	}
+	
+	/**
+	 * @author Vania Neves	 
+	 *  Obtém um objeto de {@link Expression} referente a expressão analisada
+	 *  
+	 * @return exp
+	 * 
+	 */			
 	public Expression getExp() {
 		return exp;
 	}
+	
+	/**
+	 * @author Vania Neves	 
+	 *  Configura a expressão analisada
+	 *  
+	 * @param exp
+	 * 		Objeto da classe {@link Expression}  referente a expressão analisada
+	 * 
+	 */			
 	public void setExp(Expression exp) {
 		this.exp = exp;
 	}
 	
+	/**
+	 * @author Vania Neves	 
+	 *  Obtém a lista de estados em que a {@link CounterExample#exp} é válida
+	 *  
+	 * @return validos
+	 * 
+	 */			
 	public ArrayList<State> getValidos() {
 		return this.validos;
 	}
 	
+	/**
+	 * @author Vania Neves	 
+	 *  Armazena os estados que a MEF conterá 
+	 *  
+	 * @param state
+	 * 
+	 */	
 	private void addStateMEF(State state){
 		if (!statesMEF.contains(state)){
 			statesMEF.add(state);
 		}
 	}
 	
+	/**
+	 * @author Vania Neves	 
+	 *  Armazena os estados que a MEF conterá 
+	 *  
+	 * @param state
+	 * 
+	 */	
 	public void addStateValido(State state) {
 		boolean contains = false;
 		for (Iterator<State> iterator = this.validos.iterator(); iterator.hasNext();) {
@@ -54,7 +119,8 @@ public class CounterExample {
 		if(!contains) {
 			this.validos.add(state);
 		}
-	}
+	}		
+	
 	
 	public void removeStateValido(State state) {
 		for (int i = 0; i < this.validos.size(); i++) {
@@ -63,8 +129,7 @@ public class CounterExample {
 				this.validos.remove(state2);
 			}
 		}
-	}
-	
+	}	
 	public ArrayList<Transicao> getTransicoes(){
 		return this.states;
 	}
@@ -94,7 +159,6 @@ public class CounterExample {
 
     }
     
-    
     //for testing, by pedro
     public ArrayList<State> getInvalidos() {
     	ArrayList<State> invalidStates = new ArrayList<State>();
@@ -107,5 +171,5 @@ public class CounterExample {
 		}
     	
     	return invalidStates;
-    }
+    }    	
 }

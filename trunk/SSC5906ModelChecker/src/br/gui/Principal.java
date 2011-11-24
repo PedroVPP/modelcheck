@@ -11,6 +11,7 @@
 
 package br.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -28,6 +29,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
@@ -883,7 +885,7 @@ public class Principal extends javax.swing.JFrame {
         jTabbedPane1.addTab("MEF", pnlMEF);
 
         //pnlMEFCP.setBackground(new java.awt.Color(255, 255, 255));
-        //pnlMEFCP.setLayout(new java.awt.GridLayout());
+        pnlMEFCP.setLayout(new java.awt.GridLayout(1,0));
         pnlMEFCP.add(jlbImagemCP);
         pnlMEFCP.setVisible(false);
         
@@ -912,7 +914,7 @@ public class Principal extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jcbExpressions, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jcbExpressions, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jbVisualizar)
                 .addComponent(jbChange)
@@ -988,37 +990,21 @@ public class Principal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void criaPanelCP(JScrollPane img){
-        pnlMEFCP.setBackground(new java.awt.Color(255, 255, 255));
-        javax.swing.GroupLayout pnlMEFCPLayout = new javax.swing.GroupLayout(pnlMEFCP);
-        pnlMEFCP.setLayout(pnlMEFCPLayout);
-        pnlMEFCPLayout.setHorizontalGroup(
-            pnlMEFCPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlMEFCPLayout.createSequentialGroup()
-                .addGroup(pnlMEFCPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(img, javax.swing.GroupLayout.PREFERRED_SIZE, 695, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnlComboMEF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        pnlMEFCPLayout.setVerticalGroup(
-            pnlMEFCPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlMEFCPLayout.createSequentialGroup()
-                .addComponent(pnlComboMEF, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(338, 338, 338)
-                .addComponent(img, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-    	
-    }
-    private void pnlStatesFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pnlStatesFocusLost
+     private void pnlStatesFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_pnlStatesFocusLost
 }//GEN-LAST:event_pnlStatesFocusLost
 
     private void btnDelStatesActionPerformed(java.awt.event.ActionEvent evt) {
         int[] indices = jtStates.getSelectedRows();
         for (int i : indices){
-            this.states.remove(((TableModelState)jtStates.getModel()).getValores(i));
+        	State st = ((TableModelState)jtStates.getModel()).getValores(i);
+            this.states.remove(st);
+            StateAnswer staw = new StateAnswer(st.getName());
+            this.statesAnswer.remove(staw);
+            
         }
         ((TableModelState)jtStates.getModel()).fireTableDataChanged();
-        ((TableModelState)jtStates2.getModel()).fireTableDataChanged();    
+        ((TableModelState)jtStates2.getModel()).fireTableDataChanged();
+        ((TableModelStateAnswer)jtStatesExp.getModel()).fireTableDataChanged();
     }
 
     private void btnAddStatesActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1271,36 +1257,48 @@ public class Principal extends javax.swing.JFrame {
     } 
 
     private void showCounterExample(State st, Expression exp) {
-    	CounterExample ce = MEF.getInstance().findCounterExample(st, exp).get(0);
-    	jcbStates.removeAllItems();
-    	jcbStates.addItem(st);
-    	ArrayList<State> statesCE = ce.getStatesMEF();
-    	for (int i=0;i<statesCE.size(); i++){
-    		State stateAtu = statesCE.get(i);
-    		if ((!stateAtu.equals(st)) && (!ce.getValidos().contains(state))){
-    			jcbStates.addItem(stateAtu);	
-    		}    			
-    	}
-    	jcbExpressions.removeAllItems();
-    	jcbExpressions.addItem(exp);
-    	ArrayList <CounterExample> arrayCE = MEF.getInstance().findCounterExamplesByState(st);
-    	for (int i=0; i<arrayCE.size(); i++){
-    		Expression expAtu = arrayCE.get(i).getExp();
-    		if (!exp.equals(expAtu)){
-    			jcbExpressions.addItem(expAtu);	
-    		}    		
-    	}    	
-    	
-    	MEF.getInstance().geraMEFCounterExample(ce);
+    	ArrayList<CounterExample> aCe = MEF.getInstance().findCounterExample(st, exp);
+    	if (aCe.size() > 0){
+        	CounterExample ce = MEF.getInstance().findCounterExample(st, exp).get(0);
+        	jcbStates.removeAllItems();
+        	jcbStates.addItem(st);
+        	ArrayList<State> statesCE = MEF.getInstance().findStatesCounterExample();
+        	for (int i=0;i<statesCE.size(); i++){
+        		State stateAtu = statesCE.get(i);
+        		//if ((!stateAtu.equals(st)) && (!ce.getValidos().contains(state))){
+        		if (!stateAtu.equals(st)){
+        			jcbStates.addItem(stateAtu);	
+        		}    			
+        	}
+        	jcbExpressions.removeAllItems();
+        	jcbExpressions.addItem(exp);
+        	ArrayList <CounterExample> arrayCE = MEF.getInstance().findCounterExamplesByState(st);
+        	for (int i=0; i<arrayCE.size(); i++){
+        		Expression expAtu = arrayCE.get(i).getExp();
+        		if (!exp.equals(expAtu)){
+        			jcbExpressions.addItem(expAtu);	
+        		}    		
+        	}    	
+        	
+        	MEF.getInstance().geraMEFCounterExample(ce);
 
-		ImageIcon img = new ImageIcon(MEF.getInstance().getImagemCE());
-		JLabel label = new JLabel(img);
-		label.setBounds(0, 0, img.getIconWidth() + 10, img.getIconHeight() + 10);
-		pnlMEFCP.removeAll();
-		pnlMEFCP.add(pnlComboMEF);
-		pnlMEFCP.add(new JScrollPane(label));
-		//criaPanelCP(new JScrollPane(label));
-		this.repaint();    	
+    		ImageIcon img = new ImageIcon(MEF.getInstance().getImagemCE());
+    		JLabel label = new JLabel(img);
+    		label.setBounds(0, 0, img.getIconWidth() + 10, img.getIconHeight() + 10);
+    		JPanel panel = new JPanel(new BorderLayout());
+    		panel.add(pnlComboMEF, BorderLayout.NORTH);
+    		panel.add(new JScrollPane(label), BorderLayout.SOUTH);
+
+    		pnlMEFCP.removeAll();
+    		//pnlMEFCP.add(pnlComboMEF);
+    		//pnlMEFCP.add(new JScrollPane(label));
+    		pnlMEFCP.add(new JScrollPane(panel), BorderLayout.CENTER);
+    		
+ 
+    		this.repaint();    	
+    		
+    	}
+    	
 	}
 
 
@@ -1346,6 +1344,9 @@ public class Principal extends javax.swing.JFrame {
             this.defines.add(newDefine); 
         }
         ((TableModelDefine)jtDefine.getModel()).fireTableDataChanged();
+        jtStates.clearSelection();
+        jtStates2.clearSelection();
+        jtProperties.clearSelection();
 }
 
     private void btDelDefineActionPerformed(java.awt.event.ActionEvent evt) {
