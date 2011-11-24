@@ -129,6 +129,7 @@ static public void printExpressions(Expression e)
 		  
 }
 */
+
 static public String im(String s)
 {
 int k;
@@ -343,9 +344,10 @@ Expression ctlGrammar():
 		//  System.out.println();
 		  		}
 	    
-	    exp = new Expression(t.toString());
+	    exp = new Expression(t.toString());	    
 	    exp.setType(null);	    
 	    ctlExpression = ctlExpression + t.toString();
+	    exp.setAllName(t.toString());
 	  }	  	)   				
    | 
    // definicao de propriedade atomica
@@ -354,7 +356,10 @@ Expression ctlGrammar():
     
   <Rparentheses> 
     |      //definicao de relacoes logicas parentisadas em CTL
-  exp = ctlSpecifications() exp1 = ctlGrammar()   |
+  exp = ctlSpecifications() exp1 = ctlGrammar()  (  {
+    exp.setAllName(exp.getName() + exp1.getAllName());  }
+    
+    ) |
   //exp1 = unionDec() exp2 = union()
   exp = unionAux()
   
@@ -397,6 +402,7 @@ Expression negation():
       exp.setExp1(exp1);
       exp.setType(ExpressionType.NOT);
       ctlExpression = ctlExpression + " ) ";
+      exp.setAllName(" ( ~ " + exp1.getAllName() + " )");
       return exp;
           }    
 }
@@ -437,6 +443,7 @@ Expression dualRelations():
   	  	ep = ExpressionType.BIC;
   	       
   	     exp.setType(ep);
+  	     exp.setAllName("( "+exp1.getName() +" " + t.toString()+ " " + exp2.getName() + " )");
         return exp; 		  					  					
 	  }
 }
@@ -454,6 +461,7 @@ Expression ctlSpecifications():
   {
     ctlExpression = ctlExpression + t.toString()+ " ";
     Expression exp = new Expression(t.toString()+ " ");
+    exp.setAllName(ctlExpression);
     if (t.toString().toUpperCase().equals("AX"))
     	ep = ExpressionType.AX;
     else if (t.toString().toUpperCase().equals("EX"))
@@ -522,7 +530,8 @@ Expression union():
 
   	    exp = new Expression(" [ " + exp1.getName() + " U " + exp2.getName() + " ] ");
   	    exp.setExp1(exp1);
-  	    exp.setExp2(exp2);            
+  	    exp.setExp2(exp2);
+  	    exp.setAllName(ctlExpression);         
 		return exp;  					  					
     }
 }
